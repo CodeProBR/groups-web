@@ -1,0 +1,83 @@
+@use './variables' as *;
+
+.share {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+
+	>span {
+		@include text-smaller;
+		font-weight: 700;
+		text-transform: uppercase;
+		color: $text-secondary;
+	}
+
+	>div {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+
+		>a,
+		button {
+			width: 1.75rem;
+			height: 1.75rem;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1rem;
+			text-decoration: none;
+			border: none;
+			cursor: pointer;
+			background: $border;
+			color: $text-secondary;
+			transition: $transition;
+
+			&:hover {
+				transform: translateY(-2px);
+			}
+
+			&.whatsapp:hover {
+				background: #25D366;
+				color: #ffffff;
+			}
+
+			&.telegram:hover {
+				background: #0088cc;
+				color: #ffffff;
+			}
+
+			&.facebook:hover {
+				background: #1877F2;
+				color: #ffffff;
+			}
+
+			&.twitter:hover {
+				background: #000000;
+				color: #ffffff;
+
+				[data-theme="dark"] & {
+					background: #ffffff;
+					color: #000000;
+				}
+			}
+
+			&.email:hover {
+				background: #ea4335;
+				color: #ffffff;
+			}
+
+			&.copyBtn {
+				&:hover {
+					background: $primary;
+					color: #ffffff;
+				}
+			}
+
+			&.copied {
+				background: #10b981 !important;
+				color: #ffffff !important;
+			}
+		}
+	}
+}

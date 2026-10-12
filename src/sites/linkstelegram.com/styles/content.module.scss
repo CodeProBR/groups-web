@@ -1,0 +1,261 @@
+@use './variables' as *;
+
+.content {
+    scroll-margin-top: 6.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    color: $text-secondary;
+    line-height: 1.7;
+
+    div {
+        display: block;
+
+        > :last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    img {
+        width: 100%;
+        max-width: 600px;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        border-radius: $radius-lg;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: $shadow-lg;
+        margin: 1.5rem auto;
+        display: block;
+    }
+
+    hr {
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+        border: 0;
+        margin: 1.5rem 0;
+    }
+
+    p {
+        @include text-normal;
+        color: $text-secondary;
+        margin-bottom: 1rem;
+        line-height: 1.75;
+    }
+
+    strong {
+        color: #ffffff;
+        font-weight: 700;
+    }
+
+    blockquote {
+        background: linear-gradient(135deg, rgba(0, 168, 255, 0.06) 0%, rgba(99, 102, 241, 0.04) 100%);
+        border-left: 3px solid $primary;
+        border-radius: 0 $radius $radius 0;
+        padding: 1.25rem 1.5rem;
+        margin: 1.5rem 0;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: inset 0 0 20px rgba(0, 168, 255, 0.04);
+
+        span,
+        p {
+            display: block;
+            @include text-normal;
+            color: #e2e8f0;
+            font-style: italic;
+            margin: 0;
+            line-height: 1.6;
+        }
+    }
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding-left: 1.5rem;
+        margin-bottom: 1.5rem;
+
+        >li {
+            @include text-normal;
+            color: $text-secondary;
+
+            &::marker {
+                color: $primary;
+            }
+
+            > :last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    ol {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        border-radius: $radius;
+        list-style: none;
+        padding: 0;
+        margin-bottom: 1.5rem;
+        counter-reset: item;
+
+        >li {
+            @include text-normal;
+            margin: 0;
+            color: $text;
+            background: linear-gradient(145deg, rgba(22, 32, 54, 0.5) 0%, rgba(13, 18, 32, 0.65) 100%);
+            padding: 1rem 1.25rem;
+            border-radius: $radius;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            counter-increment: item;
+
+            &::before {
+                content: counter(item);
+                min-width: 1.65rem;
+                height: 1.65rem;
+                background: rgba(0, 168, 255, 0.15);
+                border: 1px solid rgba(0, 168, 255, 0.3);
+                border-radius: 50%;
+                color: $primary;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.75rem;
+                font-weight: 700;
+                flex-shrink: 0;
+                margin-top: 0.15rem;
+            }
+
+            >ul {
+                padding-top: 0.5rem;
+                gap: 0.5rem;
+
+                >li {
+                    margin: 0;
+                }
+            }
+
+            > :last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    h3 {
+        @include text-large;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+
+        svg {
+            color: $primary;
+            background: rgba(0, 168, 255, 0.1);
+            border: 1px solid rgba(0, 168, 255, 0.25);
+            border-radius: $radius-sm;
+            flex-shrink: 0;
+            width: 2.25rem;
+            height: 2.25rem;
+            padding: 0.5rem;
+            box-sizing: border-box;
+        }
+    }
+
+    h4 {
+        @include text-normal;
+        font-weight: 600;
+        color: #ffffff;
+        margin: 1.5rem 0 0.5rem;
+    }
+
+    a {
+        color: $primary;
+        text-decoration: underline;
+        font-weight: 600;
+        transition: $transition;
+
+        &:hover {
+            color: #38bdf8;
+            text-shadow: 0 0 8px rgba(0, 168, 255, 0.4);
+        }
+    }
+
+    code {
+        background: rgba(0, 168, 255, 0.1);
+        border: 1px solid rgba(0, 168, 255, 0.2);
+        color: #38bdf8;
+        padding: 0.2rem 0.45rem;
+        border-radius: $radius-sm;
+        font-size: 0.85em;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    pre {
+        background: #060910;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: $radius;
+        padding: 1.25rem;
+        overflow-x: auto;
+        margin: 1.25rem 0;
+
+        code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: #e2e8f0;
+        }
+    }
+
+    >div>div {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.25rem;
+        margin: 1.5rem 0;
+
+        >li {
+            background: linear-gradient(145deg, rgba(22, 32, 54, 0.5) 0%, rgba(13, 18, 32, 0.65) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: $radius;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            list-style: none;
+
+            h3 {
+                @include text-normal;
+                margin: 0;
+                font-weight: 700;
+                color: #ffffff;
+                display: flex;
+                align-items: center;
+                gap: 0.65rem;
+
+                svg {
+                    color: $primary;
+                    background: rgba(0, 168, 255, 0.1);
+                    border-radius: $radius-sm;
+                    flex-shrink: 0;
+                    width: 2rem;
+                    height: 2rem;
+                    padding: 0.45rem;
+                    box-sizing: border-box;
+                }
+            }
+
+            p {
+                @include text-small;
+                color: $text-secondary;
+                margin: 0;
+                line-height: 1.6;
+            }
+        }
+    }
+}

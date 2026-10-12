@@ -1,0 +1,110 @@
+@use './variables' as *;
+
+.section {
+	background: $light;
+	border: 1px solid $border;
+	border-radius: 1rem;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	padding: 1.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+
+	>hr {
+		background-color: $border;
+		height: 1px;
+		width: 100%;
+		border: 0;
+	}
+
+	>h2 {
+		@include text-normal;
+		text-transform: uppercase;
+		font-weight: 700;
+		color: $primary-dark;
+	}
+}
+
+.categories {
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
+
+	>a {
+		display: flex;
+		align-items: center;
+		gap: .5rem;
+
+		>svg {
+			font-size: 1rem;
+			color: $text-secondary;
+		}
+
+		>h3 {
+			@include text-small;
+			margin: 0;
+			color: $text;
+			font-weight: 400;
+			transition: $transition;
+		}
+
+		&:hover {
+
+			>h3 {
+				color: $primary;
+			}
+		}
+	}
+}
+
+.groups {
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
+
+	>a {
+		display: flex;
+		align-items: center;
+		gap: .5rem;
+
+		>img {
+			width: 4rem !important;
+			height: 3rem;
+			object-fit: cover;
+			border-radius: .75rem;
+			border: 1px solid $border;
+		}
+
+		>div {
+			width: calc(100% - 4.5rem);
+			display: flex;
+			flex-direction: column;
+			gap: .5rem;
+
+			>h3 {
+				@include text-small;
+				color: $text;
+				font-weight: 700;
+				-webkit-line-clamp: 1;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+				text-transform: uppercase;
+				transition: $transition;
+			}
+
+			>span {
+				@include text-smaller;
+				color: $text-secondary;
+			}
+		}
+
+		&:hover {
+			h3 {
+				color: $primary;
+			}
+		}
+	}
+}

@@ -1,0 +1,123 @@
+@use './variables' as *;
+
+.groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    width: 100%;
+
+    >a {
+        background: $light;
+        border: 1px solid $border;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: $transition;
+
+        >figure {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+
+            >img {
+                width: 100%;
+                aspect-ratio: 2 / 1;
+                object-fit: cover;
+                transition: $transition;
+            }
+
+            >span {
+                @include text-smallest;
+                margin: 0;
+                position: absolute;
+                left: .5rem;
+                top: .5rem;
+                background-color: $bg-card;
+                color: $primary-dark;
+                padding: 0 .5rem;
+                border-radius: .6rem;
+                height: 1.5rem;
+                display: flex;
+                align-items: center;
+                width: fit-content;
+                gap: .25rem;
+
+                >svg {
+                    font-size: .8rem;
+                }
+            }
+
+            >small {
+                background-color: #e9b949;
+                color: #5C4306;
+                border-radius: .6rem;
+                align-items: center;
+                justify-content: center;
+                height: 1.5rem;
+                padding: 0 .5rem;
+                display: flex;
+                position: absolute;
+                top: .5rem;
+                right: .5rem;
+                gap: .125rem;
+
+                >svg {
+                    font-size: .8rem;
+                }
+
+                >span {
+                    @include text-smallest;
+                    margin: 0;
+                    font-weight: 900;
+                    line-height: 1;
+                    letter-spacing: 1px;
+                }
+            }
+        }
+
+        >div {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+            >h3 {
+                @include text-small;
+                font-weight: 700;
+                color: $text;
+                -webkit-line-clamp: 1;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-transform: uppercase;
+                transition: $transition;
+            }
+
+            >p {
+                @include text-smaller;
+                color: $text-secondary;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                height: 3.1rem;
+            }
+
+            >button {
+                background-color: $primary;
+                @include text-small;
+                margin: 0;
+                color: #fff;
+                border: 0;
+                border-radius: .75rem;
+                height: 2.5rem;
+                transition: $transition;
+            }
+        }
+
+        &:hover {
+            @include hover;
+        }
+    }
+}

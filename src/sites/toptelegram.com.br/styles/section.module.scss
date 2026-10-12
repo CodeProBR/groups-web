@@ -1,0 +1,376 @@
+@use './variables' as *;
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    border-bottom: 1px solid $border;
+    padding: 5rem 0;
+
+    /*>div {
+        gap: 2rem;
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }*/
+
+    &.light {
+        background-color: $light;
+    }
+
+    &.dark {
+        background-color: $dark;
+    }
+}
+
+.title {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    >h1 {
+        @include text-larger;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        text-wrap: balance;
+
+        >strong {
+            font-weight: 900;
+            color: $primary-dark;
+            text-align: center;
+            text-transform: uppercase;
+            background-image: linear-gradient(0deg, transparent 10%, $primary-light 10%, $primary-light 45%, transparent 45%);
+            padding: 0 1rem;
+        }
+    }
+
+    >h2 {
+        @include text-large;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+
+        >strong {
+            font-weight: 900;
+            color: $primary-dark;
+            text-align: center;
+            text-transform: uppercase;
+            background-image: linear-gradient(0deg, transparent 10%, $primary-light 10%, $primary-light 45%, transparent 45%);
+            padding: 0 1rem;
+        }
+    }
+
+    >p {
+        @include text-normal;
+        color: $text-secondary;
+        text-align: center;
+        text-wrap: balance;
+        max-width: 60rem;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+    }
+
+    >span {
+        white-space: pre;
+        @include text-small;
+        color: $text-secondary;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.link {
+    @include text-normal;
+    color: $text-secondary;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -1rem;
+    text-decoration: underline;
+    transition: $transition;
+
+    &:hover {
+        color: $primary-dark;
+        font-weight: 700;
+    }
+}
+
+.w100 {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+
+    @media screen and (orientation: portrait) {
+        width: 100%;
+    }
+}
+
+.w70 {
+    width: calc(70% - 2.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+
+    @media screen and (orientation: portrait) {
+        width: 100%;
+    }
+}
+
+.w30 {
+    width: calc(30% - 2.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+
+    >.block {
+        top: 6.5rem;
+        position: sticky;
+    }
+
+    @media screen and (orientation: portrait) {
+        width: 100%;
+    }
+}
+
+.block {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    >figure {
+        width: 100%;
+        height: 25rem;
+        border-radius: 1rem;
+        overflow: hidden;
+        margin-bottom: 2.5rem;
+
+        >img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+}
+
+.break {
+    background-color: $border;
+    height: 1px;
+    border: 0;
+    margin: 0 auto;
+    width: 40rem;
+}
+
+.group {
+    background: $light;
+    border: 1px solid $border;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: $transition;
+
+    &[data-bg="dark"] {
+        background-color: $dark;
+    }
+
+    >figure {
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+
+        >img {
+            width: 100%;
+            aspect-ratio: 3 / 1;
+            object-fit: cover;
+            transition: $transition;
+        }
+
+        >span {
+            @include text-smaller;
+            margin: 0;
+            position: absolute;
+            left: .5rem;
+            bottom: .5rem;
+            background-color: $bg-card;
+            color: $primary-dark;
+            padding: 0 .5rem;
+            border-radius: .6rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            width: fit-content;
+        }
+
+        >small {
+            background-color: #e9b949;
+            color: #5C4306;
+            border-radius: .6rem;
+            align-items: center;
+            justify-content: center;
+            height: 1.5rem;
+            padding: 0 .5rem;
+            display: flex;
+            position: absolute;
+            top: .5rem;
+            right: .5rem;
+            gap: .125rem;
+
+            >svg {
+                font-size: .8rem;
+            }
+
+            >span {
+                @include text-smaller;
+                margin: 0;
+                font-weight: 900;
+                line-height: 1;
+                letter-spacing: 1px;
+            }
+        }
+    }
+
+    >div {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        >h2 {
+            @include text-large;
+            font-weight: 700;
+            color: $text;
+            -webkit-line-clamp: 1;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: $transition;
+        }
+
+        >p {
+            @include text-normal;
+            color: $text-secondary;
+            font-style: italic;
+            border-left: 5px solid $border;
+            padding: .5rem 1rem;
+            margin: 0;
+        }
+
+        >a {
+            background-color: $primary;
+            @include text-normal;
+            margin: 0;
+            color: #fff;
+            border: 0;
+            border-radius: .75rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: $transition;
+
+            &:hover {
+                background-color: $primary-dark;
+                transform: translateY(-.125rem);
+            }
+        }
+    }
+}
+
+.alert {
+    background-color: $light;
+    border: 1px solid rgba(253, 230, 138, 1);
+    border-radius: 1rem;
+    overflow: hidden;
+
+    >div {
+        background-color: rgba(253, 230, 138, .1);
+        padding: 1.25rem;
+
+        >p {
+            @include text-small;
+            margin: 0;
+            color: rgba(146, 64, 14, 1);
+        }
+    }
+}
+
+.details {
+    background: $light;
+    border: 1px solid $border;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    >hr {
+        background-color: $border;
+        height: 1px;
+        width: 100%;
+        border: 0;
+    }
+
+    >h2 {
+        @include text-normal;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: $primary-dark;
+    }
+
+    >div {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+
+        >div {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+
+            >p {
+                @include text-normal;
+                margin: 0;
+                color: $text;
+            }
+
+            >span {
+                @include text-normal;
+                line-height: 1.5rem;
+                margin: 0;
+                font-weight: 700;
+                width: 1.5rem;
+                height: 1.5rem;
+                background-color: $primary-light;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 100%;
+                color: $primary-dark;
+            }
+        }
+    }
+
+    >blockquote {
+        @include text-small;
+        margin: 0;
+        color: $text-secondary;
+        border-left: 5px solid $border;
+        margin: 0;
+        padding: .75rem 1rem;
+        font-style: italic;
+        background-color: $dark;
+        border-radius: .75rem;
+    }
+
+    >p {
+        @include text-normal;
+        color: $text;
+    }
+}

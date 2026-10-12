@@ -1,0 +1,69 @@
+@use './variables' as *;
+
+.breadcrumbs {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 1rem;
+	width: 100%;
+	padding: 0.75rem 1.5rem;
+	background: linear-gradient(135deg, rgba(22, 32, 54, 0.4) 0%, rgba(13, 18, 32, 0.55) 100%);
+	border: 1px solid rgba(255, 255, 255, 0.07);
+	border-radius: $radius-full;
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
+	box-shadow: $shadow-sm;
+
+	@media screen and (max-width: 640px) {
+		justify-content: center;
+		border-radius: $radius;
+		padding: 0.75rem 1rem;
+	}
+
+	>nav {
+		display: flex;
+		align-items: center;
+
+		>ol {
+			@include text-smaller;
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 0.45rem;
+			list-style: none;
+			padding: 0;
+			margin: 0;
+
+			>li {
+				display: flex;
+				align-items: center;
+				gap: 0.45rem;
+				color: $text-secondary;
+
+				>a {
+					display: flex;
+					align-items: center;
+					gap: 0.35rem;
+					color: $text-secondary;
+					text-decoration: none;
+					transition: color $transition;
+
+					&:hover {
+						color: $primary;
+					}
+				}
+
+				>svg {
+					font-size: 0.75rem;
+					color: $text-muted;
+				}
+
+				>span {
+					color: #ffffff;
+					font-weight: 600;
+				}
+			}
+		}
+	}
+}

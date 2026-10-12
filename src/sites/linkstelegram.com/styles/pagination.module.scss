@@ -1,0 +1,62 @@
+@use './variables' as *;
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 1.5rem 0;
+
+    .item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.5rem;
+        height: 2.5rem;
+        padding: 0 0.85rem;
+        border-radius: $radius-sm;
+        background: rgba(255, 255, 255, 0.04);
+        color: $text-secondary;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        @include text-small;
+        font-weight: 500;
+        text-decoration: none;
+        transition: $transition;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+
+        &:hover {
+            background: rgba(0, 168, 255, 0.12);
+            color: #ffffff;
+            border-color: rgba(0, 168, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        &.active {
+            background: $primary-gradient;
+            color: #ffffff;
+            border-color: transparent;
+            font-weight: 700;
+            box-shadow: 0 4px 18px rgba(0, 168, 255, 0.4);
+        }
+
+        &.prev,
+        &.next {
+            font-weight: 600;
+            padding: 0 1rem;
+        }
+    }
+
+    .dots {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2rem;
+        height: 2.5rem;
+        color: $text-muted;
+        @include text-small;
+    }
+}

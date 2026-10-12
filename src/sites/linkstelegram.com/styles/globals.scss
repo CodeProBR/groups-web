@@ -1,0 +1,229 @@
+@use './variables' as *;
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    cursor: default;
+    color-scheme: dark;
+}
+
+::selection {
+    background: rgba(0, 168, 255, 0.3);
+    color: #ffffff;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background: #090d16;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    border: 2px solid #090d16;
+    transition: $transition;
+
+    &:hover {
+        background: $primary;
+    }
+}
+
+body {
+    font-family: $font;
+    background-color: $bg;
+    background-image:
+        radial-gradient(circle at 50% 0%, rgba(0, 168, 255, 0.12) 0%, transparent 55%),
+        radial-gradient(circle at 100% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 0% 70%, rgba(0, 168, 255, 0.06) 0%, transparent 50%),
+        linear-gradient(180deg, #090d16 0%, #0d121f 50%, #090d16 100%);
+    background-attachment: fixed;
+    color: $text;
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: $transition;
+}
+
+input,
+select,
+textarea,
+button {
+    font-family: inherit;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+main {
+    background: transparent;
+    padding: 2.5rem 0 6rem 0;
+    position: relative;
+    min-height: calc(100vh - 12rem);
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 1200px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(0, 168, 255, 0.25), transparent);
+        pointer-events: none;
+    }
+
+    >div {
+        gap: 3.5rem;
+    }
+}
+
+.container {
+    max-width: 1360px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 2.5rem;
+
+    @media screen and (max-width: 768px) {
+        padding: 0 1.25rem;
+        gap: 2rem;
+    }
+}
+
+.content {
+    width: calc(70% - 1.25rem);
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+
+    @media screen and (max-width: 1024px) {
+        width: 100%;
+    }
+}
+
+.sidebar {
+    width: calc(30% - 1.25rem);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: sticky;
+    top: 5.5rem;
+    align-self: flex-start;
+
+    @media screen and (max-width: 1024px) {
+        width: 100%;
+        position: static;
+    }
+}
+
+.notFound {
+    text-align: center;
+    padding: 7rem 1.5rem;
+    width: 100%;
+    max-width: 680px;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    background: linear-gradient(145deg, rgba(22, 32, 54, 0.5) 0%, rgba(13, 18, 32, 0.7) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: $radius-xl;
+    box-shadow: $shadow-xl;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '404';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 16rem;
+        font-weight: 900;
+        color: rgba(0, 168, 255, 0.03);
+        pointer-events: none;
+        z-index: 0;
+        line-height: 1;
+    }
+
+    >h1 {
+        @include text-larger;
+        font-weight: 800;
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(135deg, #ffffff 40%, #00a8ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    >p {
+        @include text-normal;
+        color: $text-secondary;
+        max-width: 440px;
+        position: relative;
+        z-index: 1;
+    }
+
+    >a {
+        @include text-small;
+        margin-top: 0.5rem;
+        position: relative;
+        z-index: 1;
+        background: $primary-gradient;
+        color: #ffffff;
+        font-weight: 600;
+        padding: 0.85rem 2rem;
+        border-radius: $radius-full;
+        text-decoration: none;
+        box-shadow: 0 4px 20px rgba(0, 168, 255, 0.35);
+        transition: $transition;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 168, 255, 0.5);
+            background: $primary-gradient-hover;
+        }
+    }
+}
