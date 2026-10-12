@@ -41,5 +41,5 @@ yarn-error.log*
 next-env.d.ts
 
 # sites
-/src/sites/linkstelegram.com/.env
-/src/sites/toptelegram.com.br/.env
+src/sites/*/.env
+src/sites/*/.env.*
