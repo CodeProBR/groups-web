@@ -16,6 +16,18 @@ const site = process.env.NEXT_PUBLIC_SITE || 'toptelegram.com.br';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: '**.toptelegram.com.br',
+            },
+            {
+                protocol: 'https',
+                hostname: '**.linkstelegram.com',
+            },
+        ],
+    },
     webpack: (config) => {
         config.resolve.alias['@site'] = path.resolve(process.cwd(), `src/sites/${site}`);
         return config;
