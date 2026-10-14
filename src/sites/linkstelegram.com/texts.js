@@ -1,100 +1,100 @@
 const texts = {
     groups: {
-        name: "Grupos",
-        title: "Grupos do Telegram em Destaque",
-        description: "Confira alguns dos grupos e canais do Telegram mais populares e recém-adicionados. Escolha sua categoria favorita e participe de comunidades ativas e atualizadas.",
-        titleAside: "Grupos em Destaque",
-        button: "ver todos os grupos",
-        slug: "grupos",
-        action: "Entrar no Grupo",
-        moderate: "O conteúdo enviado ao nosso site é revisado manualmente com curadoria por nossos moderadores.",
+        name: "Groups",
+        title: "Featured Telegram Groups",
+        description: "Check out some of the most popular and newly added Telegram groups and channels. Choose your favorite category and join active, updated communities.",
+        titleAside: "Featured Groups",
+        button: "see all groups",
+        slug: "groups",
+        action: "Join Group",
+        moderate: "Content submitted to our site is manually reviewed and curated by our moderators.",
         rules: {
-            title: "Regras do Grupo",
-            description: "Antes de acessar o grupo de [PLATFORM] [GROUP], esteja ciente que você precisa estar de acordo com todas as regras do grupo. É importante dizer também que este é um grupo independente, sem nenhuma relação com o nosso site e o único responsável por ele é o administrador do grupo. O [GROUP] faz parte da categoria de [CATEGORY]."
+            title: "Group Rules",
+            description: "Before accessing the [PLATFORM] group [GROUP], be aware that you must agree to all group rules. It is also important to note that this is an independent group with no relationship to our site, and the sole responsible party is the group administrator. [GROUP] belongs to the [CATEGORY] category."
         },
-        about: "Sobre os Grupos de [CATEGORY] do [PLATFORM]",
+        about: "About [CATEGORY] Groups on [PLATFORM]",
         similar: {
-            title: "Grupos Similares",
-            description: "Encontre outros grupos de [CATEGORY] que podem ser do seu interesse"
+            title: "Similar Groups",
+            description: "Find other [CATEGORY] groups that might interest you"
         },
-        verified: "Verificado em",
-        group: "Grupo de [PLATFORM]: [GROUP]",
+        verified: "Verified on",
+        group: "[PLATFORM] Group: [GROUP]",
         seo: {
-            title: "Grupo de [PLATFORM]: [GROUP] - Categoria [CATEGORY]",
-            description: "Grupo de [PLATFORM]: [GROUP] - Categoria [CATEGORY]"
+            title: "[PLATFORM] Group: [GROUP] - [CATEGORY] Category",
+            description: "[PLATFORM] Group: [GROUP] - [CATEGORY] Category"
         },
         faq: [
             {
-                question: `Como entrar no grupo de [PLATFORM] "[GROUP]"?`,
-                answer: `Para entrar no grupo <strong>[GROUP]</strong>, basta clicar no botão de acesso nesta página. Você será redirecionado para o link oficial de convite do [PLATFORM] para confirmar sua entrada pelo próprio aplicativo.`
+                question: `How to join the [PLATFORM] group "[GROUP]"?`,
+                answer: `To join the group <strong>[GROUP]</strong>, simply click the access button on this page. You will be redirected to the official [PLATFORM] invitation link to confirm your entry directly in the app.`
             },
             {
-                question: `O grupo "[GROUP]" é gratuito?`,
-                answer: `Sim, o acesso ao link do grupo <strong>[GROUP]</strong> através do <strong>[SITE]</strong> é 100% gratuito.`
+                question: `Is the group "[GROUP]" free?`,
+                answer: `Yes, accessing the group link <strong>[GROUP]</strong> through <strong>[SITE]</strong> is 100% free.`
             },
             {
-                question: `Qual é a categoria do grupo "[GROUP]"?`,
-                answer: `O grupo <strong>[GROUP]</strong> faz parte da categoria <strong>[CATEGORY]</strong> em nossa plataforma.`
+                question: `What is the category of the group "[GROUP]"?`,
+                answer: `The group <strong>[GROUP]</strong> belongs to the <strong>[CATEGORY]</strong> category on our platform.`
             },
             {
-                question: `Os grupos da categoria [CATEGORY] são verificados?`,
-                answer: `Nosso sistema realiza verificações periódicas para manter links de convite ativos e funcionais. Caso identifique um link expirado no grupo <strong>[GROUP]</strong>, você pode nos notificar.`
+                question: `Are groups in the [CATEGORY] category verified?`,
+                answer: `Our system performs periodic checks to keep invitation links active and functional. If you identify an expired link in the group <strong>[GROUP]</strong>, you can notify us.`
             },
             {
-                question: `O [SITE] é responsável por este grupo?`,
-                answer: `Não. O grupo <strong>[GROUP]</strong> é administrado de forma independente por seus criadores. O <strong>[SITE]</strong> funciona exclusivamente como um diretório de divulgação de links públicos.`
+                question: `Is [SITE] responsible for this group?`,
+                answer: `No. The group <strong>[GROUP]</strong> is independently managed by its creators. <strong>[SITE]</strong> functions exclusively as a directory for discovering public links.`
             },
         ]
     },
     categories: {
-        name: "Categorias",
-        title: "Mais Categorias de Grupos de Telegram",
-        description: "Confira a nossa lista de categorias de assuntos específicos de Grupos e Canais de Telegram.",
-        titleAside: "Categorias em Destaque",
-        button: "ver todas as categorias",
-        slug: "categorias",
-        more: "Mais categorias"
+        name: "Categories",
+        title: "More Telegram Group Categories",
+        description: "Browse our list of specific topic categories for Telegram Groups and Channels.",
+        titleAside: "Featured Categories",
+        button: "see all categories",
+        slug: "categories",
+        more: "More categories"
     },
     blog: {
         name: "Blog",
-        title: "Dicas e Artigos do Blog",
-        description: "Acompanhe nossas dicas, tutoriais e novidades para aproveitar ao máximo seus grupos de Telegram e manter suas comunidades engajadas.",
-        button: "ver todos os posts",
+        title: "Blog Tips and Articles",
+        description: "Follow our tips, tutorials, and updates to get the most out of your Telegram groups and keep your communities engaged.",
+        button: "see all posts",
         slug: "blog",
-        card: "Ler Post",
-        read: "min de leitura",
-        update: "Atualizado em"
+        card: "Read Post",
+        read: "min read",
+        update: "Updated on"
     },
     faq: {
-        title: "Perguntas Frequentes",
-        description: "Tire suas dúvidas sobre o funcionamento da nossa plataforma de grupos de Telegram."
+        title: "Frequently Asked Questions",
+        description: "Get answers to your questions about how our Telegram group platform works."
     },
     pagination: {
-        title: "Navegação de páginas",
-        prev: "Anterior",
-        next: "Próxima"
+        title: "Page navigation",
+        prev: "Previous",
+        next: "Next"
     },
     share: {
-        title: "Compartilhar",
-        copy: "Copiar link",
-        copied: "Link copiado!"
+        title: "Share",
+        copy: "Copy link",
+        copied: "Link copied!"
     },
-    home: "Início",
+    home: "Home",
     search: {
-        name: "Busca",
-        title: "Resultados da busca por",
-        description: "Navegue pelos grupos encontrados para a busca",
-        placeholder: "Buscar grupos"
+        name: "Search",
+        title: "Search results for",
+        description: "Browse groups found for the search",
+        placeholder: "Search groups"
     },
-    content: "Conteúdo",
-    institutional: "Institucional",
-    copyright: "Todos os direitos reservados.",
-    open: "Abrir menu",
-    close: "Fechar menu",
+    content: "Content",
+    institutional: "About & Legal",
+    copyright: "All rights reserved.",
+    open: "Open menu",
+    close: "Close menu",
     notFound: {
-        title: "404 - Página não encontrada",
-        description: "Desculpe! A página que você está procurando não existe ou foi movida.",
-        link: "Voltar ao Início"
+        title: "404 - Page Not Found",
+        description: "Sorry! The page you are looking for does not exist or has been moved.",
+        link: "Back to Home"
     }
 };
 
