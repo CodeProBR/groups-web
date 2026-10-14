@@ -3,28 +3,12 @@ import mongodb from '@/lib/mongoDB';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+	const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
+
 	const baseUrl = process.env.NEXT_PUBLIC_WEB;
 	const currentDate = new Date().toISOString().split('T')[0];
 
-	// Páginas Estáticas e Institucionais
-	const staticPages = [
-		{ loc: `${baseUrl}`, priority: '1.0', changefreq: 'daily' },
-		{ loc: `${baseUrl}/grupos`, priority: '0.7', changefreq: 'daily' },
-		{ loc: `${baseUrl}/categorias`, priority: '0.7', changefreq: 'daily' },
-		{ loc: `${baseUrl}/blog`, priority: '0.7', changefreq: 'daily' },
-		{ loc: `${baseUrl}/sobre-nos`, priority: '0.5', changefreq: 'monthly' },
-		{ loc: `${baseUrl}/contato`, priority: '0.5', changefreq: 'monthly' },
-		{ loc: `${baseUrl}/termos-de-uso`, priority: '0.3', changefreq: 'monthly' },
-		{ loc: `${baseUrl}/termos-para-anunciantes`, priority: '0.3', changefreq: 'monthly' },
-		{ loc: `${baseUrl}/politica-de-conteudo`, priority: '0.3', changefreq: 'monthly' },
-		{ loc: `${baseUrl}/politica-de-privacidade`, priority: '0.3', changefreq: 'monthly' },
-		{ loc: `${baseUrl}/politica-de-cookies`, priority: '0.3', changefreq: 'monthly' },
-		{ loc: `${baseUrl}/denuncias-e-remocao-de-conteudo`, priority: '0.3', changefreq: 'monthly' },
-	].map((page) => ({
-		...page,
-		lastmod: currentDate,
-	}));
-
+	let pageUrls = [];
 	let categoryUrls = [];
 	let groupUrls = [];
 	let articleUrls = [];
@@ -34,6 +18,27 @@ export async function GET() {
 			const client = await mongodb(process.env.DATABASE);
 			const db = client.db();
 
+			// Páginas
+			const pages = await db
+				.collection('pages')
+				.find({ status: 'active' }, { projection: { slug: 1, type: 1, updatedAt: 1, createdAt: 1 } })
+				.toArray();
+
+			pageUrls = pages.map((page) => {
+				const dateVal = page.updatedAt || page.createdAt;
+				const isHome = !page.slug || page.slug === '/';
+				const loc = isHome ? `${baseUrl}` : `${baseUrl}/${page.slug.replace(/^\//, '')}`;
+				const priority = isHome ? '1.0' : page.type === 'content' ? '0.8' : '0.4';
+				const changefreq = page.type === 'content' ? 'daily' : 'monthly';
+
+				return {
+					loc,
+					lastmod: dateVal ? new Date(dateVal).toISOString().split('T')[0] : currentDate,
+					changefreq,
+					priority,
+				};
+			});
+
 			// Categorias
 			const categories = await db
 				.collection('categories')
@@ -41,10 +46,10 @@ export async function GET() {
 				.toArray();
 
 			categoryUrls = categories.map((cat) => ({
-				loc: `${baseUrl}/categorias/${cat.slug}`,
+				loc: `${baseUrl}/${texts.categories.slug}/${cat.slug}`,
 				lastmod: cat.updatedAt ? new Date(cat.updatedAt).toISOString().split('T')[0] : currentDate,
 				changefreq: 'weekly',
-				priority: '0.8',
+				priority: '0.9',
 			}));
 
 			// Grupos
@@ -56,7 +61,7 @@ export async function GET() {
 			groupUrls = groups.map((item) => {
 				const dateVal = item.updatedAt || item.createdAt;
 				return {
-					loc: `${baseUrl}/grupos/${item.id}`,
+					loc: `${baseUrl}/${texts.groups.slug}/${item.id}`,
 					lastmod: dateVal ? new Date(dateVal).toISOString().split('T')[0] : currentDate,
 					changefreq: 'daily',
 					priority: '0.6',
@@ -72,7 +77,7 @@ export async function GET() {
 			articleUrls = articles.map((item) => {
 				const dateVal = item.updatedAt || item.createdAt;
 				return {
-					loc: `${baseUrl}/blog/${item.slug}`,
+					loc: `${baseUrl}/${texts.blog.slug}/${item.slug}`,
 					lastmod: dateVal ? new Date(dateVal).toISOString().split('T')[0] : currentDate,
 					changefreq: 'weekly',
 					priority: '0.9',
@@ -84,7 +89,7 @@ export async function GET() {
 	}
 
 	const sitemapUrls = [
-		...staticPages,
+		...pageUrls,
 		...categoryUrls,
 		...groupUrls,
 		...articleUrls,

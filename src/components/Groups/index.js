@@ -1,12 +1,12 @@
-import style from '@/styles/groups';
+import style from '@site/styles/groups.module.scss';
 import Link from 'next/link';
 import { PiStarFill, PiBarbell } from 'react-icons/pi';
 
-export default function Component({ items = [] }) {
+export default function Component({ items = [], texts }) {
     return (
         <div className={style.groups}>
             {items.map((item, i) => (
-                <Link href={`/grupos/${item.id}`} key={i}>
+                <Link href={`/${texts.groups.slug}/${item.id}`} key={i}>
                     <figure>
                         <img src={`${process.env.NEXT_PUBLIC_IMG}${item.image}`} alt={item.name} />
                         <span><PiBarbell />{item.category}</span>
@@ -15,7 +15,7 @@ export default function Component({ items = [] }) {
                     <div>
                         <h3>{item.name}</h3>
                         <p>{item.description}</p>
-                        <button>Entrar no Grupo</button>
+                        <button>{texts.groups.action}</button>
                     </div>
                 </Link>
             ))}

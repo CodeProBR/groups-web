@@ -10,9 +10,9 @@ import {
 	FaLink,
 	FaCheck,
 } from 'react-icons/fa6';
-import style from '@/styles/share';
+import style from '@site/styles/share.module.scss';
 
-export default function Component({ title = '', description = '' }) {
+export default function Component({ title = '', description = '', texts }) {
 	const [currentUrl, setCurrentUrl] = useState('');
 	const [copied, setCopied] = useState(false);
 
@@ -69,7 +69,7 @@ export default function Component({ title = '', description = '' }) {
 
 	return (
 		<div className={style.share}>
-			<span>Compartilhar:</span>
+			<span>{texts.share.title}</span>
 			<div>
 				{shareLinks.map((item) => {
 					const Icon = item.icon;
@@ -80,7 +80,7 @@ export default function Component({ title = '', description = '' }) {
 							target="_blank"
 							rel="noopener noreferrer"
 							className={item.colorClass}
-							title={`Compartilhar no ${item.name}`}
+							title={`${texts.share.title}: ${item.name}`}
 						>
 							<Icon />
 						</a>
@@ -90,7 +90,7 @@ export default function Component({ title = '', description = '' }) {
 					type="button"
 					onClick={handleCopy}
 					className={`${style.copyBtn} ${copied ? style.copied : ''}`}
-					title={copied ? 'Link copiado!' : 'Copiar link'}
+					title={copied ? texts.share.copied : texts.share.copy}
 				>
 					{copied ? <FaCheck /> : <FaLink />}
 				</button>

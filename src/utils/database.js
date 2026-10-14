@@ -1,6 +1,17 @@
 import { unstable_cache } from 'next/cache';
 import mongodb from '@/lib/mongoDB';
 
+export const getPages = unstable_cache(async ({ slug, limit } = {}) => {
+    const client = await mongodb(process.env.DATABASE);
+    const db = client.db();
+    if (slug) {
+        if (slug === '/') { slug = ''; }
+        return await db.collection('pages').findOne({ slug, status: 'active' }, { projection: { name: 1, title: 1, slug: 1, description: 1, seo: 1, faq: 1, content: 1, _id: 0 } });
+    } else {
+        return await db.collection('pages').find({ status: 'active' }, { projection: { name: 1, title: 1, type: 1, slug: 1, _id: 0 }, ...(limit && { limit: limit }) }).sort({ order: 1 }).toArray();
+    }
+}, ['pages'], { revalidate: 86400, tags: ['pages'] });
+
 export const getCategories = unstable_cache(async ({ slug, name, limit } = {}) => {
     const client = await mongodb(process.env.DATABASE);
     const db = client.db();
@@ -20,7 +31,7 @@ export const getGroups = unstable_cache(async ({ id, limit, page, adult = false,
             { projection: { name: 1, _id: 0 } }
         ).toArray();
         const activeCategoryNames = activeCategories.map(c => c.name);
-        return await db.collection('groups').findOne({ id, category: { $in: activeCategoryNames } }, { projection: { name: 1, id: 1, description: 1, image: 1, category: 1, link: 1, rules: 1, data: 1, _id: 0 } });
+        return await db.collection('groups').findOne({ id, category: { $in: activeCategoryNames } }, { projection: { name: 1, id: 1, description: 1, image: 1, category: 1, link: 1, rules: 1, updatedAt: 1, _id: 0 } });
     } else {
         const activeCategories = await db.collection('categories').find(
             { status: 'active' },

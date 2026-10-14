@@ -1,8 +1,11 @@
-export const dynamic = 'force-static';
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
+    const expires = new Date();
+    expires.setFullYear(expires.getFullYear() + 10);
+
     const content = `Contact: mailto:${process.env.NEXT_PUBLIC_EMAIL}
-Expires: 2030-12-31
-    `;
+Expires: ${expires.toISOString()}
+`;
     return new Response(content, { headers: { 'Content-Type': 'text/plain' } });
 }

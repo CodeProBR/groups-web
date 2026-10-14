@@ -4,9 +4,9 @@ import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FiMenu, FiX, FiChevronRight, FiSearch } from 'react-icons/fi';
-import style from '@/styles/header';
+import style from '@site/styles/header.module.scss';
 
-function SearchInput() {
+function SearchInput({ texts }) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const qParam = searchParams.get('q') || '';
@@ -20,26 +20,26 @@ function SearchInput() {
 		if (e) e.preventDefault();
 		const trimmed = searchQuery.trim();
 		if (!trimmed) return;
-		router.push(`/grupos?q=${encodeURIComponent(trimmed)}`);
+		router.push(`/${texts.groups.slug}?q=${encodeURIComponent(trimmed)}`);
 	};
 
 	return (
 		<form onSubmit={handleSearch} className={style.searchForm}>
 			<input
 				type="text"
-				placeholder="Buscar grupos..."
+				placeholder={texts.search.placeholder}
 				value={searchQuery}
 				onChange={(e) => setSearchQuery(e.target.value)}
 				className={style.searchInput}
 			/>
-			<button type="submit" className={style.searchBtn} aria-label="Buscar grupos">
+			<button type="submit" className={style.searchBtn} aria-label={texts.search.placeholder}>
 				<FiSearch />
 			</button>
 		</form>
 	);
 }
 
-export default function Header({ categories = [] }) {
+export default function Header({ categories = [], pages = [], texts }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const pathname = usePathname();
 
@@ -80,26 +80,22 @@ export default function Header({ categories = [] }) {
 
 			<div className="container">
 				<Link href="/" onClick={closeMenu}>
-					<div>
-					</div>
-					<span>
-						Top<span>Telegram</span>
-					</span>
+					<img src={`${process.env.NEXT_PUBLIC_IMG}/logo.webp`} alt={process.env.NEXT_PUBLIC_NAME} />
 				</Link>
 
 				<Suspense fallback={null}>
-					<SearchInput />
+					<SearchInput texts={texts} />
 				</Suspense>
 
 				<nav>
-					<Link href="/grupos">
-						<span>Grupos</span>
+					<Link href={`/${texts.groups.slug}`}>
+						<span>{texts.groups.name}</span>
 					</Link>
-					<Link href="/categorias">
-						<span>Categorias</span>
+					<Link href={`/${texts.categories.slug}`}>
+						<span>{texts.categories.name}</span>
 					</Link>
-					<Link href="/blog">
-						<span>Blog</span>
+					<Link href={`/${texts.blog.slug}`}>
+						<span>{texts.blog.name}</span>
 					</Link>
 
 				</nav>
@@ -108,7 +104,7 @@ export default function Header({ categories = [] }) {
 					type="button"
 					className={style.menuToggleBtn}
 					onClick={toggleMenu}
-					aria-label={isOpen ? 'Fechar menu' : 'Abrir menu de ferramentas'}
+					aria-label={isOpen ? texts.close : texts.open}
 					aria-expanded={isOpen}
 				>
 					{isOpen ? <FiX /> : <FiMenu />}
@@ -127,18 +123,18 @@ export default function Header({ categories = [] }) {
 					type="button"
 					className={style.close}
 					onClick={closeMenu}
-					aria-label="Fechar menu"
+					aria-label={texts.close}
 				>
 					<FiX />
 				</button>
 
 				<div className={style.content}>
 					<div>
-						<h4>Categorias</h4>
+						<h4>{texts.categories.name}</h4>
 						<ul>
 							{categories.map((item, i) => (
 								<li key={i}>
-									<Link href={`/categorias/${item.slug}`}>
+									<Link href={`/${texts.categories.slug}/${item.slug}`}>
 										<FiChevronRight />
 										<span>{item.name}</span>
 									</Link>
@@ -148,80 +144,30 @@ export default function Header({ categories = [] }) {
 					</div>
 					<hr />
 					<div>
-						<h4>Conteúdo</h4>
+						<h4>{texts.content}</h4>
 						<ul>
-							<li>
-								<Link href={`/grupos`}>
-									<FiChevronRight />
-									<span>Grupos</span>
-								</Link>
-							</li>
-							<li>
-								<Link href={`/categorias`}>
-									<FiChevronRight />
-									<span>Categorias</span>
-								</Link>
-							</li>
-							<li>
-								<Link href={`/blog`}>
-									<FiChevronRight />
-									<span>Blog</span>
-								</Link>
-							</li>
+							{pages.filter(item => item.type === 'content').map((item, i) => (
+								<li key={i}>
+									<Link href={`/${item.slug}`}>
+										<FiChevronRight />
+										<span>{item.name}</span>
+									</Link>
+								</li>
+							))}
 						</ul>
 					</div>
 					<hr />
 					<div>
-						<h4>Institucional</h4>
+						<h4>{texts.institutional}</h4>
 						<ul>
-							<li>
-								<Link href={`/sobre-nos`}>
-									<FiChevronRight />
-									<span>Sobre Nós</span>
-								</Link>
-							</li>
-							<li>
-								<Link href={`/termos-de-uso`}>
-									<FiChevronRight />
-									<span>Termos de Uso</span>
-								</Link>
-							</li>
-							<li>
-								<Link href={`/termos-para-anunciantes`}>
-									<FiChevronRight />
-									<span>Termos para Anunciantes</span>
-								</Link>
-							</li>
-							<li>
-								<Link href={`/politica-de-conteudo`}>
-									<FiChevronRight />
-									<span>Política de Conteúdo</span>
-								</Link>
-							</li>
-							<li>
-								<Link href={`/politica-de-privacidade`}>
-									<FiChevronRight />
-									<span>Política de Privacidade</span>
-								</Link>
-							</li>
-							<li>
-								<Link href={`/politica-de-cookies`}>
-									<FiChevronRight />
-									<span>Política de Cookies</span>
-								</Link>
-							</li>
-							<li>
-								<Link href={`/denuncias-e-remocao-de-conteudo`}>
-									<FiChevronRight />
-									<span>Denúncias e Remoção de Conteúdo</span>
-								</Link>
-							</li>
-							<li>
-								<Link href={`/contato`}>
-									<FiChevronRight />
-									<span>Contato</span>
-								</Link>
-							</li>
+							{pages.filter(item => item.type === 'institutional').map((item, i) => (
+								<li key={i}>
+									<Link href={`/${item.slug}`}>
+										<FiChevronRight />
+										<span>{item.name}</span>
+									</Link>
+								</li>
+							))}
 						</ul>
 					</div>
 				</div>

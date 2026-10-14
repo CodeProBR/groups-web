@@ -1,7 +1,7 @@
-import style from '@/styles/pagination';
+import style from '@site/styles/pagination.module.scss';
 import Link from 'next/link';
 
-export default function Component({ page = 1, totalPages = 1, baseUrl = '' }) {
+export default function Component({ page = 1, totalPages = 1, baseUrl = '', texts }) {
     if (!totalPages || totalPages <= 1) return null;
 
     const currentPage = Number(page) || 1;
@@ -42,10 +42,10 @@ export default function Component({ page = 1, totalPages = 1, baseUrl = '' }) {
     const pageNumbers = getPageNumbers();
 
     return (
-        <nav className={style.pagination} aria-label="Navegação de páginas">
+        <nav className={style.pagination} aria-label={texts.pagination.title}>
             {currentPage > 1 && (
                 <Link href={getPageUrl(currentPage - 1)} className={`${style.item} ${style.prev}`}>
-                    Anterior
+                    {texts.pagination.prev}
                 </Link>
             )}
 
@@ -72,7 +72,7 @@ export default function Component({ page = 1, totalPages = 1, baseUrl = '' }) {
 
             {currentPage < totalPages && (
                 <Link href={getPageUrl(currentPage + 1)} className={`${style.item} ${style.next}`}>
-                    Próxima
+                    {texts.pagination.next}
                 </Link>
             )}
         </nav>

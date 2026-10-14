@@ -22,25 +22,12 @@
 			align-items: center;
 			gap: 0.5rem;
 			flex-shrink: 0;
+			height: 100%;
 
-			>div {
-				width: 2rem;
-				height: 2rem;
-				border-radius: 1rem;
-				background: $primary;
-			}
-
-			>span {
-				font-size: 1.25rem;
-				color: $primary-light;
-				text-decoration: none;
-				font-weight: 900;
-				text-transform: uppercase;
-				letter-spacing: -1px;
-
-				>span {
-					color: $primary;
-				}
+			>img {
+				width: 12rem;
+				height: 100%;
+				object-fit: contain;
 			}
 		}
 

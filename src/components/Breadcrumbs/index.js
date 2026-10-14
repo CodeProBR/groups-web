@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { FiChevronRight } from 'react-icons/fi';
 import Share from '@/components/Share';
 import BreadcrumbList from '@/components/Snippet/BreadcrumbList';
-import style from '@/styles/breadcrumbs';
+import style from '@site/styles/breadcrumbs.module.scss';
 
-export default function Component({ items = [], title = '', description = '', showShare = true }) {
+export default function Component({ items = [], title = '', description = '', showShare = true, texts }) {
 	const shareTitle = title || (items.length > 0 ? items[items.length - 1].label : '');
 	return (
 		<div className={style.breadcrumbs}>
@@ -27,7 +27,7 @@ export default function Component({ items = [], title = '', description = '', sh
 				</ol>
 			</nav>
 			{showShare && (
-				<Share title={shareTitle} description={description} />
+				<Share title={shareTitle} description={description} texts={texts} />
 			)}
 			<BreadcrumbList data={items} />
 		</div>

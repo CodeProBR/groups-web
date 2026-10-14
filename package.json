@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:toptelegram.com.br": "cross-env NEXT_PUBLIC_SITE=toptelegram.com.br next dev",
-    "dev:linkstelegram.com": "cross-env NEXT_PUBLIC_SITE=linkstelegram.com next dev",
+    "dev:toptelegram.com.br": "node -e \"fs.rmSync('.next', { recursive: true, force: true })\" && cross-env NEXT_PUBLIC_SITE=toptelegram.com.br next dev",
+    "dev:linkstelegram.com": "node -e \"fs.rmSync('.next', { recursive: true, force: true })\" && cross-env NEXT_PUBLIC_SITE=linkstelegram.com next dev",
     "build": "next build",
     "start": "next start"
   },

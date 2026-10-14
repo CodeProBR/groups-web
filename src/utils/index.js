@@ -35,7 +35,7 @@ export function formatarDataExtenso(dateStr) {
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
-export function formatarData(dateStr) {
+export function formatData(dateStr) {
   if (!dateStr) return '';
   const date = new Date(dateStr);
   if (isNaN(date.getTime())) return dateStr;

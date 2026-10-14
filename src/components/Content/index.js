@@ -1,14 +1,9 @@
-import style from '@/styles/content';
+import style from '@site/styles/content.module.scss';
+import { marked } from 'marked';
 
-export default function Component({ id, children, html }) {
-    if (html) {
-        return <div id={id} className={style.content} dangerouslySetInnerHTML={{ __html: html }} />;
-    }
-
+export default function Component({ id, content }) {
     return (
-        <div id={id} className={style.content}>
-            {children}
-        </div>
+        <div id={id} className={style.content} dangerouslySetInnerHTML={{ __html: marked(content) }} />
     );
 }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import style from '@/styles/faq';
+import style from '@site/styles/faq.module.scss';
 import { FiChevronDown } from 'react-icons/fi';
 import FAQPage from '@/components/Snippet/FAQPage';
 

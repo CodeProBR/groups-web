@@ -1,39 +1,35 @@
-export default async function metadata(seo, slug) {
-    const image = seo.image || '/logo.webp';
-    const url = process.env.NEXT_PUBLIC_URL + '/' + slug;
-
+export default async function metadata({ title, description, index, image, url }) {
     return {
-        title: seo.title,
-        description: seo.description,
-        keywords: seo.keywords,
-        url: url,
-        image: process.env.NEXT_PUBLIC_IMG + image,
+        title: title,
+        description: description,
+        url: process.env.NEXT_PUBLIC_WEB + url,
+        image: process.env.NEXT_PUBLIC_IMG + (image || '/logo.webp'),
         alternates: {
-            canonical: url,
+            canonical: process.env.NEXT_PUBLIC_WEB + url,
         },
         openGraph: {
-            title: seo.title,
-            description: seo.description,
-            url: url,
+            title: title,
+            description: description,
+            url: process.env.NEXT_PUBLIC_WEB + url,
             siteName: process.env.NEXT_PUBLIC_NAME,
-            locale: "pt_BR",
+            locale: process.env.NEXT_PUBLIC_LOCALE,
             type: "website",
             images: [
                 {
-                    url: process.env.NEXT_PUBLIC_IMG + image,
+                    url: process.env.NEXT_PUBLIC_IMG + (image || '/logo.webp'),
                     alt: process.env.NEXT_PUBLIC_NAME,
                 },
             ],
         },
         twitter: {
             card: "summary_large_image",
-            title: seo.title,
-            description: seo.description,
-            images: [process.env.NEXT_PUBLIC_IMG + image],
+            title: title,
+            description: description,
+            images: [process.env.NEXT_PUBLIC_IMG + (image || '/logo.webp')],
         },
         robots: {
-            index: seo.index ?? true,
-            follow: seo.index ?? true,
+            index: index ?? true,
+            follow: index ?? true,
             nocache: true,
         },
         icons: {
@@ -45,6 +41,6 @@ export default async function metadata(seo, slug) {
                 { url: process.env.NEXT_PUBLIC_IMG + `/icons/icon-180.png`, sizes: "180x180", type: 'image/png' }
             ]
         },
-        manifest: process.env.NEXT_PUBLIC_URL + "/manifest.webmanifest",
+        manifest: process.env.NEXT_PUBLIC_WEB + "/manifest.webmanifest",
     };
 }
