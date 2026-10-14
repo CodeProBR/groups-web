@@ -54,7 +54,7 @@ export default async function Page({ slug }) {
 
                 <div className={style.block}>
                     <figure>
-                        <Image src={`${process.env.NEXT_PUBLIC_IMG}${data.image}`} alt={data.title} width={900} height={400} loading="lazy" />
+                        <Image src={data.image} alt={data.title} width={900} height={400} loading="lazy" />
                     </figure>
                     <Content html={contentHtml} />
                 </div>

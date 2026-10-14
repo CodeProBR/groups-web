@@ -9,7 +9,7 @@ export default function Component({ items = [], texts }) {
             {items.map((item, i) => (
                 <Link href={`/${texts.groups.slug}/${item.id}`} key={i}>
                     <figure>
-                        <Image src={`${process.env.NEXT_PUBLIC_IMG}${item.image}`} alt={item.name} width={320} height={180} loading="lazy" />
+                        <Image src={item.image} alt={item.name} width={320} height={180} loading="lazy" />
                         <span><PiBarbell />{item.category}</span>
                         {item.boost && <small><PiStarFill /><span>VIP</span></small>}
                     </figure>
