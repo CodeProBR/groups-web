@@ -1,5 +1,6 @@
 import style from '@site/styles/posts.module.scss';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Component({ items = [], texts }) {
     return (
@@ -7,7 +8,7 @@ export default function Component({ items = [], texts }) {
             {items.map((item, i) => (
                 <Link href={`/${texts.blog.slug}/${item.slug}`} key={i}>
                     <figure>
-                        <img src={`${process.env.NEXT_PUBLIC_IMG}${item.image}`} alt={item.name} />
+                        <Image src={`${process.env.NEXT_PUBLIC_IMG}${item.image}`} alt={item.name} width={320} height={180} loading="lazy" />
                         <span>{item.category}</span>
                     </figure>
                     <div>

@@ -2,7 +2,7 @@ import Layout from '@/layout';
 import { cache } from 'react';
 import Link from 'next/link';
 import Faq from '@/components/Faq';
-import Breadcrumbs from '@/components/Breadcrumbs';
+import Navigation from '@/components/Navigation';
 import Content from '@/components/Content';
 import Posts from '@/components/Posts';
 import { getPages, getBoosts, getCategories, getPosts } from "@/utils/database";
@@ -31,7 +31,7 @@ export default async function Page({ slug }) {
     return (
         <Layout>
 
-            <Breadcrumbs
+            <Navigation
                 items={data.breadcrumb}
                 title={data.title}
                 description={data.description}

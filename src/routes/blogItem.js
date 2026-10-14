@@ -2,7 +2,7 @@ import Layout from '@/layout';
 import { cache } from 'react';
 import Link from 'next/link';
 import Faq from '@/components/Faq';
-import Breadcrumbs from '@/components/Breadcrumbs';
+import Navigation from '@/components/Navigation';
 import Posts from '@/components/Posts';
 import { getBoosts, getCategories, getPosts, getPages } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
@@ -13,6 +13,7 @@ import { formatData } from '@/utils';
 import { marked } from 'marked';
 import Content from '@/components/Content';
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
+import Image from 'next/image';
 
 export async function generateMetadata({ slug }) {
     const data = await dataCache(slug);
@@ -34,7 +35,7 @@ export default async function Page({ slug }) {
     return (
         <Layout>
 
-            <Breadcrumbs
+            <Navigation
                 items={data.breadcrumb}
                 title={data.name}
                 description={data.description}
@@ -53,7 +54,7 @@ export default async function Page({ slug }) {
 
                 <div className={style.block}>
                     <figure>
-                        <img src={`${process.env.NEXT_PUBLIC_IMG}${data.image}`} alt={data.title} />
+                        <Image src={`${process.env.NEXT_PUBLIC_IMG}${data.image}`} alt={data.title} width={900} height={400} loading="lazy" />
                     </figure>
                     <Content html={contentHtml} />
                 </div>

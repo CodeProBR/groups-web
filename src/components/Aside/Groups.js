@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import style from '@site/styles/aside.module.scss';
 
 export default function Component({ title, items = [], texts }) {
@@ -9,7 +10,7 @@ export default function Component({ title, items = [], texts }) {
             <div className={style.groups}>
                 {items.map((item, i) => (
                     <Link href={`/${texts.groups.slug}/${item.id}`} key={i}>
-                        <img src={`${process.env.NEXT_PUBLIC_IMG}${item.image}`} alt={item.name} />
+                        <Image src={`${process.env.NEXT_PUBLIC_IMG}${item.image}`} alt={item.name} width={150} height={100} loading="lazy" />
                         <div>
                             <span>{item.category}</span>
                             <h3>{item.name}</h3>

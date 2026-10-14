@@ -33,6 +33,21 @@ export default function LayoutEvents() {
                 el.setAttribute('data-handled', 'true');
                 el.addEventListener('click', () => handleAds(el.getAttribute('ad')));
             });
+
+            // 4. Rastreamento de cliques em grupos (.goGroup)
+            const handleGroupClick = (group) => {
+                fetch('/api/insights', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: pathname, type: 'clicks', group }),
+                });
+            };
+
+            const groupElements = document.querySelectorAll('.goGroup:not([data-handled])');
+            groupElements.forEach(el => {
+                el.setAttribute('data-handled', 'true');
+                el.addEventListener('click', () => handleGroupClick(el.getAttribute('data-group')));
+            });
         }
     }, [pathname]); // Dispara a cada mudança de rota
 

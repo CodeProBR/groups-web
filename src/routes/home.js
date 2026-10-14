@@ -1,6 +1,6 @@
 import Layout from '@/layout';
 import { cache } from 'react';
-import Breadcrumbs from '@/components/Breadcrumbs';
+import Navigation from '@/components/Navigation';
 import metadata from "@/utils/metadata";
 import style from '@site/styles/page.module.scss';
 import { getPages, getGroups, getCategories, getPosts } from "@/utils/database";
@@ -28,7 +28,7 @@ export default async function Page() {
     return (
         <Layout>
 
-            <Breadcrumbs
+            <Navigation
                 items={data.breadcrumb}
                 title={data.title}
                 description={data.description}

@@ -11,7 +11,7 @@ export async function POST(request) {
     const db = client.db();
 
     const body = await request.json();
-    const { type, url, referer, ad } = body;
+    const { type, url, referer, ad, group: bodyGroup } = body;
 
     if (!url) return NextResponse.json({ ok: false, error: "Missing url" });
 
@@ -62,37 +62,36 @@ export async function POST(request) {
 
     await db.collection("insights").updateOne(query, update, { upsert: true });
 
-    /*if (type === "views" && url.split('/')[1] == 'grupo') {
-        await db.collection("groups").updateOne({ slug: url.split('/')[2] }, { $inc: { view: 1 } }, { upsert: false });
-    }
+    // Identifica se é uma página de grupo ou se o ID do grupo foi fornecido diretamente
+    const urlSegments = url.split('/').filter(Boolean);
+    const isGroupRoute = urlSegments[0] === 'grupos' || urlSegments[0] === 'groups' || urlSegments[0] === 'grupo';
+    const groupId = bodyGroup || (isGroupRoute && urlSegments[1] ? urlSegments[1] : null);
 
-    if (type === "clicks" && url.split('/')[1] == 'grupo') {
-        await db.collection("groups").updateOne({ slug: url.split('/')[2] }, { $inc: { clicks: 1 } }, { upsert: false });
-    }*/
+    if (groupId) {
+        // Atualiza contadores totais no próprio documento do grupo
+        if (type === "clicks") {
+            await db.collection("groups").updateOne({ id: groupId }, { $inc: { clicks: 1 } }, { upsert: false });
+        } else if (type === "views") {
+            await db.collection("groups").updateOne({ id: groupId }, { $inc: { views: 1 } }, { upsert: false });
+        }
 
-    if (url.split('/')[1] == 'grupo') {
-        const slug = url.split('/')[2];
-        const group = slug.split('-').pop();
+        // Atualiza métricas diárias por grupo
+        const dateStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
         await db.collection("groups_analytics_daily").updateOne(
             {
-                group,
-                date: new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' }),
+                group: groupId,
+                date: dateStr,
             },
             {
                 $inc: {
                     ...(type === 'views' ? { views: 1 } : {}),
                     ...(type === 'clicks' ? { clicks: 1 } : {}),
-                    //...(type === 'shares' ? { shares: 1 } : {})
-                    //...(type === 'saves' ? { saves: 1 } : {})
-                    //...(type === 'reports' ? { reports: 1 } : {})
                 },
-
                 $setOnInsert: {
-                    group,
-                    date: new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' }),
+                    group: groupId,
+                    date: dateStr,
                     createdAt: new Date(),
                 },
-
                 $set: {
                     updatedAt: new Date(),
                 }

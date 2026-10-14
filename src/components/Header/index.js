@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FiMenu, FiX, FiChevronRight, FiSearch } from 'react-icons/fi';
 import style from '@site/styles/header.module.scss';
@@ -80,7 +81,7 @@ export default function Header({ categories = [], pages = [], texts }) {
 
 			<div className="container">
 				<Link href="/" onClick={closeMenu}>
-					<img src={`${process.env.NEXT_PUBLIC_IMG}/logo.webp`} alt={process.env.NEXT_PUBLIC_NAME} />
+					<Image src={`${process.env.NEXT_PUBLIC_IMG}/logo.webp`} alt={process.env.NEXT_PUBLIC_NAME} width={200} height={80} priority />
 				</Link>
 
 				<Suspense fallback={null}>

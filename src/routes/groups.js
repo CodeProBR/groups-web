@@ -2,7 +2,7 @@ import Layout from '@/layout';
 import { cache } from 'react';
 import Link from 'next/link';
 import Faq from '@/components/Faq';
-import Breadcrumbs from '@/components/Breadcrumbs';
+import Navigation from '@/components/Navigation';
 import Groups from '@/components/Groups';
 import Pagination from '@/components/Pagination';
 import Posts from '@/components/Posts';
@@ -29,7 +29,7 @@ export default async function Page({ slug, search, page }) {
     return (
         <Layout>
 
-            <Breadcrumbs
+            <Navigation
                 items={data.breadcrumb}
                 title={data.title}
                 description={data.description}

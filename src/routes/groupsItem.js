@@ -2,7 +2,7 @@ import Layout from '@/layout';
 import { cache } from 'react';
 import Link from 'next/link';
 import Faq from '@/components/Faq';
-import Breadcrumbs from '@/components/Breadcrumbs';
+import Navigation from '@/components/Navigation';
 import Groups from '@/components/Groups';
 import Posts from '@/components/Posts';
 import { getBoosts, getCategories, getPosts, getGroups, getPages } from "@/utils/database";
@@ -12,6 +12,7 @@ import AsideCategories from '@/components/Aside/Categories'
 import metadata from "@/utils/metadata";
 import { formatData } from '@/utils';
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
+import Image from 'next/image';
 
 export async function generateMetadata({ slug }) {
     const data = await dataCache(slug);
@@ -32,7 +33,7 @@ export default async function Page({ slug }) {
     return (
         <Layout>
 
-            <Breadcrumbs
+            <Navigation
                 items={data.breadcrumb}
                 title={data.name}
                 description={data.description}
@@ -50,12 +51,12 @@ export default async function Page({ slug }) {
                 <div className={style.block}>
                     <div className={style.group}>
                         <figure>
-                            <img src={`${process.env.NEXT_PUBLIC_IMG}${data.image}`} alt={data.name} />
+                            <Image src={`${process.env.NEXT_PUBLIC_IMG}${data.image}`} alt={data.name} width={900} height={400} loading="lazy" />
                         </figure>
                         <div>
                             <h2>{data.name}</h2>
                             <p>{data.description}</p>
-                            <a href={data.link} target="_blank" rel="noopener noreferrer">{texts.groups.action}</a>
+                            <a href={data.link} target="_blank" rel="noopener noreferrer" className="goGroup" data-group={data.id}>{texts.groups.action}</a>
                         </div>
                     </div>
                     <div className={style.alert}>
