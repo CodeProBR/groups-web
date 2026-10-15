@@ -12,6 +12,7 @@ import Groups from "@/components/Groups";
 import Pagination from "@/components/Pagination";
 import Posts from "@/components/Posts";
 import Content from "@/components/Content";
+import Image from 'next/image';
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
 
 export async function generateMetadata({ slug, page }) {
@@ -49,22 +50,25 @@ export default async function Page({ slug, page }) {
 
             <div className={style.w70}>
 
-                {/* CONTENT */}
                 <div className={style.block}>
-                    <Content content={data.content} />
-                </div>
 
-                {/* GROUPS */}
-                <div className={style.block}>
+                    <figure>
+                        <Image src={data.image} alt={data.title} width={900} height={400} loading="lazy" />
+                    </figure>
+
+                    <Content content={data.content} />
+
                     <Groups
                         items={data.groups.items} texts={texts}
                     />
+
                     <Pagination
                         page={data.groups.page}
                         totalPages={data.groups.totalPages}
                         baseUrl={`/${slug[0]}`}
                         texts={texts}
                     />
+
                 </div>
 
                 {/* FAQ */}

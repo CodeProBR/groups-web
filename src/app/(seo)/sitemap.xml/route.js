@@ -11,7 +11,8 @@ export async function GET() {
 	let pageUrls = [];
 	let categoryUrls = [];
 	let groupUrls = [];
-	let articleUrls = [];
+	let postUrls = [];
+	let themeUrls = [];
 
 	if (process.env.DATABASE) {
 		try {
@@ -52,6 +53,22 @@ export async function GET() {
 				priority: '0.9',
 			}));
 
+			// Temas (themes)
+			const themes = await db
+				.collection('themes')
+				.find({ status: 'active' }, { projection: { slug: 1, updatedAt: 1, createdAt: 1 } })
+				.toArray();
+
+			themeUrls = themes.map((item) => {
+				const dateVal = item.updatedAt || item.createdAt;
+				return {
+					loc: `${baseUrl}/${item.slug.replace(/^\//, '')}`,
+					lastmod: dateVal ? new Date(dateVal).toISOString().split('T')[0] : currentDate,
+					changefreq: 'weekly',
+					priority: '0.9',
+				};
+			});
+
 			// Grupos
 			const groups = await db
 				.collection('groups')
@@ -68,13 +85,18 @@ export async function GET() {
 				};
 			});
 
-			// Artigos do Blog (articles)
-			const articles = await db
-				.collection('articles')
+			// Artigos do Blog (posts)
+			const posts = await db
+				.collection('posts')
 				.find({ status: 'active' }, { projection: { slug: 1, updatedAt: 1, createdAt: 1 } })
 				.toArray();
 
-			articleUrls = articles.map((item) => {
+			const postsList = posts.length > 0 ? posts : await db
+				.collection('posts')
+				.find({ status: 'active' }, { projection: { slug: 1, updatedAt: 1, createdAt: 1 } })
+				.toArray();
+
+			postUrls = postsList.map((item) => {
 				const dateVal = item.updatedAt || item.createdAt;
 				return {
 					loc: `${baseUrl}/${texts.blog.slug}/${item.slug}`,
@@ -91,8 +113,9 @@ export async function GET() {
 	const sitemapUrls = [
 		...pageUrls,
 		...categoryUrls,
+		...themeUrls,
 		...groupUrls,
-		...articleUrls,
+		...postUrls,
 	];
 
 	const xml = `<?xml version="1.0" encoding="UTF-8"?>
