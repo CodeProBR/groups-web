@@ -75,10 +75,6 @@
                 @include text-small;
                 font-weight: 700;
                 color: #ffffff;
-                -webkit-line-clamp: 2;
-                display: -webkit-box;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
                 transition: color 0.2s ease;
                 letter-spacing: -0.01em;
                 line-height: 1.4;

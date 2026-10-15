@@ -13,8 +13,8 @@ export default function Component({ items = [], texts }) {
                     </figure>
                     <div>
                         <h3>{item.title}</h3>
-                        <p>{item.summary}</p>
-                        <button>{texts.card}</button>
+                        <p>{item.description}</p>
+                        <button>{texts.blog.action}</button>
                     </div>
                 </Link>
             ))}

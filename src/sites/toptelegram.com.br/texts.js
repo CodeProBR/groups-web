@@ -61,7 +61,7 @@ const texts = {
         description: "Acompanhe nossas dicas, tutoriais e novidades para aproveitar ao máximo seus grupos de Telegram e manter suas comunidades engajadas.",
         button: "ver todos os posts",
         slug: "blog",
-        card: "Ler Post",
+        action: "Ler Post",
         read: "min de leitura",
         update: "Atualizado em"
     },

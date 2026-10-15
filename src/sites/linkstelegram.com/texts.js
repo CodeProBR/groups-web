@@ -61,7 +61,7 @@ const texts = {
         description: "Follow our tips, tutorials, and updates to get the most out of your Telegram groups and keep your communities engaged.",
         button: "see all posts",
         slug: "blog",
-        card: "Read Post",
+        action: "Read Post",
         read: "min read",
         update: "Updated on"
     },

@@ -81,10 +81,6 @@
                 @include text-small;
                 font-weight: 700;
                 color: $text;
-                -webkit-line-clamp: 1;
-                display: -webkit-box;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
                 text-transform: uppercase;
                 transition: $transition;
             }

@@ -31,7 +31,7 @@ export default async function Page({ slug }) {
     const data = await dataCache(slug);
     if (!data) return <NotFound slug={slug} />;
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
-    const contentHtml = marked.parse(data.content || '');
+    //const contentHtml = marked.parse(data.content || '');
     return (
         <Layout>
 
@@ -44,7 +44,7 @@ export default async function Page({ slug }) {
 
             <div className={style.w100}>
                 <div className={style.title}>
-                    <span>{`${data.category}   ●   ${data.readTime} ${texts.blog.read}   ●   ${texts.blog.update} ${formatData(data.updatedAt)}`}</span>
+                    <span>{`${data.category ? data.category + '   ●   ' : ''}${data.readingTime} ${texts.blog.read}   ●   ${texts.blog.update} ${formatData(data.updatedAt)}`}</span>
                     <h1><strong>{data.title}</strong></h1>
                     <p>{data.summary}</p>
                 </div>
@@ -56,7 +56,7 @@ export default async function Page({ slug }) {
                     <figure>
                         <Image src={data.image} alt={data.title} width={900} height={400} loading="lazy" />
                     </figure>
-                    <Content html={contentHtml} />
+                    <Content content={data.content} />
                 </div>
 
             </div>
@@ -91,10 +91,10 @@ export default async function Page({ slug }) {
                 {/* FAQ */}
                 <div className={style.block}>
                     <div className={style.title}>
-                        <h2><strong>{texts.faq.title}</strong></h2>
-                        <p>{texts.faq.description}</p>
+                        <h2><strong>{data.faq.title}</strong></h2>
+                        <p>{data.faq.description}</p>
                     </div>
-                    <Faq items={data.faq} />
+                    <Faq items={data.faq.items} />
                 </div>
 
             </div>
