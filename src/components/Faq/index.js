@@ -5,13 +5,13 @@ import style from '@site/styles/faq.module.scss';
 import { FiChevronDown } from 'react-icons/fi';
 import FAQPage from '@/components/Snippet/FAQPage';
 
-export default function Component({ items = [] }) {
+export default function Component({ items = [], width }) {
     const [openIdx, setOpenIdx] = useState(0);
     const toggleItem = (idx) => {
         setOpenIdx(openIdx === idx ? null : idx);
     };
     return (
-        <div className={`${style.faq}`}>
+        <div className={`${style.faq}`} style={width ? { width } : {}}>
             {items.map((item, i) => {
                 const isOpen = openIdx === i;
                 return (

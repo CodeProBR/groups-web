@@ -6,6 +6,7 @@ import Blog, { generateMetadata as metadataBlog } from "@/routes/blog";
 import BlogItem, { generateMetadata as metadataBlogItem } from "@/routes/blogItem";
 import Categories, { generateMetadata as metadataCategories } from "@/routes/categories";
 import CategoriesItem, { generateMetadata as metadataCategoriesItem } from "@/routes/categoriesItem";
+import ThemesItem, { generateMetadata as metadataThemesItem } from "@/routes/themesItem";
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
 
 export async function generateMetadata({ params, searchParams }) {
@@ -61,6 +62,13 @@ export async function generateMetadata({ params, searchParams }) {
             const currentPage = parseInt(page) || 1;
             return metadataCategoriesItem({ slug, page: currentPage });
         }
+    }
+
+    // THEMES
+    if (slug[0] && !slug[1]) {
+        const { page } = (await searchParams) || {};
+        const currentPage = parseInt(page) || 1;
+        return metadataThemesItem({ slug, page: currentPage });
     }
 
     // NOT FOUND
@@ -120,6 +128,13 @@ export default async function Page({ params, searchParams }) {
             const currentPage = parseInt(page) || 1;
             return <CategoriesItem slug={slug} page={currentPage} />
         }
+    }
+
+    // THEMES
+    if (slug[0] && !slug[1]) {
+        const { page } = (await searchParams) || {};
+        const currentPage = parseInt(page) || 1;
+        return <ThemesItem slug={slug} page={currentPage} />;
     }
 
     // NOT FOUND

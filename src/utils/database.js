@@ -22,7 +22,7 @@ export const getCategories = unstable_cache(async ({ slug, name, limit } = {}) =
     }
 }, ['categories'], { revalidate: 86400, tags: ['categories'] });
 
-export const getGroups = unstable_cache(async ({ id, limit, page, adult = false, category, q } = {}) => {
+export const getGroups = unstable_cache(async ({ id, limit, page, adult = false, category, q, tags } = {}) => {
     const client = await mongodb(process.env.DATABASE);
     const db = client.db();
     if (id) {
@@ -38,17 +38,31 @@ export const getGroups = unstable_cache(async ({ id, limit, page, adult = false,
             { projection: { name: 1, _id: 0 } }
         ).toArray();
         const activeCategoryNames = activeCategories.map(c => c.name);
+
+        const andConditions = [];
+
+        if (q) {
+            const qRegex = { $regex: q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' };
+            andConditions.push({ $or: [{ name: qRegex }, { description: qRegex }] });
+        }
+
+        const validTags = Array.isArray(tags) ? tags.filter(t => typeof t === 'string' && t.trim() !== '') : [];
+        if (validTags.length > 0) {
+            const tagsRegex = new RegExp(validTags.map(t => t.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'i');
+            andConditions.push({
+                $or: [
+                    { name: tagsRegex },
+                    { description: tagsRegex }
+                ]
+            });
+        }
+
         const filter = {
             status: 'active',
             category: { $in: activeCategoryNames },
             /*...(adult ? {} : blockContent()),*/
             ...(category ? { category } : {}),
-            ...(q ? {
-                $or: [
-                    { name: { $regex: q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' } },
-                    { description: { $regex: q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' } }
-                ]
-            } : {})
+            ...(andConditions.length > 0 ? { $and: andConditions } : {})
         };
         const skip = (page - 1) * limit;
         const [items, total] = await Promise.all([
@@ -91,6 +105,32 @@ export const getPosts = unstable_cache(async ({ slug, limit, page, adult = false
         return { items, total, page: page || 1, totalPages: limit ? Math.ceil(total / limit) : 1 };
     }
 }, ['posts'], { revalidate: 86400, tags: ['posts'] });
+
+export const getThemes = unstable_cache(async ({ slug, limit, page, adult = false } = {}) => {
+    const client = await mongodb(process.env.DATABASE);
+    const db = client.db();
+    if (slug) {
+        return await db.collection('themes').findOne({ slug }, { projection: { title: 1, slug: 1, description: 1, image: 1, seo: 1, faq: 1, createdAt: 1, updatedAt: 1, content: 1, tags: 1, _id: 0 } });
+    } else {
+        const filter = {
+            status: 'active',
+            /*...(adult ? {} : blockContent()),*/
+        };
+        const skip = (page - 1) * limit;
+        const [items, total] = await Promise.all([
+            db.collection('themes')
+                .find(filter, {
+                    projection: { title: 1, slug: 1, description: 1, image: 1, createdAt: 1, _id: 0 },
+                    ...(limit && { limit }),
+                    ...(skip && { skip }),
+                })
+                .sort({ createdAt: -1 })
+                .toArray(),
+            db.collection('themes').countDocuments(filter)
+        ]);
+        return { items, total, page: page || 1, totalPages: limit ? Math.ceil(total / limit) : 1 };
+    }
+}, ['themes'], { revalidate: 86400, tags: ['themes'] });
 
 export const getBoosts = unstable_cache(async ({ adult = false } = {}) => {
     return [];
