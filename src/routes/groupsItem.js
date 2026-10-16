@@ -22,7 +22,7 @@ export async function generateMetadata({ slug }) {
         description: data.seo?.description,
         index: data.seo?.index,
         image: data.seo?.image,
-        url: `/${process.env.LANG === 'en' ? 'groups' : process.env.LANG === 'es' ? 'grupos' : 'grupos'}/${slug}`
+        url: `/${slug[0]}/${slug[1]}`
     });
 }
 
@@ -150,7 +150,7 @@ export const dataCache = cache(async (slug) => {
         category,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
-        getGroups({ limit: 12, adult: false, category: item.category }),
+        getGroups({ limit: 12, adult: false, categoryId: item.categoryId ? item.categoryId.toString() : null }),
         getBoosts({ adult: false }),
         getCategories({ limit: 4 }),
         getPosts({ limit: 4 }),

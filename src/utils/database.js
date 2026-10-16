@@ -1,5 +1,5 @@
 import { unstable_cache } from 'next/cache';
-import mongodb from '@/lib/mongoDB';
+import mongodb, { ObjectId } from '@/lib/mongoDB';
 
 export const getPages = unstable_cache(async ({ slug, limit } = {}) => {
     const client = await mongodb(process.env.DATABASE);
@@ -16,28 +16,53 @@ export const getCategories = unstable_cache(async ({ slug, name, limit } = {}) =
     const client = await mongodb(process.env.DATABASE);
     const db = client.db();
     if (slug || name) {
-        return await db.collection('categories').findOne({ $or: [{ slug }, { name }] }, { projection: { name: 1, slug: 1, description: 1, seo: 1, faq: 1, _id: 0 } });
+        return await db.collection('categories').findOne(
+            { $or: [{ slug }, { slugs: slug }, { name }] },
+            { projection: { name: 1, title: 1, slug: 1, badges: 1, slugs: 1, description: 1, seo: 1, faq: 1 } }
+        );
     } else {
         return await db.collection('categories').find({ status: 'active' }, { projection: { name: 1, slug: 1, icon: 1, _id: 0 }, ...(limit && { limit: limit }) }).sort({ name: 1 }).toArray();
     }
 }, ['categories'], { revalidate: 86400, tags: ['categories'] });
 
-export const getGroups = unstable_cache(async ({ id, limit, page, adult = false, category, q, tags } = {}) => {
+export const getGroups = unstable_cache(async ({ id, limit, page, adult = false, categoryId, q, tags } = {}) => {
     const client = await mongodb(process.env.DATABASE);
     const db = client.db();
     if (id) {
-        const activeCategories = await db.collection('categories').find(
-            { status: 'active' },
-            { projection: { name: 1, _id: 0 } }
-        ).toArray();
-        const activeCategoryNames = activeCategories.map(c => c.name);
-        return await db.collection('groups').findOne({ id, category: { $in: activeCategoryNames } }, { projection: { name: 1, id: 1, description: 1, image: 1, category: 1, link: 1, rules: 1, updatedAt: 1, _id: 0 } });
+        const pipeline = [
+            { $match: { id, status: 'active' } },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'categoryId',
+                    foreignField: '_id',
+                    as: 'categoryDoc'
+                }
+            },
+            { $match: { 'categoryDoc.status': 'active' } },
+            {
+                $project: {
+                    name: 1,
+                    id: 1,
+                    description: 1,
+                    image: 1,
+                    categoryId: 1,
+                    category: { $arrayElemAt: ['$categoryDoc.name', 0] },
+                    link: 1,
+                    rules: 1,
+                    updatedAt: 1,
+                    _id: 0
+                }
+            }
+        ];
+        const res = await db.collection('groups').aggregate(pipeline).toArray();
+        return res[0] || null;
     } else {
         const activeCategories = await db.collection('categories').find(
             { status: 'active' },
-            { projection: { name: 1, _id: 0 } }
+            { projection: { _id: 1 } }
         ).toArray();
-        const activeCategoryNames = activeCategories.map(c => c.name);
+        const activeCategoryIds = activeCategories.map(c => c._id);
 
         const andConditions = [];
 
@@ -59,21 +84,39 @@ export const getGroups = unstable_cache(async ({ id, limit, page, adult = false,
 
         const filter = {
             status: 'active',
-            category: { $in: activeCategoryNames },
+            categoryId: { $in: activeCategoryIds },
             /*...(adult ? {} : blockContent()),*/
-            ...(category ? { category } : {}),
+            ...(categoryId && ObjectId.isValid(categoryId) ? { categoryId: new ObjectId(categoryId) } : {}),
             ...(andConditions.length > 0 ? { $and: andConditions } : {})
         };
         const skip = (page - 1) * limit;
+        const pipeline = [
+            { $match: filter },
+            { $sort: { score: -1, createdAt: -1 } },
+            ...(skip ? [{ $skip: skip }] : []),
+            ...(limit ? [{ $limit: limit }] : []),
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'categoryId',
+                    foreignField: '_id',
+                    as: 'categoryDoc'
+                }
+            },
+            {
+                $project: {
+                    name: 1,
+                    id: 1,
+                    description: 1,
+                    image: 1,
+                    categoryId: 1,
+                    category: { $arrayElemAt: ['$categoryDoc.name', 0] },
+                    _id: 0
+                }
+            }
+        ];
         const [items, total] = await Promise.all([
-            db.collection('groups')
-                .find(filter, {
-                    projection: { name: 1, id: 1, description: 1, image: 1, category: 1, _id: 0 },
-                    ...(limit && { limit }),
-                    ...(skip && { skip }),
-                })
-                .sort({ score: -1, createdAt: -1 })
-                .toArray(),
+            db.collection('groups').aggregate(pipeline).toArray(),
             db.collection('groups').countDocuments(filter)
         ]);
         return { items, total, page: page || 1, totalPages: limit ? Math.ceil(total / limit) : 1 };
@@ -84,7 +127,10 @@ export const getPosts = unstable_cache(async ({ slug, limit, page, adult = false
     const client = await mongodb(process.env.DATABASE);
     const db = client.db();
     if (slug) {
-        return await db.collection('posts').findOne({ slug }, { projection: { title: 1, slug: 1, description: 1, image: 1, category: 1, seo: 1, faq: 1, createdAt: 1, updatedAt: 1, readingTime: 1, author: 1, content: 1, _id: 0 } });
+        return await db.collection('posts').findOne(
+            { $or: [{ slug }, { slugs: slug }] },
+            { projection: { title: 1, slug: 1, slugs: 1, description: 1, image: 1, category: 1, seo: 1, faq: 1, createdAt: 1, updatedAt: 1, readingTime: 1, author: 1, content: 1, _id: 0 } }
+        );
     } else {
         const filter = {
             status: 'active',
@@ -110,7 +156,10 @@ export const getThemes = unstable_cache(async ({ slug, limit, page, adult = fals
     const client = await mongodb(process.env.DATABASE);
     const db = client.db();
     if (slug) {
-        return await db.collection('themes').findOne({ slug }, { projection: { title: 1, slug: 1, description: 1, image: 1, seo: 1, faq: 1, createdAt: 1, updatedAt: 1, content: 1, tags: 1, _id: 0 } });
+        return await db.collection('themes').findOne(
+            { $or: [{ slug }, { slugs: slug }] },
+            { projection: { title: 1, slug: 1, slugs: 1, description: 1, image: 1, seo: 1, faq: 1, createdAt: 1, updatedAt: 1, content: 1, tags: 1, _id: 0 } }
+        );
     } else {
         const filter = {
             status: 'active',
@@ -149,6 +198,11 @@ export const getBoosts = unstable_cache(async ({ adult = false } = {}) => {
     });*/
 }, ['boosts'], { revalidate: 86400, tags: ['boosts'] });
 
+export const getRedirects = unstable_cache(async ({ url } = {}) => {
+    const client = await mongodb(process.env.DATABASE);
+    const db = client.db();
+    return await db.collection('redirects').findOne({ from: url, status: "active" }, { projection: { type: 1, to: 1, _id: 0 } });
+}, ['redirects'], { revalidate: 86400, tags: ['redirects'] });
 
 
 

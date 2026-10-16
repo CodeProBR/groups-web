@@ -8,7 +8,7 @@ export default function Component({ items = [], texts }) {
             {items.map((item, i) => (
                 <Link href={`/${texts.blog.slug}/${item.slug}`} key={i}>
                     <figure>
-                        <Image src={item.image} alt={item.name} width={320} height={180} loading="lazy" />
+                        <Image src={item.image} alt={item.title} width={320} height={180} loading="lazy" />
                         <span>{item.category}</span>
                     </figure>
                     <div>

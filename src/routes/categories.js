@@ -71,9 +71,6 @@ export default async function Page({ slug }) {
                     {/* BOOSTS */}
                     <AsideGroups items={data.boosts} texts={texts} />
 
-                    {/* CATEGORIES */}
-                    <AsideCategories items={data.categories} texts={texts} />
-
                 </div>
             </section>
             <hr className={style.break} />

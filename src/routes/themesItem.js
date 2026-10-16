@@ -14,22 +14,29 @@ import Posts from "@/components/Posts";
 import Content from "@/components/Content";
 import Image from 'next/image';
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
+import { permanentRedirect } from "next/navigation";
 
 export async function generateMetadata({ slug, page }) {
     const data = await dataCache(slug, page);
     if (!data) return metadataNotFound({ slug });
+    if (data.slug && slug[0] !== data.slug) {
+        permanentRedirect(`/${data.slug}`);
+    }
     return metadata({
         title: data.seo?.title,
         description: data.seo?.description,
         index: data.seo?.index,
         image: data.image,
-        url: `/${slug[0]}`
+        url: `/${data.slug || slug[0]}`
     });
 }
 
 export default async function Page({ slug, page }) {
     const data = await dataCache(slug, page);
     if (!data) return <NotFound slug={slug} />;
+    if (data.slug && slug[0] !== data.slug) {
+        permanentRedirect(`/${data.slug}`);
+    }
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
     return (
         <Layout>
@@ -131,7 +138,7 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
     ]);
     const breadcrumb = [
         { name: texts.home, url: '/' },
-        { name: item.title, url: `/${slug[0]}` },
+        { name: item.title, url: `/${item.slug || slug[0]}` },
     ];
     return { ...item, breadcrumb, groups, boosts, categories, posts };
 });

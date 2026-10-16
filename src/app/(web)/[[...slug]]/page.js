@@ -1,13 +1,15 @@
+import { redirect, permanentRedirect } from "next/navigation";
 import Home, { generateMetadata as metadataHome } from "@/routes/home";
 import Institutional, { generateMetadata as metadataInstitutional } from "@/routes/institutional";
 import Groups, { generateMetadata as metadataGroups } from "@/routes/groups";
-import GroupsItem, { generateMetadata as metadataGroupsItem } from "@/routes/groupsItem";
+import GroupsItem, { generateMetadata as metadataGroupsItem, dataCache as getGroupData } from "@/routes/groupsItem";
 import Blog, { generateMetadata as metadataBlog } from "@/routes/blog";
-import BlogItem, { generateMetadata as metadataBlogItem } from "@/routes/blogItem";
+import BlogItem, { generateMetadata as metadataBlogItem, dataCache as getBlogData } from "@/routes/blogItem";
 import Categories, { generateMetadata as metadataCategories } from "@/routes/categories";
-import CategoriesItem, { generateMetadata as metadataCategoriesItem } from "@/routes/categoriesItem";
-import ThemesItem, { generateMetadata as metadataThemesItem } from "@/routes/themesItem";
+import CategoriesItem, { generateMetadata as metadataCategoriesItem, dataCache as getCategoryData } from "@/routes/categoriesItem";
+import ThemesItem, { generateMetadata as metadataThemesItem, dataCache as getThemeData } from "@/routes/themesItem";
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
+import { getRedirects } from "@/utils/database";
 
 export async function generateMetadata({ params, searchParams }) {
     const { slug } = await params;
@@ -38,7 +40,10 @@ export async function generateMetadata({ params, searchParams }) {
             const currentPage = parseInt(page) || 1;
             return metadataGroups({ slug, search: q, page: currentPage });
         } else {
-            return metadataGroupsItem({ slug });
+            const group = await getGroupData(slug);
+            if (group) {
+                return metadataGroupsItem({ slug });
+            }
         }
     }
 
@@ -49,7 +54,10 @@ export async function generateMetadata({ params, searchParams }) {
             const currentPage = parseInt(page) || 1;
             return metadataBlog({ slug, page: currentPage });
         } else {
-            return metadataBlogItem({ slug });
+            const post = await getBlogData(slug);
+            if (post) {
+                return metadataBlogItem({ slug });
+            }
         }
     }
 
@@ -60,7 +68,10 @@ export async function generateMetadata({ params, searchParams }) {
         } else {
             const { page } = (await searchParams) || {};
             const currentPage = parseInt(page) || 1;
-            return metadataCategoriesItem({ slug, page: currentPage });
+            const category = await getCategoryData(slug, currentPage);
+            if (category) {
+                return metadataCategoriesItem({ slug, page: currentPage });
+            }
         }
     }
 
@@ -68,7 +79,17 @@ export async function generateMetadata({ params, searchParams }) {
     if (slug[0] && !slug[1]) {
         const { page } = (await searchParams) || {};
         const currentPage = parseInt(page) || 1;
-        return metadataThemesItem({ slug, page: currentPage });
+        const theme = await getThemeData(slug, currentPage);
+        if (theme) {
+            return metadataThemesItem({ slug, page: currentPage });
+        }
+    }
+
+    // REDIRECTS
+    const fullPath = '/' + (Array.isArray(slug) ? slug.join('/') : (slug || ''));
+    const redirectItem = await getRedirects({ url: fullPath });
+    if (redirectItem) {
+        return {};
     }
 
     // NOT FOUND
@@ -104,7 +125,10 @@ export default async function Page({ params, searchParams }) {
             const currentPage = parseInt(page) || 1;
             return <Groups slug={slug} search={q} page={currentPage} />
         } else {
-            return <GroupsItem slug={slug} />
+            const group = await getGroupData(slug);
+            if (group) {
+                return <GroupsItem slug={slug} />
+            }
         }
     }
 
@@ -115,7 +139,10 @@ export default async function Page({ params, searchParams }) {
             const currentPage = parseInt(page) || 1;
             return <Blog slug={slug} page={currentPage} />
         } else {
-            return <BlogItem slug={slug} />
+            const post = await getBlogData(slug);
+            if (post) {
+                return <BlogItem slug={slug} />
+            }
         }
     }
 
@@ -126,7 +153,10 @@ export default async function Page({ params, searchParams }) {
         } else {
             const { page } = (await searchParams) || {};
             const currentPage = parseInt(page) || 1;
-            return <CategoriesItem slug={slug} page={currentPage} />
+            const category = await getCategoryData(slug, currentPage);
+            if (category) {
+                return <CategoriesItem slug={slug} page={currentPage} />
+            }
         }
     }
 
@@ -134,7 +164,21 @@ export default async function Page({ params, searchParams }) {
     if (slug[0] && !slug[1]) {
         const { page } = (await searchParams) || {};
         const currentPage = parseInt(page) || 1;
-        return <ThemesItem slug={slug} page={currentPage} />;
+        const theme = await getThemeData(slug, currentPage);
+        if (theme) {
+            return <ThemesItem slug={slug} page={currentPage} />;
+        }
+    }
+
+    // REDIRECTS
+    const fullPath = '/' + (Array.isArray(slug) ? slug.join('/') : (slug || ''));
+    const redirectItem = await getRedirects({ url: fullPath });
+    if (redirectItem) {
+        if (redirectItem.type === "301") {
+            permanentRedirect(redirectItem.to);
+        } else {
+            redirect(redirectItem.to);
+        }
     }
 
     // NOT FOUND

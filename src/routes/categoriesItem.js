@@ -12,22 +12,29 @@ import Groups from "@/components/Groups";
 import Pagination from "@/components/Pagination";
 import Posts from "@/components/Posts";
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
+import { permanentRedirect } from "next/navigation";
 
 export async function generateMetadata({ slug, page }) {
     const data = await dataCache(slug, page);
     if (!data) return metadataNotFound({ slug });
+    if (data.slug && slug[1] !== data.slug) {
+        permanentRedirect(`/${slug[0]}/${data.slug}`);
+    }
     return metadata({
         title: data.seo?.title,
         description: data.seo?.description,
         index: data.seo?.index,
         image: null,
-        url: `/${slug[0]}/${slug[1]}`
+        url: `/${slug[0]}/${data.slug || slug[1]}`
     });
 }
 
 export default async function Page({ slug, page }) {
     const data = await dataCache(slug, page);
     if (!data) return <NotFound slug={slug} />;
+    if (data.slug && slug[1] !== data.slug) {
+        permanentRedirect(`/${slug[0]}/${data.slug}`);
+    }
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
     return (
         <Layout>
@@ -41,7 +48,8 @@ export default async function Page({ slug, page }) {
 
             <div className={style.w100}>
                 <div className={style.title}>
-                    <h1><strong>{data.name}</strong></h1>
+                    <span>{data.badges.replaceAll(',', '   ●   ')}</span>
+                    <h1><strong>{data.title}</strong></h1>
                     <p>{data.description}</p>
                 </div>
             </div>
@@ -59,6 +67,15 @@ export default async function Page({ slug, page }) {
                         baseUrl={`/${slug[0]}/${slug[1]}`}
                         texts={texts}
                     />
+                </div>
+
+                {/* FAQ */}
+                <div className={style.block}>
+                    <div className={style.title}>
+                        <h2><strong>{data.faq.title}</strong></h2>
+                        <p>{data.faq.description}</p>
+                    </div>
+                    <Faq items={data.faq.items} width={'100%'} />
                 </div>
 
             </div>
@@ -88,17 +105,6 @@ export default async function Page({ slug, page }) {
                     <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
                 </div>
 
-                <hr className={style.break} />
-
-                {/* FAQ */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{texts.faq.title}</strong></h2>
-                        <p>{texts.faq.description}</p>
-                    </div>
-                    <Faq items={data.faq} />
-                </div>
-
             </div>
         </Layout>
     );
@@ -118,7 +124,7 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
         posts,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
-        getGroups({ limit: 12, page: currentPage, adult: false, category: item.name }),
+        getGroups({ limit: 12, page: currentPage, adult: false, categoryId: item._id.toString() }),
         getBoosts({ adult: false }),
         getCategories({ limit: 4 }),
         getPosts({ limit: 4 }),
@@ -126,7 +132,7 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
     const breadcrumb = [
         { name: texts.home, url: '/' },
         { name: page.name, url: `/${slug[0]}` },
-        { name: item.name, url: `/${slug[0]}/${slug[1]}` },
+        { name: item.name, url: `/${slug[0]}/${item.slug || slug[1]}` },
     ];
     return { ...item, breadcrumb, groups, boosts, categories, posts };
 });

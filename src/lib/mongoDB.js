@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 // cache global por URI (importante para ambiente dev do Next.js)
 const globalMongo = globalThis._mongoConnections ?? {};
@@ -23,4 +23,4 @@ export default async function getMongoClient(dbUri) {
   return connectedClient;
 }
 
-export { getMongoClient as mongodb };
+export { getMongoClient as mongodb, ObjectId };

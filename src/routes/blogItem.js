@@ -13,23 +13,30 @@ import { formatData } from '@/utils';
 import { marked } from 'marked';
 import Content from '@/components/Content';
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
+import { permanentRedirect } from "next/navigation";
 import Image from 'next/image';
 
 export async function generateMetadata({ slug }) {
     const data = await dataCache(slug);
     if (!data) return metadataNotFound({ slug });
+    if (data.slug && slug[1] !== data.slug) {
+        permanentRedirect(`/${slug[0]}/${data.slug}`);
+    }
     return metadata({
         title: data.seo?.title,
         description: data.seo?.description,
         index: data.seo?.index,
         image: data.image,
-        url: `/${slug[0]}/${slug[1]}`
+        url: `/${slug[0]}/${data.slug || slug[1]}`
     });
 }
 
 export default async function Page({ slug }) {
     const data = await dataCache(slug);
     if (!data) return <NotFound slug={slug} />;
+    if (data.slug && slug[1] !== data.slug) {
+        permanentRedirect(`/${slug[0]}/${data.slug}`);
+    }
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
     //const contentHtml = marked.parse(data.content || '');
     return (
@@ -122,7 +129,7 @@ export const dataCache = cache(async (slug) => {
     const breadcrumb = [
         { name: texts.home, url: '/' },
         { name: page.name, url: `/${slug[0]}` },
-        { name: item.title, url: `/${slug[0]}/${slug[1]}` },
+        { name: item.title, url: `/${slug[0]}/${item.slug || slug[1]}` },
     ];
     return { ...item, breadcrumb, boosts, categories, posts };
 });

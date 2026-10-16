@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { PiBarbell } from 'react-icons/pi';
 import style from '@site/styles/aside.module.scss';
+import * as PiIcons from 'react-icons/pi';
 
 export default function Component({ title, items = [], texts }) {
     return (
@@ -8,12 +8,16 @@ export default function Component({ title, items = [], texts }) {
             <h2>{title || texts.categories.titleAside}</h2>
             <hr />
             <div className={style.categories}>
-                {items.map((item, i) => (
-                    <Link href={`/${texts.categories.slug}/${item.slug}`} key={i}>
-                        <PiBarbell />
-                        <h3>{item.name}</h3>
-                    </Link>
-                ))}
+                {items.map((item, i) => {
+                    const iconKey = item.icon?.startsWith('Pi') ? item.icon : (item.icon ? `Pi${item.icon}` : null);
+                    const IconComponent = (iconKey && PiIcons[iconKey]) || PiIcons.PiBarbell;
+                    return (
+                        <Link href={`/${texts.categories.slug}/${item.slug}`} key={i}>
+                            <IconComponent />
+                            <h3>{item.name}</h3>
+                        </Link>
+                    );
+                })}
             </div>
         </div>
     );
