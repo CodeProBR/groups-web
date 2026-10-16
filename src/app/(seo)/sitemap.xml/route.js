@@ -12,7 +12,7 @@ export async function GET() {
 	let categoryUrls = [];
 	let groupUrls = [];
 	let postUrls = [];
-	let themeUrls = [];
+	let guideUrls = [];
 
 	if (process.env.DATABASE) {
 		try {
@@ -53,13 +53,13 @@ export async function GET() {
 				priority: '0.9',
 			}));
 
-			// Temas (themes)
-			const themes = await db
-				.collection('themes')
+			// Guias
+			const guides = await db
+				.collection('guides')
 				.find({ status: 'active' }, { projection: { slug: 1, updatedAt: 1, createdAt: 1 } })
 				.toArray();
 
-			themeUrls = themes.map((item) => {
+			guideUrls = guides.map((item) => {
 				const dateVal = item.updatedAt || item.createdAt;
 				return {
 					loc: `${baseUrl}/${item.slug.replace(/^\//, '')}`,
@@ -113,7 +113,7 @@ export async function GET() {
 	const sitemapUrls = [
 		...pageUrls,
 		...categoryUrls,
-		...themeUrls,
+		...guideUrls,
 		...groupUrls,
 		...postUrls,
 	];

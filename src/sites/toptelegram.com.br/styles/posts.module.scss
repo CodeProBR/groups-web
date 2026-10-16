@@ -95,6 +95,11 @@
                 height: 3.1rem;
             }
 
+            >span {
+                @include text-smaller;
+                color: $text-secondary;
+            }
+
             >button {
                 background-color: $primary;
                 @include text-small;

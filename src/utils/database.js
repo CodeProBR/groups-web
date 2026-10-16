@@ -140,7 +140,7 @@ export const getPosts = unstable_cache(async ({ slug, limit, page, adult = false
         const [items, total] = await Promise.all([
             db.collection('posts')
                 .find(filter, {
-                    projection: { title: 1, slug: 1, description: 1, image: 1, category: 1, createdAt: 1, _id: 0 },
+                    projection: { title: 1, slug: 1, description: 1, image: 1, category: 1, createdAt: 1, updatedAt: 1, _id: 0 },
                     ...(limit && { limit }),
                     ...(skip && { skip }),
                 })
@@ -152,11 +152,11 @@ export const getPosts = unstable_cache(async ({ slug, limit, page, adult = false
     }
 }, ['posts'], { revalidate: 86400, tags: ['posts'] });
 
-export const getThemes = unstable_cache(async ({ slug, limit, page, adult = false } = {}) => {
+export const getGuides = unstable_cache(async ({ slug, limit, page, adult = false } = {}) => {
     const client = await mongodb(process.env.DATABASE);
     const db = client.db();
     if (slug) {
-        return await db.collection('themes').findOne(
+        return await db.collection('guides').findOne(
             { $or: [{ slug }, { slugs: slug }] },
             { projection: { title: 1, slug: 1, slugs: 1, description: 1, image: 1, seo: 1, faq: 1, createdAt: 1, updatedAt: 1, content: 1, tags: 1, _id: 0 } }
         );
@@ -167,7 +167,7 @@ export const getThemes = unstable_cache(async ({ slug, limit, page, adult = fals
         };
         const skip = (page - 1) * limit;
         const [items, total] = await Promise.all([
-            db.collection('themes')
+            db.collection('guides')
                 .find(filter, {
                     projection: { title: 1, slug: 1, description: 1, image: 1, createdAt: 1, _id: 0 },
                     ...(limit && { limit }),
@@ -175,11 +175,11 @@ export const getThemes = unstable_cache(async ({ slug, limit, page, adult = fals
                 })
                 .sort({ createdAt: -1 })
                 .toArray(),
-            db.collection('themes').countDocuments(filter)
+            db.collection('guides').countDocuments(filter)
         ]);
         return { items, total, page: page || 1, totalPages: limit ? Math.ceil(total / limit) : 1 };
     }
-}, ['themes'], { revalidate: 86400, tags: ['themes'] });
+}, ['guides'], { revalidate: 86400, tags: ['guides'] });
 
 export const getBoosts = unstable_cache(async ({ adult = false } = {}) => {
     return [];

@@ -1,0 +1,76 @@
+@use './variables' as *;
+
+.guides {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    width: 100%;
+
+    >a {
+        background: $bg-card;
+        border: 1px solid $border;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: $transition;
+
+        >figure {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+
+            >img {
+                width: 100%;
+                aspect-ratio: 2 / 1;
+                object-fit: cover;
+                transition: $transition;
+            }
+        }
+
+        >div {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+            >h3 {
+                @include text-small;
+                font-weight: 700;
+                color: $text;
+                text-transform: uppercase;
+                transition: $transition;
+            }
+
+            >p {
+                @include text-smaller;
+                color: $text-secondary;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                height: 3.1rem;
+            }
+
+            >span {
+                @include text-smaller;
+                color: $text-secondary;
+            }
+
+            >button {
+                background-color: $primary;
+                @include text-small;
+                margin: 0;
+                color: #fff;
+                border: 0;
+                border-radius: .75rem;
+                height: 2.5rem;
+                transition: $transition;
+            }
+        }
+
+        &:hover {
+            @include hover;
+        }
+    }
+}

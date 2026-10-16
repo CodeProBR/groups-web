@@ -2,7 +2,7 @@ import Layout from '@/layout';
 import { cache } from 'react';
 import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
-import { getBoosts, getCategories, getPosts, getGroups, getThemes } from "@/utils/database";
+import { getBoosts, getCategories, getPosts, getGroups, getGuides, getPages } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
 import AsideGroups from '@/components/Aside/Groups';
 import AsideCategories from '@/components/Aside/Categories'
@@ -19,23 +19,23 @@ import { permanentRedirect } from "next/navigation";
 export async function generateMetadata({ slug, page }) {
     const data = await dataCache(slug, page);
     if (!data) return metadataNotFound({ slug });
-    if (data.slug && slug[0] !== data.slug) {
-        permanentRedirect(`/${data.slug}`);
+    if (data.slug && slug[1] !== data.slug) {
+        permanentRedirect(`/${slug[0]}/${data.slug}`);
     }
     return metadata({
         title: data.seo?.title,
         description: data.seo?.description,
         index: data.seo?.index,
         image: data.image,
-        url: `/${data.slug || slug[0]}`
+        url: `/${slug[0]}/${data.slug || slug[1]}`
     });
 }
 
 export default async function Page({ slug, page }) {
     const data = await dataCache(slug, page);
     if (!data) return <NotFound slug={slug} />;
-    if (data.slug && slug[0] !== data.slug) {
-        permanentRedirect(`/${data.slug}`);
+    if (data.slug && slug[1] !== data.slug) {
+        permanentRedirect(`/${slug[0]}/${data.slug}`);
     }
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
     return (
@@ -121,16 +121,18 @@ export default async function Page({ slug, page }) {
 
 export const dataCache = cache(async (slug, currentPage = 1) => {
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
-    const item = await getThemes({ slug: slug[0] });
+    const item = await getGuides({ slug: slug[1] });
     if (!item) {
         return;
     }
     const [
+        page,
         groups,
         boosts,
         categories,
         posts,
     ] = await Promise.all([
+        getPages({ slug: slug[0] }),
         getGroups({ limit: 12, page: currentPage, adult: false, tags: item.tags }),
         getBoosts({ adult: false }),
         getCategories({ limit: 4 }),
@@ -138,7 +140,8 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
     ]);
     const breadcrumb = [
         { name: texts.home, url: '/' },
-        { name: item.title, url: `/${item.slug || slug[0]}` },
+        { name: page.name, url: `/${slug[0]}` },
+        { name: item.title, url: `/${slug[0]}/${item.slug || slug[1]}` },
     ];
     return { ...item, breadcrumb, groups, boosts, categories, posts };
 });

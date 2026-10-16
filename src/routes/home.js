@@ -3,10 +3,11 @@ import { cache } from 'react';
 import Navigation from '@/components/Navigation';
 import metadata from "@/utils/metadata";
 import style from '@site/styles/page.module.scss';
-import { getPages, getGroups, getCategories, getPosts } from "@/utils/database";
+import { getPages, getGroups, getCategories, getPosts, getGuides } from "@/utils/database";
 import Groups from '@/components/Groups';
 import Categories from '@/components/Categories';
 import Posts from '@/components/Posts';
+import Guides from '@/components/Guides';
 import Faq from '@/components/Faq';
 import WebSite from '@/components/Snippet/WebSite';
 import Link from 'next/link';
@@ -61,6 +62,20 @@ export default async function Page() {
 
                 <hr className={style.break} />
 
+                {/* GUIDES */}
+                <div className={style.block}>
+                    <div className={style.title}>
+                        <h2><strong>{texts.guides.title}</strong></h2>
+                        <p>{texts.guides.description}</p>
+                    </div>
+                    <Guides
+                        items={data.guides.items} texts={texts}
+                    />
+                    <Link className={style.link} href={`/${texts.guides.slug}`}>{texts.guides.button}</Link>
+                </div>
+
+                <hr className={style.break} />
+
                 {/* POSTS */}
                 <div className={style.block}>
                     <div className={style.title}>
@@ -99,14 +114,16 @@ export const dataCache = cache(async () => {
         groups,
         categories,
         posts,
+        guides,
     ] = await Promise.all([
         getPages({ slug: '/' }),
         getGroups({ adult: false, limit: 12 }),
         getCategories({ limit: 8 }),
         getPosts({ limit: 4 }),
+        getGuides({ limit: 4 }),
     ]);
     const breadcrumb = [
         { name: page.name, url: '/' },
     ];
-    return { ...page, breadcrumb, groups, categories, posts };
+    return { ...page, breadcrumb, groups, categories, posts, guides };
 });

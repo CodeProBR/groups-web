@@ -10,7 +10,6 @@ import AsideGroups from '@/components/Aside/Groups';
 import AsideCategories from '@/components/Aside/Categories'
 import metadata from "@/utils/metadata";
 import { formatData } from '@/utils';
-import { marked } from 'marked';
 import Content from '@/components/Content';
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
 import { permanentRedirect } from "next/navigation";
@@ -53,7 +52,7 @@ export default async function Page({ slug }) {
                 <div className={style.title}>
                     <span>{`${data.category ? data.category + '   ●   ' : ''}${data.readingTime} ${texts.blog.read}   ●   ${texts.blog.update} ${formatData(data.updatedAt)}`}</span>
                     <h1><strong>{data.title}</strong></h1>
-                    <p>{data.summary}</p>
+                    <p>{data.description}</p>
                 </div>
             </div>
 
@@ -64,6 +63,15 @@ export default async function Page({ slug }) {
                         <Image src={data.image} alt={data.title} width={900} height={400} loading="lazy" />
                     </figure>
                     <Content content={data.content} />
+                </div>
+
+                {/* FAQ */}
+                <div className={style.block}>
+                    <div className={style.title}>
+                        <h2><strong>{data.faq.title}</strong></h2>
+                        <p>{data.faq.description}</p>
+                    </div>
+                    <Faq items={data.faq.items} width={'100%'} />
                 </div>
 
             </div>
@@ -91,17 +99,6 @@ export default async function Page({ slug }) {
                         items={data.posts.items} texts={texts}
                     />
                     <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
-                </div>
-
-                <hr className={style.break} />
-
-                {/* FAQ */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{data.faq.title}</strong></h2>
-                        <p>{data.faq.description}</p>
-                    </div>
-                    <Faq items={data.faq.items} />
                 </div>
 
             </div>

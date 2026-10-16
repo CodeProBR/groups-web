@@ -1,0 +1,106 @@
+import Layout from '@/layout';
+import { cache } from 'react';
+import Faq from '@/components/Faq';
+import Navigation from '@/components/Navigation';
+import Guides from '@/components/Guides';
+import Pagination from '@/components/Pagination';
+import { getPages, getBoosts, getCategories, getGuides } from "@/utils/database";
+import style from '@site/styles/page.module.scss';
+import AsideGroups from '@/components/Aside/Groups';
+import AsideCategories from '@/components/Aside/Categories'
+import metadata from "@/utils/metadata";
+
+export async function generateMetadata({ slug, page }) {
+    const data = await dataCache(slug, page);
+    return metadata({
+        title: data.seo?.title,
+        description: data.seo?.description,
+        index: data.seo?.index,
+        image: null,
+        url: `/${slug[0]}`
+    });
+}
+
+export default async function Page({ slug, page }) {
+    const data = await dataCache(slug, page);
+    const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
+    return (
+        <Layout>
+
+            <Navigation
+                items={data.breadcrumb}
+                title={data.title}
+                description={data.description}
+                texts={texts}
+            />
+
+            <div className={style.w100}>
+                <div className={style.title}>
+                    <h1><strong>{data.title}</strong></h1>
+                    <p>{data.description}</p>
+                </div>
+            </div>
+
+            <div className={style.w70}>
+
+                {/* GUIDES */}
+                <div className={style.block}>
+                    <Guides
+                        items={data.guides.items} texts={texts}
+                    />
+                    <Pagination
+                        page={data.guides.page}
+                        totalPages={data.guides.totalPages}
+                        baseUrl={`/${texts.guides.slug}`}
+                        texts={texts}
+                    />
+                </div>
+
+            </div>
+            <section className={style.w30}>
+                <div className={style.block}>
+
+                    {/* BOOSTS */}
+                    <AsideGroups items={data.boosts} texts={texts} />
+
+                    {/* CATEGORIES */}
+                    <AsideCategories items={data.categories} texts={texts} />
+
+                </div>
+            </section>
+            <hr className={style.break} />
+            <div className={style.w100}>
+
+                {/* FAQ */}
+                <div className={style.block}>
+                    <div className={style.title}>
+                        <h2><strong>{texts.faq.title}</strong></h2>
+                        <p>{texts.faq.description}</p>
+                    </div>
+                    <Faq items={data.faq} />
+                </div>
+
+            </div>
+        </Layout>
+    );
+}
+
+export const dataCache = cache(async (slug, currentPage = 1) => {
+    const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
+    const [
+        page,
+        boosts,
+        categories,
+        guides,
+    ] = await Promise.all([
+        getPages({ slug: slug[0] }),
+        getBoosts({ adult: false }),
+        getCategories({ limit: 4 }),
+        getGuides({ limit: 12, page: currentPage }),
+    ]);
+    const breadcrumb = [
+        { name: texts.home, url: '/' },
+        { name: page.name, url: `/${slug[0]}` },
+    ];
+    return { ...page, breadcrumb, boosts, categories, guides };
+});

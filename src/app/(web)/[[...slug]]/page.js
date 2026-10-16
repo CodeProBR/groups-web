@@ -7,7 +7,8 @@ import Blog, { generateMetadata as metadataBlog } from "@/routes/blog";
 import BlogItem, { generateMetadata as metadataBlogItem, dataCache as getBlogData } from "@/routes/blogItem";
 import Categories, { generateMetadata as metadataCategories } from "@/routes/categories";
 import CategoriesItem, { generateMetadata as metadataCategoriesItem, dataCache as getCategoryData } from "@/routes/categoriesItem";
-import ThemesItem, { generateMetadata as metadataThemesItem, dataCache as getThemeData } from "@/routes/themesItem";
+import Guides, { generateMetadata as metadataGuides } from "@/routes/guides";
+import GuidesItem, { generateMetadata as metadataGuidesItem, dataCache as getGuidesData } from "@/routes/guidesItem";
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
 import { getRedirects } from "@/utils/database";
 
@@ -75,13 +76,19 @@ export async function generateMetadata({ params, searchParams }) {
         }
     }
 
-    // THEMES
-    if (slug[0] && !slug[1]) {
-        const { page } = (await searchParams) || {};
-        const currentPage = parseInt(page) || 1;
-        const theme = await getThemeData(slug, currentPage);
-        if (theme) {
-            return metadataThemesItem({ slug, page: currentPage });
+    // GUIDES
+    if (slug[0] === 'guias' || slug[0] === 'guides' || slug[0] === 'guias') {
+        if (!slug[1]) {
+            const { page } = (await searchParams) || {};
+            const currentPage = parseInt(page) || 1;
+            return metadataGuides({ slug, page: currentPage });
+        } else {
+            const { page } = (await searchParams) || {};
+            const currentPage = parseInt(page) || 1;
+            const guide = await getGuidesData(slug, currentPage);
+            if (guide) {
+                return metadataGuidesItem({ slug, page: currentPage });
+            }
         }
     }
 
@@ -160,13 +167,19 @@ export default async function Page({ params, searchParams }) {
         }
     }
 
-    // THEMES
-    if (slug[0] && !slug[1]) {
-        const { page } = (await searchParams) || {};
-        const currentPage = parseInt(page) || 1;
-        const theme = await getThemeData(slug, currentPage);
-        if (theme) {
-            return <ThemesItem slug={slug} page={currentPage} />;
+    // GUIDES
+    if (slug[0] === 'guias' || slug[0] === 'guides' || slug[0] === 'guias') {
+        if (!slug[1]) {
+            const { page } = (await searchParams) || {};
+            const currentPage = parseInt(page) || 1;
+            return <Guides slug={slug} page={currentPage} />
+        } else {
+            const { page } = (await searchParams) || {};
+            const currentPage = parseInt(page) || 1;
+            const guide = await getGuidesData(slug, currentPage);
+            if (guide) {
+                return <GuidesItem slug={slug} page={currentPage} />
+            }
         }
     }
 

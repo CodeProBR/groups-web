@@ -1,5 +1,6 @@
 import style from '@site/styles/content.module.scss';
 import { marked } from 'marked';
+import Image from 'next/image';
 
 export default function Component({ id, content }) {
     if (Array.isArray(content) && content.length > 0) {

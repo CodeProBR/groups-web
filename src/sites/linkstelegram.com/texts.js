@@ -65,6 +65,14 @@ const texts = {
         read: "min read",
         update: "Updated on"
     },
+    guides: {
+        name: "Guides",
+        title: "Guides for Telegram Groups",
+        description: "Check out our list of guides for Telegram Groups to find the best groups and channels for you.",
+        button: "see all guides",
+        slug: "guides",
+        action: "See Groups",
+    },
     faq: {
         title: "Frequently Asked Questions",
         description: "Get answers to your questions about how our Telegram group platform works."

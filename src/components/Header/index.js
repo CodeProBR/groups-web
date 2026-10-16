@@ -95,6 +95,9 @@ export default function Header({ categories = [], pages = [], texts }) {
 					<Link href={`/${texts.categories.slug}`}>
 						<span>{texts.categories.name}</span>
 					</Link>
+					<Link href={`/${texts.guides.slug}`}>
+						<span>{texts.guides.name}</span>
+					</Link>
 					<Link href={`/${texts.blog.slug}`}>
 						<span>{texts.blog.name}</span>
 					</Link>
