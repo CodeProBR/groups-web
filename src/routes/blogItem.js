@@ -14,6 +14,7 @@ import Content from '@/components/Content';
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
 import { permanentRedirect } from "next/navigation";
 import Image from 'next/image';
+import Article from '@/components/Snippet/Article';
 
 export async function generateMetadata({ slug }) {
     const data = await dataCache(slug);
@@ -37,7 +38,6 @@ export default async function Page({ slug }) {
         permanentRedirect(`/${slug[0]}/${data.slug}`);
     }
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
-    //const contentHtml = marked.parse(data.content || '');
     return (
         <Layout>
 
@@ -74,6 +74,27 @@ export default async function Page({ slug }) {
                     <Faq items={data.faq.items} width={'100%'} />
                 </div>
 
+                {/* AUTHOR */}
+                {data.author && data.author.name && (
+                    <div className={style.author}>
+                        {data.author.image && (
+                            <figure>
+                                <Image
+                                    src={data.author.image}
+                                    alt={data.author.name}
+                                    width={90}
+                                    height={90}
+                                />
+                            </figure>
+                        )}
+                        <div>
+                            {data.author.role && <span>{data.author.role}</span>}
+                            <h3>{data.author.name}</h3>
+                            {data.author.description && <p>{data.author.description}</p>}
+                        </div>
+                    </div>
+                )}
+
             </div>
             <section className={style.w30}>
                 <div className={style.block}>
@@ -102,6 +123,8 @@ export default async function Page({ slug }) {
                 </div>
 
             </div>
+
+            <Article data={data} />
         </Layout>
     );
 }

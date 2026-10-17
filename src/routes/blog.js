@@ -9,6 +9,8 @@ import style from '@site/styles/page.module.scss';
 import AsideGroups from '@/components/Aside/Groups';
 import AsideCategories from '@/components/Aside/Categories'
 import metadata from "@/utils/metadata";
+import CollectionPage from '@/components/Snippet/CollectionPage';
+import ItemList from '@/components/Snippet/ItemList';
 
 export async function generateMetadata({ slug, page }) {
     const data = await dataCache(slug, page);
@@ -81,6 +83,11 @@ export default async function Page({ slug, page }) {
                 </div>
 
             </div>
+
+            <CollectionPage name={data.title} url={`/${slug[0]}`} description={data.description} />
+            {data.posts?.items?.length > 0 && (
+                <ItemList data={data.posts.items} name={data.title} type="blog" slug={slug[0]} />
+            )}
         </Layout>
     );
 }

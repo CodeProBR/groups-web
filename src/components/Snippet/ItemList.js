@@ -1,4 +1,4 @@
-export default async function Component({ data, name, type }) {
+export default async function Component({ data, name, type, slug }) {
     const schema = {
         "@context": "https://schema.org",
         "@type": "ItemList",
@@ -7,17 +7,19 @@ export default async function Component({ data, name, type }) {
         itemListElement: data.map((item, index) => ({
             "@type": "ListItem",
             position: index + 1,
-            ...type === "group" && {
+            ...(type === "group") && {
                 name: item.name,
-                url: `${process.env.NEXT_PUBLIC_WEB}/groups/${item.slug}`,
+                url: `${process.env.NEXT_PUBLIC_WEB}/${slug}/${item.slug}`,
             },
-            ...type === "post" && {
+            ...(type === "post" || type === "guide") && {
                 item: {
                     "@type": "Article",
                     headline: item.title,
-                    url: `${process.env.NEXT_PUBLIC_WEB}/blog/${item.slug}`,
-                    datePublished: item.publishedAt,
-                    image: `${process.env.NEXT_PUBLIC_IMG}${item.image.url}`,
+                    url: `${process.env.NEXT_PUBLIC_WEB}/${slug}/${item.slug}`,
+                    ...(item.publishedAt && { datePublished: new Date(item.publishedAt).toISOString() }),
+                    ...(item.image && {
+                        image: item.image
+                    }),
                     ...(item.author && item.author?.name && {
                         author: {
                             "@type": "Person",

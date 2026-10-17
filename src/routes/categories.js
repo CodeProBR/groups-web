@@ -5,12 +5,13 @@ import Navigation from '@/components/Navigation';
 import { getPages, getBoosts, getCategories, getPosts, getGroups } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
 import AsideGroups from '@/components/Aside/Groups';
-import AsideCategories from '@/components/Aside/Categories'
 import metadata from "@/utils/metadata";
 import Link from "next/link";
 import Groups from "@/components/Groups";
 import Categories from "@/components/Categories";
 import Posts from "@/components/Posts";
+import CollectionPage from '@/components/Snippet/CollectionPage';
+import ItemList from '@/components/Snippet/ItemList';
 
 export async function generateMetadata({ slug }) {
     const data = await dataCache(slug);
@@ -100,6 +101,11 @@ export default async function Page({ slug }) {
                 </div>
 
             </div>
+
+            <CollectionPage name={data.title} url={`/${slug[0]}`} description={data.description} />
+            {data.categories?.length > 0 && (
+                <ItemList data={data.categories} name={data.title} type="category" slug={slug[0]} />
+            )}
         </Layout>
     );
 }

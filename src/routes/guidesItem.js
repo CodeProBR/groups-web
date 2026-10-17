@@ -15,6 +15,7 @@ import Content from "@/components/Content";
 import Image from 'next/image';
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
 import { permanentRedirect } from "next/navigation";
+import Article from '@/components/Snippet/Article';
 
 export async function generateMetadata({ slug, page }) {
     const data = await dataCache(slug, page);
@@ -115,6 +116,8 @@ export default async function Page({ slug, page }) {
                 </div>
 
             </div>
+
+            <Article data={data} />
         </Layout>
     );
 }
