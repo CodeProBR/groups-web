@@ -56,13 +56,13 @@ export async function GET() {
 			// Guias
 			const guides = await db
 				.collection('guides')
-				.find({ status: 'active' }, { projection: { slug: 1, updatedAt: 1, createdAt: 1 } })
+				.find({ status: 'active', publishedAt: { $lte: new Date() } }, { projection: { slug: 1, updatedAt: 1, createdAt: 1 } })
 				.toArray();
 
 			guideUrls = guides.map((item) => {
 				const dateVal = item.updatedAt || item.createdAt;
 				return {
-					loc: `${baseUrl}/${item.slug.replace(/^\//, '')}`,
+					loc: `${baseUrl}/${texts.guides.slug}/${item.slug.replace(/^\//, '')}`,
 					lastmod: dateVal ? new Date(dateVal).toISOString().split('T')[0] : currentDate,
 					changefreq: 'weekly',
 					priority: '0.9',
@@ -88,15 +88,10 @@ export async function GET() {
 			// Artigos do Blog (posts)
 			const posts = await db
 				.collection('posts')
-				.find({ status: 'active' }, { projection: { slug: 1, updatedAt: 1, createdAt: 1 } })
+				.find({ status: 'active', publishedAt: { $lte: new Date() } }, { projection: { slug: 1, updatedAt: 1, createdAt: 1 } })
 				.toArray();
 
-			const postsList = posts.length > 0 ? posts : await db
-				.collection('posts')
-				.find({ status: 'active' }, { projection: { slug: 1, updatedAt: 1, createdAt: 1 } })
-				.toArray();
-
-			postUrls = postsList.map((item) => {
+			postUrls = posts.map((item) => {
 				const dateVal = item.updatedAt || item.createdAt;
 				return {
 					loc: `${baseUrl}/${texts.blog.slug}/${item.slug}`,

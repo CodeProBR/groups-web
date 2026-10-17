@@ -134,17 +134,18 @@ export const getPosts = unstable_cache(async ({ slug, limit, page, adult = false
     } else {
         const filter = {
             status: 'active',
+            publishedAt: { $lte: new Date() },
             /*...(adult ? {} : blockContent()),*/
         };
         const skip = (page - 1) * limit;
         const [items, total] = await Promise.all([
             db.collection('posts')
                 .find(filter, {
-                    projection: { title: 1, slug: 1, description: 1, image: 1, category: 1, createdAt: 1, updatedAt: 1, _id: 0 },
+                    projection: { title: 1, slug: 1, description: 1, image: 1, category: 1, publishedAt: 1, createdAt: 1, updatedAt: 1, _id: 0 },
                     ...(limit && { limit }),
                     ...(skip && { skip }),
                 })
-                .sort({ createdAt: -1 })
+                .sort({ publishedAt: -1, createdAt: -1 })
                 .toArray(),
             db.collection('posts').countDocuments(filter)
         ]);
@@ -163,17 +164,18 @@ export const getGuides = unstable_cache(async ({ slug, limit, page, adult = fals
     } else {
         const filter = {
             status: 'active',
+            publishedAt: { $lte: new Date() },
             /*...(adult ? {} : blockContent()),*/
         };
         const skip = (page - 1) * limit;
         const [items, total] = await Promise.all([
             db.collection('guides')
                 .find(filter, {
-                    projection: { title: 1, slug: 1, description: 1, image: 1, createdAt: 1, _id: 0 },
+                    projection: { title: 1, slug: 1, description: 1, image: 1, publishedAt: 1, createdAt: 1, _id: 0 },
                     ...(limit && { limit }),
                     ...(skip && { skip }),
                 })
-                .sort({ createdAt: -1 })
+                .sort({ publishedAt: -1, createdAt: -1 })
                 .toArray(),
             db.collection('guides').countDocuments(filter)
         ]);
