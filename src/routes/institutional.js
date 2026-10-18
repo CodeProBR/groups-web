@@ -5,9 +5,9 @@ import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
 import Content from '@/components/Content';
 import Posts from '@/components/Posts';
-import { getPages, getBoosts, getCategories, getPosts, getProducts } from "@/utils/database";
+import { getPages, getBoosts, getCategoriesFeatured, getPosts, getProducts } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
-import AsideGroups from '@/components/Aside/Groups';
+import AsideBoosts from '@/components/Aside/Boosts';
 import AsideCategories from '@/components/Aside/Categories'
 import metadata from "@/utils/metadata";
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
@@ -56,10 +56,10 @@ export default async function Page({ slug }) {
                 <div className={style.block}>
 
                     {/* BOOSTS */}
-                    <AsideGroups items={data.boosts} texts={texts} />
+                    <AsideBoosts items={data.boosts} texts={texts} />
 
                     {/* CATEGORIES */}
-                    <AsideCategories items={data.categories} texts={texts} />
+                    <AsideCategories items={data.categoriesFeatured} texts={texts} />
 
                 </div>
             </section>
@@ -115,13 +115,13 @@ export const dataCache = cache(async (slug) => {
     const [
         page,
         boosts,
-        categories,
+        categoriesFeatured,
         posts,
         products,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
         getBoosts({ adult: false }),
-        getCategories({ limit: 4 }),
+        getCategoriesFeatured(),
         getPosts({ limit: 4 }),
         getProducts(),
     ]);
@@ -129,5 +129,5 @@ export const dataCache = cache(async (slug) => {
         { name: texts.home, url: '/' },
         { name: page.name, url: `/${slug[0]}` },
     ];
-    return { ...page, breadcrumb, boosts, categories, posts, products };
+    return { ...page, breadcrumb, boosts, categoriesFeatured, posts, products };
 });

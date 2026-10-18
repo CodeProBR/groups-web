@@ -51,26 +51,26 @@
             >small {
                 background-color: #e9b949;
                 color: #5C4306;
-                border-radius: .6rem;
+                border-radius: 0 1rem;
                 align-items: center;
                 justify-content: center;
-                height: 1.5rem;
-                padding: 0 .5rem;
+                height: 2rem;
+                padding: 0 1rem;
                 display: flex;
                 position: absolute;
-                top: .5rem;
-                right: .5rem;
-                gap: .125rem;
+                top: 0rem;
+                right: 0rem;
+                gap: .25rem;
 
                 >svg {
-                    font-size: .8rem;
+                    font-size: 1rem;
                 }
 
                 >span {
-                    @include text-smallest;
+                    @include text-smaller;
                     margin: 0;
                     font-weight: 900;
-                    line-height: 1;
+                    line-height: 2rem;
                     letter-spacing: 1px;
                 }
             }

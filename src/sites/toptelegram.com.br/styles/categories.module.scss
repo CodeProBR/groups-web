@@ -18,22 +18,40 @@
 
         >svg {
             font-size: 1rem;
-            color: $text-secondary;
+            color: $primary-dark;
+            width: 2rem;
+            height: 2rem;
+            padding: .25rem;
+            border-radius: .75rem;
+            background-color: $primary-light;
         }
 
         >h3 {
             @include text-small;
+            margin: 0;
             font-weight: 400;
             color: $text;
-            -webkit-line-clamp: 1;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
             transition: $transition;
+            width: calc(100% - 2.5rem);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            >span {
+                @include text-small;
+                margin: 0;
+                color: $text-secondary;
+                font-weight: 700;
+                transition: $transition;
+            }
         }
 
         &:hover {
             @include hover;
+
+            >h3>span {
+                color: $primary-dark;
+            }
         }
     }
 }

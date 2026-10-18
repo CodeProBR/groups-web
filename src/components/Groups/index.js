@@ -2,6 +2,7 @@ import style from '@site/styles/groups.module.scss';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PiStarFill } from 'react-icons/pi';
+import { isBoostActive } from '@/utils';
 
 export default function Component({ items = [], texts }) {
     return (
@@ -11,7 +12,7 @@ export default function Component({ items = [], texts }) {
                     <figure>
                         <Image src={item.image} alt={item.name} width={320} height={180} loading="lazy" />
                         <span>{item.category}</span>
-                        {item.boost && <small><PiStarFill /><span>VIP</span></small>}
+                        {isBoostActive(item.boost) && <small><PiStarFill /><span>VIP</span></small>}
                     </figure>
                     <div>
                         <h3>{item.name}</h3>

@@ -5,7 +5,7 @@ import Footer from '@/components/Footer';
 import LayoutEvents from './LayoutEvents';
 import Script from 'next/script';
 import Organization from '@/components/Snippet/Organization';
-import { getCategories, getPages } from "@/utils/database";
+import { getCategoriesFeatured, getCategoriesAll, getPages } from "@/utils/database";
 
 const poppins = Poppins({
 	variable: '--font-poppins',
@@ -15,19 +15,20 @@ const poppins = Poppins({
 });
 
 export default async function RootLayout({ children }) {
-	const categories = await getCategories();
+	const categoriesAll = await getCategoriesAll();
+	const categoriesFeatured = await getCategoriesFeatured();
 	const pages = await getPages();
 	const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
 	return (
 		<html lang={process.env.NEXT_PUBLIC_LOCALE} className={`${poppins.variable}`}>
 			<body>
-				<Header categories={categories} pages={pages} texts={texts} />
+				<Header categories={categoriesAll} pages={pages} texts={texts} />
 				<main>
 					<div className="container">
 						{children}
 					</div>
 				</main>
-				<Footer categories={categories} pages={pages} texts={texts} />
+				<Footer categories={categoriesFeatured} pages={pages} texts={texts} />
 				<Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.ANALYTICS}`} strategy="afterInteractive" />
 				<Script id="ga-script" strategy="afterInteractive">
 					{`

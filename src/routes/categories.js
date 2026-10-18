@@ -2,9 +2,9 @@ import Layout from '@/layout';
 import { cache } from 'react';
 import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
-import { getPages, getBoosts, getCategories, getPosts, getGroups, getProducts } from "@/utils/database";
+import { getPages, getBoosts, getCategoriesAll, getPosts, getGroups, getProducts } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
-import AsideGroups from '@/components/Aside/Groups';
+import AsideBoosts from '@/components/Aside/Boosts';
 import metadata from "@/utils/metadata";
 import Link from "next/link";
 import Groups from "@/components/Groups";
@@ -49,7 +49,7 @@ export default async function Page({ slug }) {
 
                 {/* CATEGORIES */}
                 <div className={style.block}>
-                    <Categories items={data.categories} texts={texts} />
+                    <Categories items={data.categoriesFeatured} texts={texts} />
                 </div>
 
                 <hr className={style.break} />
@@ -71,7 +71,7 @@ export default async function Page({ slug }) {
                 <div className={style.block}>
 
                     {/* BOOSTS */}
-                    <AsideGroups items={data.boosts} texts={texts} />
+                    <AsideBoosts items={data.boosts} texts={texts} />
 
                 </div>
             </section>
@@ -133,14 +133,14 @@ export const dataCache = cache(async (slug) => {
         page,
         groups,
         boosts,
-        categories,
+        categoriesFeatured,
         posts,
         products,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
         getGroups({ limit: 12, adult: false }),
         getBoosts({ adult: false }),
-        getCategories(),
+        getCategoriesAll(),
         getPosts({ limit: 4 }),
         getProducts(),
     ]);
@@ -148,5 +148,5 @@ export const dataCache = cache(async (slug) => {
         { name: texts.home, url: '/' },
         { name: page.name, url: `/${slug[0]}` },
     ];
-    return { ...page, breadcrumb, groups, boosts, categories, posts, products };
+    return { ...page, breadcrumb, groups, boosts, categoriesFeatured, posts, products };
 });

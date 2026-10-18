@@ -20,29 +20,37 @@
         text-decoration: none;
 
         >svg {
-            font-size: 1.1rem;
-            color: $primary;
-            background: rgba(0, 168, 255, 0.1);
             border: 1px solid rgba(0, 168, 255, 0.25);
-            border-radius: $radius-sm;
-            width: 2.25rem;
-            height: 2.25rem;
-            padding: 0.5rem;
             box-sizing: border-box;
             flex-shrink: 0;
             transition: $transition;
+            font-size: 1rem;
+            color: $primary-dark;
+            width: 2rem;
+            height: 2rem;
+            padding: .25rem;
+            border-radius: .75rem;
+            background-color: $primary-light;
         }
 
         >h3 {
             @include text-small;
             font-weight: 600;
             color: #ffffff;
-            -webkit-line-clamp: 1;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
             transition: color 0.2s ease;
             margin: 0;
+            width: calc(100% - 2.5rem);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            >span {
+                @include text-small;
+                margin: 0;
+                color: $text-secondary;
+                font-weight: 700;
+                transition: $transition;
+            }
         }
 
         &:hover {
@@ -61,6 +69,10 @@
 
             >h3 {
                 color: $primary;
+
+                >span {
+                    color: $primary-dark;
+                }
             }
         }
     }

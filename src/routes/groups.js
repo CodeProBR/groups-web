@@ -6,9 +6,9 @@ import Navigation from '@/components/Navigation';
 import Groups from '@/components/Groups';
 import Pagination from '@/components/Pagination';
 import Posts from '@/components/Posts';
-import { getPages, getBoosts, getCategories, getPosts, getGroups, getProducts } from "@/utils/database";
+import { getPages, getBoosts, getCategoriesFeatured, getPosts, getGroups, getProducts } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
-import AsideGroups from '@/components/Aside/Groups';
+import AsideBoosts from '@/components/Aside/Boosts';
 import AsideCategories from '@/components/Aside/Categories'
 import metadata from "@/utils/metadata";
 import CollectionPage from '@/components/Snippet/CollectionPage';
@@ -66,10 +66,10 @@ export default async function Page({ slug, search, page }) {
                 <div className={style.block}>
 
                     {/* BOOSTS */}
-                    <AsideGroups items={data.boosts} texts={texts} />
+                    <AsideBoosts items={data.boosts} texts={texts} />
 
                     {/* CATEGORIES */}
-                    <AsideCategories items={data.categories} texts={texts} />
+                    <AsideCategories items={data.categoriesFeatured} texts={texts} />
 
                 </div>
             </section>
@@ -131,14 +131,14 @@ export const dataCache = cache(async (slug, currentPage = 1, search = '') => {
         page,
         groups,
         boosts,
-        categories,
+        categoriesFeatured,
         posts,
         products,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
         getGroups({ limit: 12, page: currentPage, adult: false, q: search }),
         getBoosts({ adult: false }),
-        getCategories({ limit: 4 }),
+        getCategoriesFeatured(),
         getPosts({ limit: 4 }),
         getProducts(),
     ]);
@@ -154,5 +154,5 @@ export const dataCache = cache(async (slug, currentPage = 1, search = '') => {
         { name: page.name, url: `/${slug[0]}` },
         ...(search ? [{ name: `${texts.search.name}: "${search}"`, url: `/${slug[0]}?q=${encodeURIComponent(search)}` }] : []),
     ];
-    return { ...page, title, description, seo, breadcrumb, groups, boosts, categories, posts, products };
+    return { ...page, title, description, seo, breadcrumb, groups, boosts, categoriesFeatured, posts, products };
 });

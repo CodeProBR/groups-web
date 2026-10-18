@@ -40,6 +40,31 @@ export async function POST(request) {
             }
         } catch (e) { }
         source = sanitizeKey(source);
+
+        if (source === "google") {
+            try {
+                const now = new Date().toLocaleTimeString("pt-BR", {
+                    timeZone: "America/Sao_Paulo",
+                    hour12: false,
+                });
+                const payload = new URLSearchParams({
+                    token: process.env.PUSHOVER_TOKEN || "",
+                    user: process.env.PUSHOVER_USER || "",
+                    device: process.env.PUSHOVER_DEVICE || "",
+                    message: `${now} - ${process.env.NEXT_PUBLIC_NAME || ""}`,
+                    title: "Google",
+                });
+                await fetch("https://api.pushover.net/1/messages.json", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: payload.toString(),
+                });
+            } catch (err) {
+                console.error("Erro ao enviar notificação Pushover:", err);
+            }
+        }
     }
 
     const query = { url, date: today };

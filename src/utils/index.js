@@ -46,4 +46,23 @@ export function formatData(dateStr) {
   });
 }
 
+export function isBoostActive(boostDate) {
+  if (!boostDate) return false;
+
+  let date;
+  if (boostDate instanceof Date) {
+    date = boostDate;
+  } else if (typeof boostDate === 'string') {
+    // Se a string não indicar timezone/offset explicitamente (nem 'Z', nem '+' nem '-'), tratamos como UTC
+    const hasTimezone = boostDate.endsWith('Z') || /[+-]\d{2}(:?\d{2})?$/.test(boostDate);
+    date = new Date(hasTimezone ? boostDate : `${boostDate}Z`);
+  } else {
+    date = new Date(boostDate);
+  }
+
+  if (isNaN(date.getTime())) return false;
+
+  return date.getTime() > Date.now();
+}
+
 

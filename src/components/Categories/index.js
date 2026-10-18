@@ -11,7 +11,7 @@ export default function Component({ items = [], texts }) {
                 return (
                     <Link href={`/${texts.categories.slug}/${item.slug}`} key={i}>
                         <IconComponent />
-                        <h3>{item.name}</h3>
+                        <h3>{item.name}<span>{item.groups}</span></h3>
                     </Link>
                 );
             })}

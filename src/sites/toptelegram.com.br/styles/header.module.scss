@@ -247,12 +247,28 @@
 							transition: $transition;
 						}
 
+						>small {
+							@include text-smallest;
+							margin: 0;
+							background-color: $text-secondary;
+							border-radius: .25rem;
+							color: white;
+							padding: 0 .25rem;
+							height: 1rem;
+							line-height: 1rem;
+							transition: $transition;
+						}
+
 						&:hover {
 							color: $primary;
 
 							>svg {
 								color: $primary;
 								transform: translateX(3px);
+							}
+
+							>small {
+								background-color: $primary;
 							}
 						}
 					}

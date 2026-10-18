@@ -39,7 +39,12 @@
 
 		>svg {
 			font-size: 1rem;
-			color: $text-secondary;
+			color: $primary-dark;
+			width: 2rem;
+			height: 2rem;
+			padding: .25rem;
+			border-radius: .75rem;
+			background-color: $primary-light;
 		}
 
 		>h3 {
@@ -48,18 +53,34 @@
 			color: $text;
 			font-weight: 400;
 			transition: $transition;
+			width: calc(100% - 2.5rem);
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			>span {
+				@include text-small;
+				margin: 0;
+				color: $text-secondary;
+				font-weight: 700;
+				transition: $transition;
+			}
 		}
 
 		&:hover {
 
 			>h3 {
-				color: $primary;
+				color: $primary-dark;
+
+				>span {
+					color: $primary-dark;
+				}
 			}
 		}
 	}
 }
 
-.groups {
+.boosts {
 	display: flex;
 	flex-direction: column;
 	gap: .5rem;
@@ -71,7 +92,7 @@
 
 		>img {
 			width: 4rem !important;
-			height: 3rem;
+			height: 4rem;
 			object-fit: cover;
 			border-radius: .75rem;
 			border: 1px solid $border;
@@ -95,9 +116,13 @@
 				transition: $transition;
 			}
 
-			>span {
+			>p {
 				@include text-smaller;
 				color: $text-secondary;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
 			}
 		}
 

@@ -60,6 +60,11 @@
 			font-size: 0.95rem;
 			color: $text-secondary;
 			transition: $transition;
+			width: 2rem;
+			height: 2rem;
+			padding: .25rem;
+			border-radius: .75rem;
+			background-color: $primary-light;
 		}
 
 		>h3 {
@@ -68,6 +73,18 @@
 			color: $text;
 			font-weight: 500;
 			transition: $transition;
+			width: calc(100% - 2.5rem);
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			>span {
+				@include text-small;
+				margin: 0;
+				color: $text-secondary;
+				font-weight: 700;
+				transition: $transition;
+			}
 		}
 
 		&:hover {
@@ -86,7 +103,7 @@
 	}
 }
 
-.groups {
+.boosts {
 	display: flex;
 	flex-direction: column;
 	gap: 0.65rem;
@@ -103,8 +120,8 @@
 		transition: $transition;
 
 		>img {
-			width: 3.5rem !important;
-			height: 2.75rem;
+			width: 4rem !important;
+			height: 4rem;
 			object-fit: cover;
 			border-radius: $radius-sm;
 			border: 1px solid rgba(255, 255, 255, 0.08);
@@ -113,10 +130,10 @@
 		}
 
 		>div {
-			width: calc(100% - 4.25rem);
+			width: calc(100% - 4.5rem);
 			display: flex;
 			flex-direction: column;
-			gap: 0.2rem;
+			gap: 0.5rem;
 
 			>h3 {
 				@include text-small;
@@ -130,10 +147,13 @@
 				margin: 0;
 			}
 
-			>span {
-				font-size: 0.72rem;
+			>p {
+				@include text-smaller;
 				color: $primary;
-				font-weight: 500;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
 			}
 		}
 

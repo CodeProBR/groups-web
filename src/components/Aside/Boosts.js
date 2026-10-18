@@ -7,13 +7,13 @@ export default function Component({ title, items = [], texts }) {
         <div className={style.section}>
             <h2>{title || texts.groups.titleAside}</h2>
             <hr />
-            <div className={style.groups}>
+            <div className={style.boosts}>
                 {items.map((item, i) => (
                     <Link href={`/${texts.groups.slug}/${item.id}`} key={i}>
                         <Image src={item.image} alt={item.name} width={150} height={100} loading="lazy" />
                         <div>
-                            <span>{item.category}</span>
                             <h3>{item.name}</h3>
+                            <p>{item.description}</p>
                         </div>
                     </Link>
                 ))}

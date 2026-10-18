@@ -12,7 +12,12 @@ const texts = {
             title: "Group Rules",
             description: "Before accessing the [PLATFORM] group [GROUP], be aware that you must agree to all group rules. It is also important to note that this is an independent group with no relationship to our site, and the sole responsible party is the group administrator. [GROUP] belongs to the [CATEGORY] category."
         },
+        description: "Group Description",
         about: "About [CATEGORY] Groups on [PLATFORM]",
+        alert: {
+            title: "Important Notice",
+            description: "We act exclusively as a sharing platform for public links submitted by third parties and do not manage or take part in [GROUP]. All shared content is the sole responsibility of its administrators and members. We do not tolerate illegal activities, scams, or fraud; if you spot any violations, please report it so we can review and take action."
+        },
         similar: {
             title: "Similar Groups",
             description: "Find other [CATEGORY] groups that might interest you"
@@ -109,7 +114,8 @@ const texts = {
         title: "404 - Page Not Found",
         description: "Sorry! The page you are looking for does not exist or has been moved.",
         link: "Back to Home"
-    }
+    },
+    report: 'Report an error'
 };
 
 export default texts;

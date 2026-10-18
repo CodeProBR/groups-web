@@ -87,12 +87,28 @@
 								transition: $transition;
 							}
 
+							>small {
+								@include text-smallest;
+								margin: 0;
+								background-color: $text-muted;
+								border-radius: .25rem;
+								color: rgb(15, 23, 42);
+								padding: 0 .25rem;
+								height: 1rem;
+								line-height: 1rem;
+								transition: $transition;
+							}
+
 							&:hover {
 								color: $primary;
 
 								>svg {
 									color: $primary;
 									transform: translateX(3px);
+								}
+
+								>small {
+									background-color: $primary;
 								}
 							}
 						}

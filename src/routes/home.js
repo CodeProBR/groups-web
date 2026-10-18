@@ -3,7 +3,7 @@ import { cache } from 'react';
 import Navigation from '@/components/Navigation';
 import metadata from "@/utils/metadata";
 import style from '@site/styles/page.module.scss';
-import { getPages, getGroups, getCategories, getPosts, getGuides, getProducts } from "@/utils/database";
+import { getPages, getGroups, getCategoriesFeatured, getPosts, getGuides, getProducts } from "@/utils/database";
 import Groups from '@/components/Groups';
 import Categories from '@/components/Categories';
 import Posts from '@/components/Posts';
@@ -57,7 +57,7 @@ export default async function Page() {
                         <h2><strong>{texts.categories.title}</strong></h2>
                         <p>{texts.categories.description}</p>
                     </div>
-                    <Categories items={data.categories} texts={texts} />
+                    <Categories items={data.categoriesFeatured} texts={texts} />
                     <Link className={style.link} href={`/${texts.categories.slug}`}>{texts.categories.button}</Link>
                 </div>
 
@@ -127,14 +127,14 @@ export const dataCache = cache(async () => {
     const [
         page,
         groups,
-        categories,
+        categoriesFeatured,
         posts,
         guides,
         products,
     ] = await Promise.all([
         getPages({ slug: '/' }),
         getGroups({ adult: false, limit: 12 }),
-        getCategories({ limit: 8 }),
+        getCategoriesFeatured(),
         getPosts({ limit: 4 }),
         getGuides({ limit: 4 }),
         getProducts(),
@@ -142,5 +142,5 @@ export const dataCache = cache(async () => {
     const breadcrumb = [
         { name: page.name, url: '/' },
     ];
-    return { ...page, breadcrumb, groups, categories, posts, guides, products };
+    return { ...page, breadcrumb, groups, categoriesFeatured, posts, guides, products };
 });

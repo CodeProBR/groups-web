@@ -4,9 +4,9 @@ import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
 import Guides from '@/components/Guides';
 import Pagination from '@/components/Pagination';
-import { getPages, getBoosts, getCategories, getGuides, getProducts } from "@/utils/database";
+import { getPages, getBoosts, getCategoriesFeatured, getGuides, getProducts } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
-import AsideGroups from '@/components/Aside/Groups';
+import AsideBoosts from '@/components/Aside/Boosts';
 import AsideCategories from '@/components/Aside/Categories'
 import metadata from "@/utils/metadata";
 import CollectionPage from '@/components/Snippet/CollectionPage';
@@ -64,10 +64,10 @@ export default async function Page({ slug, page }) {
                 <div className={style.block}>
 
                     {/* BOOSTS */}
-                    <AsideGroups items={data.boosts} texts={texts} />
+                    <AsideBoosts items={data.boosts} texts={texts} />
 
                     {/* CATEGORIES */}
-                    <AsideCategories items={data.categories} texts={texts} />
+                    <AsideCategories items={data.categoriesFeatured} texts={texts} />
 
                 </div>
             </section>
@@ -114,13 +114,13 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
     const [
         page,
         boosts,
-        categories,
+        categoriesFeatured,
         guides,
         products,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
         getBoosts({ adult: false }),
-        getCategories({ limit: 4 }),
+        getCategoriesFeatured(),
         getGuides({ limit: 12, page: currentPage }),
         getProducts(),
     ]);
@@ -128,5 +128,5 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
         { name: texts.home, url: '/' },
         { name: page.name, url: `/${slug[0]}` },
     ];
-    return { ...page, breadcrumb, boosts, categories, guides, products };
+    return { ...page, breadcrumb, boosts, categoriesFeatured, guides, products };
 });

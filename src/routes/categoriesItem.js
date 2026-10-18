@@ -2,9 +2,9 @@ import Layout from '@/layout';
 import { cache } from 'react';
 import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
-import { getBoosts, getCategories, getPosts, getGroups, getPages, getProducts } from "@/utils/database";
+import { getBoosts, getPosts, getGroups, getPages, getProducts, getCategoriesFeatured, getCategoriesItem } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
-import AsideGroups from '@/components/Aside/Groups';
+import AsideBoosts from '@/components/Aside/Boosts';
 import AsideCategories from '@/components/Aside/Categories'
 import metadata from "@/utils/metadata";
 import Link from "next/link";
@@ -84,10 +84,10 @@ export default async function Page({ slug, page }) {
                 <div className={style.block}>
 
                     {/* BOOSTS */}
-                    <AsideGroups items={data.boosts} texts={texts} />
+                    <AsideBoosts items={data.boosts} texts={texts} />
 
                     {/* CATEGORIES */}
-                    <AsideCategories items={data.categories} texts={texts} />
+                    <AsideCategories items={data.categoriesFeatured} texts={texts} />
 
                 </div>
             </section>
@@ -129,7 +129,7 @@ export default async function Page({ slug, page }) {
 
 export const dataCache = cache(async (slug, currentPage = 1) => {
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
-    const item = await getCategories({ slug: slug[1] });
+    const item = await getCategoriesItem({ slug: slug[1] });
     if (!item) {
         return;
     }
@@ -137,21 +137,21 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
         page,
         groups,
         boosts,
-        categories,
         posts,
         products,
+        categoriesFeatured
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
         getGroups({ limit: 12, page: currentPage, adult: false, categoryId: item._id.toString() }),
         getBoosts({ adult: false }),
-        getCategories({ limit: 4 }),
         getPosts({ limit: 4 }),
         getProducts(),
+        getCategoriesFeatured(),
     ]);
     const breadcrumb = [
         { name: texts.home, url: '/' },
         { name: page.name, url: `/${slug[0]}` },
         { name: item.name, url: `/${slug[0]}/${item.slug || slug[1]}` },
     ];
-    return { ...item, breadcrumb, groups, boosts, categories, posts, products };
+    return { ...item, breadcrumb, groups, boosts, posts, products, categoriesFeatured };
 });

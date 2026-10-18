@@ -268,6 +268,18 @@
 							transition: $transition;
 						}
 
+						>small {
+							@include text-smallest;
+							margin: 0;
+							background-color: $text-secondary;
+							border-radius: .25rem;
+							color: #0d121f;
+							padding: 0 .25rem;
+							height: 1rem;
+							line-height: 1rem;
+							transition: $transition;
+						}
+
 						&:hover {
 							color: #ffffff;
 							background: rgba(0, 168, 255, 0.08);
@@ -276,6 +288,10 @@
 							>svg {
 								color: $primary;
 								transform: translateX(3px);
+							}
+
+							>small {
+								background-color: $primary;
 							}
 						}
 					}

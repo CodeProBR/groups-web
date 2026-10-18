@@ -4,9 +4,9 @@ import Link from 'next/link';
 import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
 import Posts from '@/components/Posts';
-import { getBoosts, getCategories, getPosts, getPages, getProducts } from "@/utils/database";
+import { getBoosts, getCategoriesFeatured, getPosts, getPages, getProducts } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
-import AsideGroups from '@/components/Aside/Groups';
+import AsideBoosts from '@/components/Aside/Boosts';
 import AsideCategories from '@/components/Aside/Categories'
 import metadata from "@/utils/metadata";
 import { formatData } from '@/utils';
@@ -101,10 +101,10 @@ export default async function Page({ slug }) {
                 <div className={style.block}>
 
                     {/* BOOSTS */}
-                    <AsideGroups items={data.boosts} texts={texts} />
+                    <AsideBoosts items={data.boosts} texts={texts} />
 
                     {/* CATEGORIES */}
-                    <AsideCategories items={data.categories} texts={texts} />
+                    <AsideCategories items={data.categoriesFeatured} texts={texts} />
 
                 </div>
             </section>
@@ -156,13 +156,13 @@ export const dataCache = cache(async (slug) => {
     const [
         page,
         boosts,
-        categories,
+        categoriesFeatured,
         posts,
         products,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
         getBoosts({ adult: false }),
-        getCategories({ limit: 4 }),
+        getCategoriesFeatured(),
         getPosts({ limit: 4 }),
         getProducts(),
     ]);
@@ -171,5 +171,5 @@ export const dataCache = cache(async (slug) => {
         { name: page.name, url: `/${slug[0]}` },
         { name: item.title, url: `/${slug[0]}/${item.slug || slug[1]}` },
     ];
-    return { ...item, breadcrumb, boosts, categories, posts, products };
+    return { ...item, breadcrumb, boosts, categoriesFeatured, posts, products };
 });

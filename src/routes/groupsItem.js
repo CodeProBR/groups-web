@@ -5,15 +5,16 @@ import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
 import Groups from '@/components/Groups';
 import Posts from '@/components/Posts';
-import { getBoosts, getCategories, getPosts, getGroups, getPages, getProducts } from "@/utils/database";
+import { getBoosts, getCategoriesFeatured, getPosts, getGroups, getPages, getProducts, getCategoriesItem } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
-import AsideGroups from '@/components/Aside/Groups';
+import AsideBoosts from '@/components/Aside/Boosts';
 import AsideCategories from '@/components/Aside/Categories'
 import metadata from "@/utils/metadata";
 import { formatData } from '@/utils';
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
 import Image from 'next/image';
 import Products from '@/components/Products';
+import { PiSealCheck, PiUsersThree, PiArrowsClockwise } from "react-icons/pi";
 
 export async function generateMetadata({ slug }) {
     const data = await dataCache(slug);
@@ -56,11 +57,32 @@ export default async function Page({ slug }) {
                         </figure>
                         <div>
                             <h2>{data.name}</h2>
-                            <p>{data.description}</p>
-                            <a href={data.link} target="_blank" rel="noopener noreferrer" className="goGroup" data-group={data.id}>{texts.groups.action}</a>
+                            <span>
+                                <span>1.048 membros</span>
+                                <span>Atualizado em {formatData(data.updatedAt)}</span>
+                                <span className={style.green}><PiSealCheck />Verificado</span>
+                            </span>
+                            <p><span>{data.description}</span></p>
+                            <div>
+                                <a href={data.link} target="_blank" rel="noopener noreferrer" className="goGroup" data-group={data.id}>{texts.groups.action}</a>
+                                <button>{texts.share.copy}</button>
+                            </div>
+                            <button>{texts.report}</button>
                         </div>
                     </div>
                     <div className={style.alert}>
+                        <div>
+                            <h2>{texts.groups.alert.title}</h2>
+                            <hr />
+                            <p>{texts.groups.alert.description.replaceAll('[GROUP]', data.name)}</p>
+                        </div>
+                    </div>
+                    <div className={style.details}>
+                        <h2>{texts.groups.description}</h2>
+                        <hr />
+                        <p>{data.description}</p>
+                    </div>
+                    <div className={style.moderate}>
                         <div>
                             <p>{texts.groups.moderate}</p>
                         </div>
@@ -84,13 +106,25 @@ export default async function Page({ slug }) {
 
                 <hr className={style.break} />
 
+                {/* SIMILAR GROUPS */}
                 <div className={style.block}>
                     <div className={style.title}>
                         <h2><strong>{texts.groups.similar.title}</strong></h2>
                         <span>{texts.groups.similar.description.replaceAll('[CATEGORY]', data.category.name)}</span>
                     </div>
                     <Groups items={data.groups.items} texts={texts} />
-                    <Link className={style.link} href={`/${texts.groups.slug}`}>{texts.groups.button}</Link>
+                    <Link className={style.link} href={`/${texts.categories.slug}/${data.category.slug}`}>{texts.groups.button}</Link>
+                </div>
+
+                <hr className={style.break} />
+
+                {/* FAQ */}
+                <div className={style.block}>
+                    <div className={style.title}>
+                        <h2><strong>{texts.faq.title}</strong></h2>
+                        <p>{texts.faq.description}</p>
+                    </div>
+                    <Faq items={data.faq} width={'100%'} />
                 </div>
 
             </div>
@@ -98,7 +132,7 @@ export default async function Page({ slug }) {
                 <div className={style.block}>
 
                     {/* BOOSTS */}
-                    <AsideGroups items={data.boosts} texts={texts} />
+                    <AsideBoosts items={data.boosts} texts={texts} />
 
                     {/* CATEGORIES */}
                     <AsideCategories items={data.categories} texts={texts} />
@@ -136,17 +170,6 @@ export default async function Page({ slug }) {
                     <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
                 </div>
 
-                <hr className={style.break} />
-
-                {/* FAQ */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{texts.faq.title}</strong></h2>
-                        <p>{texts.faq.description}</p>
-                    </div>
-                    <Faq items={data.faq} />
-                </div>
-
             </div>
         </Layout>
     );
@@ -155,6 +178,7 @@ export default async function Page({ slug }) {
 export const dataCache = cache(async (slug) => {
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
     const item = await getGroups({ id: slug[1] });
+    console.log(item)
     if (!item) {
         return;
     }
@@ -164,19 +188,17 @@ export const dataCache = cache(async (slug) => {
         boosts,
         categories,
         posts,
-        category,
         products,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
-        getGroups({ limit: 12, adult: false, categoryId: item.categoryId ? item.categoryId.toString() : null }),
+        getGroups({ limit: 6, adult: false, categoryId: item.category?.id ? item.category.id.toString() : null }),
         getBoosts({ adult: false }),
-        getCategories({ limit: 4 }),
+        getCategoriesFeatured(),
         getPosts({ limit: 4 }),
-        getCategories({ name: item.category }),
         getProducts(),
     ]);
     const groupName = item?.name;
-    const categoryName = item?.category;
+    const categoryName = item?.category?.name;
     const platform = item.link.includes("t.me") ? "Telegram" : item.link.includes("telegram") ? "Telegram" : "WhatsApp";
     const seo = {
         title: texts.groups.seo.title.replaceAll('[PLATFORM]', platform).replaceAll('[GROUP]', groupName).replaceAll('[CATEGORY]', categoryName),
@@ -193,5 +215,5 @@ export const dataCache = cache(async (slug) => {
         { name: page.name, url: `/${slug[0]}` },
         { name: groupName, url: `/${slug[0]}/${slug[1]}` },
     ];
-    return { ...item, platform, category, groups, seo, faq, breadcrumb, boosts, categories, posts, products };
+    return { ...item, platform, groups, seo, faq, breadcrumb, boosts, categories, posts, products };
 });

@@ -21,6 +21,7 @@ export default async function Footer({ categories = [], pages = [], texts }) {
 									<Link href={`/${texts.categories.slug}/${item.slug}`}>
 										<FiChevronRight />
 										<span>{item.name}</span>
+										<small>{item.groups}</small>
 									</Link>
 								</li>
 							))}
