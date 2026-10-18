@@ -5,7 +5,7 @@ import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
 import Groups from '@/components/Groups';
 import Posts from '@/components/Posts';
-import { getBoosts, getCategories, getPosts, getGroups, getPages } from "@/utils/database";
+import { getBoosts, getCategories, getPosts, getGroups, getPages, getProducts } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
 import AsideGroups from '@/components/Aside/Groups';
 import AsideCategories from '@/components/Aside/Categories'
@@ -13,6 +13,7 @@ import metadata from "@/utils/metadata";
 import { formatData } from '@/utils';
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
 import Image from 'next/image';
+import Products from '@/components/Products';
 
 export async function generateMetadata({ slug }) {
     const data = await dataCache(slug);
@@ -107,6 +108,22 @@ export default async function Page({ slug }) {
             <hr className={style.break} />
             <div className={style.w100}>
 
+                {/* PRODUCTS */}
+                {data.products.length > 0 && (
+                    <div className={style.block}>
+                        <div className={style.title}>
+                            <h2><strong>{texts.products.title}</strong></h2>
+                            <p>{texts.products.description}</p>
+                        </div>
+                        <Products
+                            items={data.products}
+                            texts={texts}
+                        />
+                    </div>
+                )}
+
+                {data.products.length > 0 && <hr className={style.break} />}
+
                 {/* POSTS */}
                 <div className={style.block}>
                     <div className={style.title}>
@@ -148,6 +165,7 @@ export const dataCache = cache(async (slug) => {
         categories,
         posts,
         category,
+        products,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
         getGroups({ limit: 12, adult: false, categoryId: item.categoryId ? item.categoryId.toString() : null }),
@@ -155,6 +173,7 @@ export const dataCache = cache(async (slug) => {
         getCategories({ limit: 4 }),
         getPosts({ limit: 4 }),
         getCategories({ name: item.category }),
+        getProducts(),
     ]);
     const groupName = item?.name;
     const categoryName = item?.category;
@@ -174,5 +193,5 @@ export const dataCache = cache(async (slug) => {
         { name: page.name, url: `/${slug[0]}` },
         { name: groupName, url: `/${slug[0]}/${slug[1]}` },
     ];
-    return { ...item, platform, category, groups, seo, faq, breadcrumb, boosts, categories, posts };
+    return { ...item, platform, category, groups, seo, faq, breadcrumb, boosts, categories, posts, products };
 });

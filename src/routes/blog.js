@@ -4,13 +4,14 @@ import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
 import Posts from '@/components/Posts';
 import Pagination from '@/components/Pagination';
-import { getPages, getBoosts, getCategories, getPosts } from "@/utils/database";
+import { getPages, getBoosts, getCategories, getPosts, getProducts } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
 import AsideGroups from '@/components/Aside/Groups';
 import AsideCategories from '@/components/Aside/Categories'
 import metadata from "@/utils/metadata";
 import CollectionPage from '@/components/Snippet/CollectionPage';
 import ItemList from '@/components/Snippet/ItemList';
+import Products from '@/components/Products';
 
 export async function generateMetadata({ slug, page }) {
     const data = await dataCache(slug, page);
@@ -73,6 +74,22 @@ export default async function Page({ slug, page }) {
             <hr className={style.break} />
             <div className={style.w100}>
 
+                {/* PRODUCTS */}
+                {data.products.length > 0 && (
+                    <div className={style.block}>
+                        <div className={style.title}>
+                            <h2><strong>{texts.products.title}</strong></h2>
+                            <p>{texts.products.description}</p>
+                        </div>
+                        <Products
+                            items={data.products}
+                            texts={texts}
+                        />
+                    </div>
+                )}
+
+                {data.products.length > 0 && <hr className={style.break} />}
+
                 {/* FAQ */}
                 <div className={style.block}>
                     <div className={style.title}>
@@ -99,15 +116,17 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
         boosts,
         categories,
         posts,
+        products,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
         getBoosts({ adult: false }),
         getCategories({ limit: 4 }),
         getPosts({ limit: 12, page: currentPage }),
+        getProducts(),
     ]);
     const breadcrumb = [
         { name: texts.home, url: '/' },
         { name: page.name, url: `/${slug[0]}` },
     ];
-    return { ...page, breadcrumb, boosts, categories, posts };
+    return { ...page, breadcrumb, boosts, categories, posts, products };
 });

@@ -234,6 +234,16 @@ export const getRedirects = unstable_cache(async ({ url } = {}) => {
     return await db.collection('redirects').findOne({ from: url, status: "active" }, { projection: { type: 1, to: 1, _id: 0 } });
 }, ['redirects'], { revalidate: 86400, tags: ['redirects'] });
 
+export const getProducts = unstable_cache(async () => {
+    const client = await mongodb(process.env.DATABASE);
+    const db = client.db();
+    const products = await db.collection('products').find({ status: "active" }, { projection: { name: 1, image: 1, price: 1, discount: 1, installments: 1, shipping: 1, url: 1, store: 1, padding: 1 } }).toArray();
+    return products.map(product => ({
+        ...product,
+        _id: product._id ? product._id.toString() : undefined
+    }));
+}, ['products'], { revalidate: 86400, tags: ['products'] });
+
 
 
 

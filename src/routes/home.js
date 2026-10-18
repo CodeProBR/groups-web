@@ -3,7 +3,7 @@ import { cache } from 'react';
 import Navigation from '@/components/Navigation';
 import metadata from "@/utils/metadata";
 import style from '@site/styles/page.module.scss';
-import { getPages, getGroups, getCategories, getPosts, getGuides } from "@/utils/database";
+import { getPages, getGroups, getCategories, getPosts, getGuides, getProducts } from "@/utils/database";
 import Groups from '@/components/Groups';
 import Categories from '@/components/Categories';
 import Posts from '@/components/Posts';
@@ -11,6 +11,7 @@ import Guides from '@/components/Guides';
 import Faq from '@/components/Faq';
 import WebSite from '@/components/Snippet/WebSite';
 import Link from 'next/link';
+import Products from '@/components/Products';
 
 export async function generateMetadata() {
     const data = await dataCache();
@@ -90,6 +91,20 @@ export default async function Page() {
 
                 <hr className={style.break} />
 
+                {/* PRODUCTS */}
+                <div className={style.block}>
+                    <div className={style.title}>
+                        <h2><strong>{texts.products.title}</strong></h2>
+                        <p>{texts.products.description}</p>
+                    </div>
+                    <Products
+                        items={data.products}
+                        texts={texts}
+                    />
+                </div>
+
+                <hr className={style.break} />
+
                 {/* FAQ */}
                 <div className={style.block}>
                     <div className={style.title}>
@@ -115,15 +130,17 @@ export const dataCache = cache(async () => {
         categories,
         posts,
         guides,
+        products,
     ] = await Promise.all([
         getPages({ slug: '/' }),
         getGroups({ adult: false, limit: 12 }),
         getCategories({ limit: 8 }),
         getPosts({ limit: 4 }),
         getGuides({ limit: 4 }),
+        getProducts(),
     ]);
     const breadcrumb = [
         { name: page.name, url: '/' },
     ];
-    return { ...page, breadcrumb, groups, categories, posts, guides };
+    return { ...page, breadcrumb, groups, categories, posts, guides, products };
 });

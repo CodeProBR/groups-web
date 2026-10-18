@@ -73,6 +73,12 @@ const texts = {
         slug: "guias",
         action: "Ver Grupos",
     },
+    products: {
+        name: "Produtos",
+        title: "Produtos em Alta",
+        description: "Confira a nossa lista de produtos em alta para encontrar os melhores produtos para você.",
+        action: "Ir para o Produto",
+    },
     faq: {
         title: "Perguntas Frequentes",
         description: "Tire suas dúvidas sobre o funcionamento da nossa plataforma de grupos de Telegram."

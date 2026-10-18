@@ -6,13 +6,14 @@ import Navigation from '@/components/Navigation';
 import Groups from '@/components/Groups';
 import Pagination from '@/components/Pagination';
 import Posts from '@/components/Posts';
-import { getPages, getBoosts, getCategories, getPosts, getGroups } from "@/utils/database";
+import { getPages, getBoosts, getCategories, getPosts, getGroups, getProducts } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
 import AsideGroups from '@/components/Aside/Groups';
 import AsideCategories from '@/components/Aside/Categories'
 import metadata from "@/utils/metadata";
 import CollectionPage from '@/components/Snippet/CollectionPage';
 import ItemList from '@/components/Snippet/ItemList';
+import Products from '@/components/Products';
 
 export async function generateMetadata({ slug, search, page }) {
     const data = await dataCache(slug, page, search);
@@ -75,6 +76,22 @@ export default async function Page({ slug, search, page }) {
             <hr className={style.break} />
             <div className={style.w100}>
 
+                {/* PRODUCTS */}
+                {data.products.length > 0 && (
+                    <div className={style.block}>
+                        <div className={style.title}>
+                            <h2><strong>{texts.products.title}</strong></h2>
+                            <p>{texts.products.description}</p>
+                        </div>
+                        <Products
+                            items={data.products}
+                            texts={texts}
+                        />
+                    </div>
+                )}
+
+                {data.products.length > 0 && <hr className={style.break} />}
+
                 {/* POSTS */}
                 <div className={style.block}>
                     <div className={style.title}>
@@ -116,12 +133,14 @@ export const dataCache = cache(async (slug, currentPage = 1, search = '') => {
         boosts,
         categories,
         posts,
+        products,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
         getGroups({ limit: 12, page: currentPage, adult: false, q: search }),
         getBoosts({ adult: false }),
         getCategories({ limit: 4 }),
         getPosts({ limit: 4 }),
+        getProducts(),
     ]);
     const title = search ? `${texts.search.title} "${search}"` : page.title;
     const description = search ? `${texts.search.description} "${search}"` : page.description;
@@ -135,5 +154,5 @@ export const dataCache = cache(async (slug, currentPage = 1, search = '') => {
         { name: page.name, url: `/${slug[0]}` },
         ...(search ? [{ name: `${texts.search.name}: "${search}"`, url: `/${slug[0]}?q=${encodeURIComponent(search)}` }] : []),
     ];
-    return { ...page, title, description, seo, breadcrumb, groups, boosts, categories, posts };
+    return { ...page, title, description, seo, breadcrumb, groups, boosts, categories, posts, products };
 });

@@ -1,0 +1,136 @@
+@use './variables' as *;
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    width: 100%;
+
+    >a {
+        background: $light;
+        border: 1px solid $border;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: $transition;
+
+        >figure {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 1;
+
+            >img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: $transition;
+                filter: brightness(0.95);
+                background-color: #fcfcfc;
+
+                &[data-padding="true"] {
+                    padding: .5rem;
+                }
+            }
+
+            >div {
+                border-radius: 0 1rem;
+                width: 3rem;
+                height: 3rem;
+                position: absolute;
+                top: 0;
+                right: 0;
+                overflow: hidden;
+
+                >img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                }
+            }
+
+            >span {
+                @include text-smaller;
+                margin: 0;
+                position: absolute;
+                top: 0;
+                left: 0;
+                background-color: red;
+                color: white;
+                padding: 0 .5rem;
+                border-radius: 1rem 0;
+                height: 1.5rem;
+                display: flex;
+                align-items: center;
+            }
+        }
+
+        >div {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+            >h3 {
+                @include text-small;
+                font-weight: 700;
+                color: $text;
+                -webkit-line-clamp: 2;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-transform: uppercase;
+                transition: $transition;
+                height: 2.5rem;
+            }
+
+            >div {
+                display: flex;
+                flex-direction: column;
+                gap: .5rem;
+                height: 3.4rem;
+                justify-content: center;
+
+                >del {
+                    @include text-smaller;
+                    color: $text-secondary;
+                }
+
+                >strong {
+                    @include text-normal;
+                    font-size: 1.25rem;
+                    color: $primary-dark;
+                }
+
+                >span {
+                    @include text-smaller;
+                    color: $text-secondary;
+                    padding-top: .1rem;
+                }
+            }
+
+            >p {
+                @include text-small;
+                color: $text;
+                height: 1.25rem;
+            }
+
+            >button {
+                background-color: $primary;
+                @include text-small;
+                margin: 0;
+                color: #fff;
+                border: 0;
+                border-radius: .75rem;
+                height: 2.5rem;
+                transition: $transition;
+                cursor: pointer;
+            }
+        }
+
+        &:hover {
+            @include hover;
+        }
+    }
+}

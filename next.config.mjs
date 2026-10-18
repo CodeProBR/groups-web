@@ -26,6 +26,10 @@ const nextConfig = {
                 protocol: 'https',
                 hostname: '**.linkstelegram.com',
             },
+            {
+                protocol: 'https',
+                hostname: '**.mlstatic.com',
+            },
         ],
     },
     webpack: (config) => {
