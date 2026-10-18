@@ -44,8 +44,7 @@ export async function POST(request) {
         if (source === "google") {
             try {
                 const now = new Date().toLocaleTimeString("pt-BR", {
-                    timeZone: "America/Sao_Paulo",
-                    hour12: false,
+                    timeZone: "America/Sao_Paulo", hour12: false,
                 });
                 const payload = new URLSearchParams({
                     token: process.env.PUSHOVER_TOKEN || "",
