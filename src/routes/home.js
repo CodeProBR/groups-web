@@ -12,6 +12,7 @@ import Faq from '@/components/Faq';
 import WebSite from '@/components/Snippet/WebSite';
 import Link from 'next/link';
 import Products from '@/components/Products';
+import * as PiIcons from 'react-icons/pi';
 
 export async function generateMetadata() {
     const data = await dataCache();
@@ -40,79 +41,123 @@ export default async function Page() {
             <div className={style.w100}>
 
                 {/* GROUPS */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h1><strong>{data.title}</strong></h1>
-                        <p>{data.description}</p>
-                    </div>
-                    <Groups items={data.groups.items} texts={texts} />
-                    <Link className={style.link} href={`/${texts.groups.slug}`}>{texts.groups.button}</Link>
-                </div>
-
-                <hr className={style.break} />
+                {data.groups.items.length > 0 && (
+                    <>
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h1><strong>{data.title}</strong></h1>
+                                <p>{data.description}</p>
+                            </div>
+                            <Groups items={data.groups.items} texts={texts} />
+                            <Link className={style.link} href={`/${texts.groups.slug}`}>{texts.groups.button}</Link>
+                        </div>
+                    </>
+                )}
 
                 {/* CATEGORIES */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{texts.categories.title}</strong></h2>
-                        <p>{texts.categories.description}</p>
-                    </div>
-                    <Categories items={data.categoriesFeatured} texts={texts} />
-                    <Link className={style.link} href={`/${texts.categories.slug}`}>{texts.categories.button}</Link>
-                </div>
-
-                <hr className={style.break} />
-
-                {/* GUIDES */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{texts.guides.title}</strong></h2>
-                        <p>{texts.guides.description}</p>
-                    </div>
-                    <Guides
-                        items={data.guides.items} texts={texts}
-                    />
-                    <Link className={style.link} href={`/${texts.guides.slug}`}>{texts.guides.button}</Link>
-                </div>
-
-                <hr className={style.break} />
-
-                {/* POSTS */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{texts.blog.title}</strong></h2>
-                        <p>{texts.blog.description}</p>
-                    </div>
-                    <Posts
-                        items={data.posts.items} texts={texts}
-                    />
-                    <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
-                </div>
-
-                <hr className={style.break} />
+                {data.categoriesFeatured.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.categories.title}</strong></h2>
+                                <p>{texts.categories.description}</p>
+                            </div>
+                            <Categories items={data.categoriesFeatured} texts={texts} />
+                            <Link className={style.link} href={`/${texts.categories.slug}`}>{texts.categories.button}</Link>
+                        </div>
+                    </>
+                )}
 
                 {/* PRODUCTS */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{texts.products.title}</strong></h2>
-                        <p>{texts.products.description}</p>
-                    </div>
-                    <Products
-                        items={data.products}
-                        texts={texts}
-                    />
-                </div>
+                {data.products.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.products.title}</strong></h2>
+                                <p>{texts.products.description}</p>
+                            </div>
+                            <Products
+                                items={data.products}
+                                texts={texts}
+                            />
+                        </div>
+                    </>
+                )}
 
-                <hr className={style.break} />
+                {/* GUIDES */}
+                {data.guides.items.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.guides.title}</strong></h2>
+                                <p>{texts.guides.description}</p>
+                            </div>
+                            <Guides
+                                items={data.guides.items} texts={texts}
+                            />
+                            <Link className={style.link} href={`/${texts.guides.slug}`}>{texts.guides.button}</Link>
+                        </div>
+                    </>
+                )}
+
+                {/* POSTS */}
+                {data.posts.items.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.blog.title}</strong></h2>
+                                <p>{texts.blog.description}</p>
+                            </div>
+                            <Posts
+                                items={data.posts.items} texts={texts}
+                            />
+                            <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
+                        </div>
+                    </>
+                )}
+
+                {/* WHY */}
+                {texts.why.items.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.why.title}</strong></h2>
+                                <p>{texts.why.description}</p>
+                            </div>
+                            <div className={style.why}>
+                                {texts.why.items.map((item, i) => {
+                                    const IconComponent = PiIcons[item.icon];
+                                    return (
+                                        <div key={i}>
+                                            <IconComponent />
+                                            <h3>{item.name}</h3>
+                                            <p>{item.description}</p>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </>
+                )}
 
                 {/* FAQ */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{texts.faq.title}</strong></h2>
-                        <p>{texts.faq.description}</p>
-                    </div>
-                    <Faq items={data.faq} />
-                </div>
+                {data.faq.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.faq.title}</strong></h2>
+                                <p>{texts.faq.description}</p>
+                            </div>
+                            <Faq items={data.faq} />
+                        </div>
+                    </>
+                )}
 
             </div>
 

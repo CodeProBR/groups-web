@@ -2,7 +2,7 @@ const texts = {
     groups: {
         name: "Grupos",
         title: "Grupos do Telegram em Destaque",
-        description: "Confira alguns dos grupos e canais do Telegram mais populares e recém-adicionados. Escolha sua categoria favorita e participe de comunidades ativas e atualizadas.",
+        description: "Confira alguns dos grupos e canais do Telegram mais populares e recém-adicionados.",
         titleAside: "Grupos em Destaque",
         button: "ver todos os grupos",
         slug: "grupos",
@@ -12,7 +12,6 @@ const texts = {
             title: "Regras do Grupo",
             description: "Antes de acessar o grupo de [PLATFORM] [GROUP], esteja ciente que você precisa estar de acordo com todas as regras do grupo. É importante dizer também que este é um grupo independente, sem nenhuma relação com o nosso site e o único responsável por ele é o administrador do grupo. O [GROUP] faz parte da categoria de [CATEGORY]."
         },
-        description: "Descrição do Grupo",
         about: "Sobre os Grupos de [CATEGORY] do [PLATFORM]",
         alert: {
             title: "Aviso importante",
@@ -115,7 +114,46 @@ const texts = {
         description: "Desculpe! A página que você está procurando não existe ou foi movida.",
         link: "Voltar ao Início"
     },
-    report: 'Reportar um erro / Denunciar'
+    report: 'Reportar um erro / Denunciar',
+    why: {
+        title: "Por que usar o TopTelegram?",
+        description: "Diferenciais que fazem da nossa plataforma o lugar mais seguro, prático e atualizado para encontrar os melhores grupos e canais.",
+        items: [
+            {
+                icon: 'PiUsersThree',
+                name: "Grupos Verificados",
+                description: "Nossa plataforma conta com uma comunidade ativa de usuários que compartilham e interagem em nossos grupos."
+            },
+            {
+                icon: 'PiCalendarCheck',
+                name: "Atualizações Diárias",
+                description: "Todos os dias verificamos os links dos grupos para garantir que estejam funcionando."
+            },
+            {
+                icon: 'PiTag',
+                name: "Organizado por Categorias",
+                description: "Navegue por categorias selecionadas e encontre os grupos ideais para seus interesses."
+            },
+            {
+                icon: 'PiUserList',
+                name: "Comunidade Ativa",
+                description: "Junte-se a milhares de usuários que compartilham interesses e experiências em nossos grupos."
+            },
+            {
+                icon: 'PiMagnifyingGlass',
+                name: "Busca Inteligente",
+                description: "Encontre exatamente o que procura com nossa ferramenta de busca."
+            },
+            {
+                icon: 'PiCurrencyCircleDollar',
+                name: "100% Gratuito",
+                description: "Acesse todos os grupos e funcionalidades sem nenhum custo. A entrada nos grupos é feita diretamente pelo aplicativo."
+            },
+        ]
+    },
+    disclaimer: "Atuamos apenas na divulgação de links públicos enviados por terceiros e não gerenciamos nem participamos de Grupos ou Canais. Todo o conteúdo compartilhado é de responsabilidade exclusiva de seus administradores e participantes. Não toleramos atividades ilícitas, golpes ou fraudes; caso identifique irregularidades, utilize o botão de denúncia para que possamos analisar e remover o link.",
+    updated: "Atualizado em",
+    actives: "Grupos Ativos"
 };
 
 export default texts;

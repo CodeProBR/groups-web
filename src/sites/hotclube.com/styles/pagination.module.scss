@@ -1,0 +1,58 @@
+@use './variables' as *;
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+    width: 100%;
+
+    .item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.25rem;
+        height: 2.25rem;
+        padding: 0 .75rem;
+        border-radius: .5rem;
+        background-color: $bg-card;
+        color: $text;
+        border: 1px solid $border;
+        @include text-small;
+        font-weight: 500;
+        text-decoration: none;
+        transition: $transition;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgba(225, 29, 72, 0.15);
+            color: #ff4d6d;
+            border-color: $primary;
+            box-shadow: 0 0 10px rgba(225, 29, 72, 0.3);
+        }
+
+        &.active {
+            background: linear-gradient(135deg, #e11d48, #be123c);
+            color: #ffffff;
+            border-color: $primary;
+            font-weight: 700;
+            box-shadow: 0 0 15px rgba(225, 29, 72, 0.5);
+        }
+
+        &.prev,
+        &.next {
+            font-weight: 600;
+        }
+    }
+
+    .dots {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2rem;
+        height: 2.25rem;
+        color: $text-secondary;
+        @include text-small;
+    }
+}

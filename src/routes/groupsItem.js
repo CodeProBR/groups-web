@@ -5,7 +5,8 @@ import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
 import Groups from '@/components/Groups';
 import Posts from '@/components/Posts';
-import { getBoosts, getCategoriesFeatured, getPosts, getGroups, getPages, getProducts, getCategoriesItem } from "@/utils/database";
+import Guides from '@/components/Guides';
+import { getBoosts, getCategoriesFeatured, getPosts, getGroups, getPages, getProducts, getGuides } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
 import AsideBoosts from '@/components/Aside/Boosts';
 import AsideCategories from '@/components/Aside/Categories'
@@ -32,6 +33,12 @@ export default async function Page({ slug }) {
     const data = await dataCache(slug);
     if (!data) return <NotFound slug={slug} />;
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
+    const updatedAt = new Date().toLocaleDateString('pt-BR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'America/Sao_Paulo',
+    }).replace(/ de ([a-z])/i, (match, p1) => ` de ${p1.toUpperCase()}`);
     return (
         <Layout>
 
@@ -44,8 +51,8 @@ export default async function Page({ slug }) {
 
             <div className={style.w100}>
                 <div className={style.title}>
+                    <span><strong>{data.category.name}</strong>   ●   {texts.groups.verified} <strong>{updatedAt}</strong></span>
                     <h1><strong>{texts.groups.group.replaceAll('[PLATFORM]', data.platform).replaceAll('[GROUP]', data.name)}</strong></h1>
-                    <span>{`${data.category.name}   ●   ${texts.groups.verified} ${formatData(data.updatedAt)}`}</span>
                 </div>
             </div>
 
@@ -59,7 +66,7 @@ export default async function Page({ slug }) {
                             <h2>{data.name}</h2>
                             <span>
                                 <span>1.048 membros</span>
-                                <span>Atualizado em {formatData(data.updatedAt)}</span>
+                                <span>{texts.updated} {formatData(data.updatedAt)}</span>
                                 <span className={style.green}><PiSealCheck />Verificado</span>
                             </span>
                             <p><span>{data.description}</span></p>
@@ -104,28 +111,20 @@ export default async function Page({ slug }) {
                     </div>
                 </div>
 
-                <hr className={style.break} />
-
                 {/* SIMILAR GROUPS */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{texts.groups.similar.title}</strong></h2>
-                        <span>{texts.groups.similar.description.replaceAll('[CATEGORY]', data.category.name)}</span>
-                    </div>
-                    <Groups items={data.groups.items} texts={texts} />
-                    <Link className={style.link} href={`/${texts.categories.slug}/${data.category.slug}`}>{texts.groups.button}</Link>
-                </div>
-
-                <hr className={style.break} />
-
-                {/* FAQ */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{texts.faq.title}</strong></h2>
-                        <p>{texts.faq.description}</p>
-                    </div>
-                    <Faq items={data.faq} width={'100%'} />
-                </div>
+                {data.results.items.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.groups.similar.title}</strong></h2>
+                                <span>{texts.groups.similar.description.replaceAll('[CATEGORY]', data.category.name)}</span>
+                            </div>
+                            <Groups items={data.results.items} texts={texts} />
+                            <Link className={style.link} href={`/${texts.categories.slug}/${data.category.slug}`}>{texts.groups.button}</Link>
+                        </div>
+                    </>
+                )}
 
             </div>
             <section className={style.w30}>
@@ -135,40 +134,76 @@ export default async function Page({ slug }) {
                     <AsideBoosts items={data.boosts} texts={texts} />
 
                     {/* CATEGORIES */}
-                    <AsideCategories items={data.categories} texts={texts} />
+                    <AsideCategories items={data.categoriesFeatured} texts={texts} />
 
                 </div>
             </section>
-            <hr className={style.break} />
             <div className={style.w100}>
 
                 {/* PRODUCTS */}
                 {data.products.length > 0 && (
-                    <div className={style.block}>
-                        <div className={style.title}>
-                            <h2><strong>{texts.products.title}</strong></h2>
-                            <p>{texts.products.description}</p>
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.products.title}</strong></h2>
+                                <p>{texts.products.description}</p>
+                            </div>
+                            <Products
+                                items={data.products}
+                                texts={texts}
+                            />
                         </div>
-                        <Products
-                            items={data.products}
-                            texts={texts}
-                        />
-                    </div>
+                    </>
                 )}
 
-                {data.products.length > 0 && <hr className={style.break} />}
+                {/* GUIDES */}
+                {data.guides.items.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.guides.title}</strong></h2>
+                                <p>{texts.guides.description}</p>
+                            </div>
+                            <Guides
+                                items={data.guides.items} texts={texts}
+                            />
+                            <Link className={style.link} href={`/${texts.guides.slug}`}>{texts.guides.button}</Link>
+                        </div>
+                    </>
+                )}
 
                 {/* POSTS */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{texts.blog.title}</strong></h2>
-                        <p>{texts.blog.description}</p>
-                    </div>
-                    <Posts
-                        items={data.posts.items} texts={texts}
-                    />
-                    <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
-                </div>
+                {data.posts.items.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.blog.title}</strong></h2>
+                                <p>{texts.blog.description}</p>
+                            </div>
+                            <Posts
+                                items={data.posts.items} texts={texts}
+                            />
+                            <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
+                        </div>
+                    </>
+                )}
+
+                {/* FAQ */}
+                {data.faq.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.faq.title}</strong></h2>
+                                <p>{texts.faq.description}</p>
+                            </div>
+                            <Faq items={data.faq} />
+                        </div>
+                    </>
+                )}
 
             </div>
         </Layout>
@@ -178,16 +213,16 @@ export default async function Page({ slug }) {
 export const dataCache = cache(async (slug) => {
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
     const item = await getGroups({ id: slug[1] });
-    console.log(item)
     if (!item) {
         return;
     }
     const [
         page,
-        groups,
+        results,
         boosts,
-        categories,
+        categoriesFeatured,
         posts,
+        guides,
         products,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
@@ -195,6 +230,7 @@ export const dataCache = cache(async (slug) => {
         getBoosts({ adult: false }),
         getCategoriesFeatured(),
         getPosts({ limit: 4 }),
+        getGuides({ limit: 4 }),
         getProducts(),
     ]);
     const groupName = item?.name;
@@ -215,5 +251,5 @@ export const dataCache = cache(async (slug) => {
         { name: page.name, url: `/${slug[0]}` },
         { name: groupName, url: `/${slug[0]}/${slug[1]}` },
     ];
-    return { ...item, platform, groups, seo, faq, breadcrumb, boosts, categories, posts, products };
+    return { ...item, platform, results, seo, faq, breadcrumb, boosts, categoriesFeatured, posts, guides, products };
 });

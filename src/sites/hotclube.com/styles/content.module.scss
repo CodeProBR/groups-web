@@ -1,0 +1,102 @@
+@use './variables' as *;
+
+.content {
+    scroll-margin-top: 6.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    div {
+        display: block;
+        flex-direction: column;
+        gap: 1.25rem;
+        display: flex;
+
+        >:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    img {
+        width: 50%;
+        aspect-ratio: 3/2;
+        object-fit: cover;
+        border-radius: .75rem;
+        border: 1px solid $border;
+        float: left;
+        margin: 0 1rem 1rem 0;
+    }
+
+    hr {
+        width: 100%;
+        height: 1px;
+        background-color: $border;
+        border: 0;
+        margin-top: 0;
+        margin-bottom: .7rem;
+    }
+
+    p {
+        @include text-normal;
+        color: #d4d4d8;
+        margin-bottom: .75rem;
+        line-height: 1.7;
+    }
+
+    strong {
+        color: #fff;
+        font-weight: 700;
+    }
+
+    blockquote {
+        background-color: rgba(225, 29, 72, 0.08);
+        border-left: .25rem solid $primary;
+        border-radius: .75rem;
+        padding: 1.25rem 1rem;
+
+        span,
+        p {
+            display: block;
+            @include text-normal;
+            color: #fca5a5;
+            font-style: italic;
+        }
+    }
+
+    h2 {
+        @include text-large;
+        color: #fff;
+        font-weight: 700;
+        margin-top: 1rem;
+    }
+
+    h3 {
+        @include text-normal;
+        color: #ff4d6d;
+        font-weight: 700;
+        margin-top: .75rem;
+    }
+
+    ul, ol {
+        color: #d4d4d8;
+        padding-left: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+
+        li {
+            line-height: 1.6;
+        }
+    }
+
+    a {
+        color: #ff4d6d;
+        text-decoration: underline;
+        transition: $transition;
+
+        &:hover {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(225, 29, 72, 0.6);
+        }
+    }
+}

@@ -57,6 +57,9 @@ export default async function Footer({ categories = [], pages = [], texts }) {
 						</ul>
 					</div>
 				</div>
+				<div className={style.disclaimer}>
+					<p>{texts.disclaimer}</p>
+				</div>
 				<div className={style.bottom}>
 					<p>© {year} {process.env.NEXT_PUBLIC_NAME}. {texts.copyright}</p>
 				</div>

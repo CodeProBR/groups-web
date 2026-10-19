@@ -1,0 +1,165 @@
+// HotClube - Dark & Spicy Red Theme Palette
+$primary: #e11d48;         // Crimson Rose Red
+$primary-dark: #be123c;    // Deep Crimson
+$primary-light: rgba(225, 29, 72, 0.15); // Glowing Red Accent Tint
+$primary-bg: rgba(225, 29, 72, 0.08);
+
+$success: #10b981;
+$success-light: rgba(16, 185, 129, 0.12);
+$warning: #f59e0b;
+$danger: #ff2a5f;
+
+// Dark spicy surfaces
+$bg: #09090b;             // Ultra Dark Background
+$bg-card: #121217;        // Card Surface
+$bg-card-hover: #1c1a24;  // Card Hover Surface
+$text: #f4f4f5;           // Crisp light text
+$text-secondary: #a1a1aa; // Muted soft text
+$text-muted: #71717a;     // Subtle text
+$border: #27272a;         // Sleek dark border
+$border-focus: #e11d48;
+
+$dark: #09090b;
+$light: #121217;          // Mapeado para o card dark
+
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+$shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 1px rgba(225, 29, 72, 0.2);
+$shadow-md: 0 6px 18px rgba(0, 0, 0, 0.6), 0 0 15px rgba(225, 29, 72, 0.15);
+$shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.7), 0 0 20px rgba(225, 29, 72, 0.25);
+$shadow-xl: 0 20px 35px rgba(0, 0, 0, 0.8), 0 0 30px rgba(225, 29, 72, 0.35);
+
+$radius-sm: 6px;
+$radius: 12px;
+$radius-lg: 16px;
+$radius-xl: 24px;
+
+$font: var(--font-poppins);
+
+$transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-slow: 0.35s ease;
+
+@mixin dark-mode {
+    @content;
+}
+
+@mixin respond($breakpoint) {
+    @if $breakpoint ==sm {
+        @media (max-width: 640px) {
+            @content;
+        }
+    }
+
+    @else if $breakpoint ==md {
+        @media (max-width: 768px) {
+            @content;
+        }
+    }
+
+    @else if $breakpoint ==lg {
+        @media (max-width: 1024px) {
+            @content;
+        }
+    }
+}
+
+@mixin glass {
+    background: rgba(18, 18, 23, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] {
+    $bg: #09090b;
+    $bg-card: #121217;
+    $bg-card-hover: #1c1a24;
+    $text: #f4f4f5;
+    $text-secondary: #a1a1aa;
+    $text-muted: #71717a;
+    $border: #27272a;
+}
+
+@mixin text-smallest {
+    font-size: .65rem;
+    line-height: 1.5;
+    margin: -.2rem 0 -.25rem;
+
+    @media screen and (orientation: portrait) {
+        font-size: .65rem;
+    }
+}
+
+@mixin text-smaller {
+    font-size: .75rem;
+    line-height: 1.5;
+    margin: -.2rem 0 -.25rem;
+
+    @media screen and (orientation: portrait) {
+        font-size: .75rem;
+    }
+}
+
+@mixin text-small {
+    margin: -.3rem 0 -.4rem 0;
+    font-size: .85rem;
+    line-height: 1.6;
+
+    @media screen and (orientation: portrait) {
+        font-size: .8rem;
+    }
+}
+
+@mixin text-normal {
+    margin: -.3rem 0 -.4rem;
+    font-size: 1rem;
+    line-height: 1.4;
+
+    @media screen and (orientation: portrait) {
+        font-size: .92rem;
+    }
+}
+
+@mixin text-large {
+    margin: -.3rem 0 -.45rem;
+    font-size: 1.75rem;
+    line-height: 1.2;
+
+    @media screen and (orientation: portrait) {
+        font-size: 1.5rem;
+    }
+}
+
+@mixin text-larger {
+    margin: -.5rem 0 -.6rem;
+    font-size: 2.5rem;
+    line-height: 1.15;
+
+    @media screen and (orientation: portrait) {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+}
+
+@mixin hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 20px rgba(225, 29, 72, 0.25);
+    border-color: rgba(225, 29, 72, 0.5);
+    transform: translateY(-.18rem);
+    cursor: pointer;
+
+    button {
+        background-color: $primary;
+        color: #ffffff;
+        font-weight: 700;
+        box-shadow: 0 0 15px rgba(225, 29, 72, 0.4);
+    }
+
+    img {
+        transform: scale(1.08);
+        filter: brightness(1.05);
+    }
+
+    h3 {
+        color: #ff4d6d;
+        font-weight: 700;
+    }
+}

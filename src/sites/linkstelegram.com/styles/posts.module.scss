@@ -78,18 +78,24 @@
                 transition: color 0.2s ease;
                 letter-spacing: -0.01em;
                 line-height: 1.4;
+                height: 2.6rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
             }
 
             >p {
                 @include text-smaller;
                 color: $text-secondary;
                 display: -webkit-box;
-                -webkit-line-clamp: 2;
+                -webkit-line-clamp: 3;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 line-height: 1.5;
                 margin: 0;
                 flex: 1;
+                height: 3.1rem;
             }
 
             >span {

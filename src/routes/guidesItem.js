@@ -11,6 +11,7 @@ import Link from "next/link";
 import Groups from "@/components/Groups";
 import Pagination from "@/components/Pagination";
 import Posts from "@/components/Posts";
+import Guides from '@/components/Guides';
 import Content from "@/components/Content";
 import Image from 'next/image';
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
@@ -40,6 +41,12 @@ export default async function Page({ slug, page }) {
         permanentRedirect(`/${slug[0]}/${data.slug}`);
     }
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
+    const updatedAt = new Date().toLocaleDateString('pt-BR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'America/Sao_Paulo',
+    }).replace(/ de ([a-z])/i, (match, p1) => ` de ${p1.toUpperCase()}`);
     return (
         <Layout>
 
@@ -52,6 +59,7 @@ export default async function Page({ slug, page }) {
 
             <div className={style.w100}>
                 <div className={style.title}>
+                    <span><strong>{data.results.total}</strong> {texts.actives}   ●   {texts.updated} <strong>{updatedAt}</strong></span>
                     <h1><strong>{data.title}</strong></h1>
                     <p>{data.description}</p>
                 </div>
@@ -68,25 +76,16 @@ export default async function Page({ slug, page }) {
                     <Content content={data.content} />
 
                     <Groups
-                        items={data.groups.items} texts={texts}
+                        items={data.results.items} texts={texts}
                     />
 
                     <Pagination
-                        page={data.groups.page}
-                        totalPages={data.groups.totalPages}
+                        page={data.results.page}
+                        totalPages={data.results.totalPages}
                         baseUrl={`/${slug[0]}`}
                         texts={texts}
                     />
 
-                </div>
-
-                {/* FAQ */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{data.faq.title}</strong></h2>
-                        <p>{data.faq.description}</p>
-                    </div>
-                    <Faq items={data.faq.items} width={'100%'} />
                 </div>
 
             </div>
@@ -101,36 +100,72 @@ export default async function Page({ slug, page }) {
 
                 </div>
             </section>
-            <hr className={style.break} />
             <div className={style.w100}>
 
                 {/* PRODUCTS */}
                 {data.products.length > 0 && (
-                    <div className={style.block}>
-                        <div className={style.title}>
-                            <h2><strong>{texts.products.title}</strong></h2>
-                            <p>{texts.products.description}</p>
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.products.title}</strong></h2>
+                                <p>{texts.products.description}</p>
+                            </div>
+                            <Products
+                                items={data.products}
+                                texts={texts}
+                            />
                         </div>
-                        <Products
-                            items={data.products}
-                            texts={texts}
-                        />
-                    </div>
+                    </>
                 )}
 
-                {data.products.length > 0 && <hr className={style.break} />}
+                {/* GUIDES */}
+                {data.guides.items.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.guides.title}</strong></h2>
+                                <p>{texts.guides.description}</p>
+                            </div>
+                            <Guides
+                                items={data.guides.items} texts={texts}
+                            />
+                            <Link className={style.link} href={`/${texts.guides.slug}`}>{texts.guides.button}</Link>
+                        </div>
+                    </>
+                )}
 
                 {/* POSTS */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{texts.blog.title}</strong></h2>
-                        <p>{texts.blog.description}</p>
-                    </div>
-                    <Posts
-                        items={data.posts.items} texts={texts}
-                    />
-                    <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
-                </div>
+                {data.posts.items.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.blog.title}</strong></h2>
+                                <p>{texts.blog.description}</p>
+                            </div>
+                            <Posts
+                                items={data.posts.items} texts={texts}
+                            />
+                            <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
+                        </div>
+                    </>
+                )}
+
+                {/* FAQ */}
+                {data.faq.items.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{data.faq.title}</strong></h2>
+                                <p>{data.faq.description}</p>
+                            </div>
+                            <Faq items={data.faq.items} />
+                        </div>
+                    </>
+                )}
 
             </div>
 
@@ -147,10 +182,11 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
     }
     const [
         page,
-        groups,
+        results,
         boosts,
         categoriesFeatured,
         posts,
+        guides,
         products,
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
@@ -158,6 +194,7 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
         getBoosts({ adult: false }),
         getCategoriesFeatured(),
         getPosts({ limit: 4 }),
+        getGuides({ limit: 4 }),
         getProducts(),
     ]);
     const breadcrumb = [
@@ -165,5 +202,5 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
         { name: page.name, url: `/${slug[0]}` },
         { name: item.title, url: `/${slug[0]}/${item.slug || slug[1]}` },
     ];
-    return { ...item, breadcrumb, groups, boosts, categoriesFeatured, posts, products };
+    return { ...item, breadcrumb, results, boosts, categoriesFeatured, posts, guides, products };
 });

@@ -189,3 +189,15 @@
 		}
 	}
 }
+
+.disclaimer {
+	background-color: #0c111c;
+	padding: 1.5rem;
+	border-radius: 1rem;
+
+	>p {
+		@include text-small;
+		color: $text-muted;
+		text-align: center;
+	}
+}

@@ -2,7 +2,7 @@ const texts = {
     groups: {
         name: "Groups",
         title: "Featured Telegram Groups",
-        description: "Check out some of the most popular and newly added Telegram groups and channels. Choose your favorite category and join active, updated communities.",
+        description: "Check out some of the most popular and newly added Telegram groups and channels.",
         titleAside: "Featured Groups",
         button: "see all groups",
         slug: "groups",
@@ -12,7 +12,6 @@ const texts = {
             title: "Group Rules",
             description: "Before accessing the [PLATFORM] group [GROUP], be aware that you must agree to all group rules. It is also important to note that this is an independent group with no relationship to our site, and the sole responsible party is the group administrator. [GROUP] belongs to the [CATEGORY] category."
         },
-        description: "Group Description",
         about: "About [CATEGORY] Groups on [PLATFORM]",
         alert: {
             title: "Important Notice",
@@ -115,7 +114,46 @@ const texts = {
         description: "Sorry! The page you are looking for does not exist or has been moved.",
         link: "Back to Home"
     },
-    report: 'Report an error'
+    report: 'Report an error',
+    why: {
+        title: "Why Use LinksTelegram?",
+        description: "Discover the differentials that make our platform the safest, most practical, and up-to-date place to find the best groups and channels.",
+        items: [
+            {
+                icon: 'PiUsersThree',
+                name: "Verified Groups",
+                description: "Our platform has an active community of users who share and interact in our groups."
+            },
+            {
+                icon: 'PiCalendarCheck',
+                name: "Daily Updates",
+                description: "We check group links every day to ensure they are working."
+            },
+            {
+                icon: 'PiTag',
+                name: "Organized by Categories",
+                description: "Browse through selected categories and find the ideal groups for your interests."
+            },
+            {
+                icon: 'PiUserList',
+                name: "Active Community",
+                description: "Join thousands of users who share interests and experiences in our groups."
+            },
+            {
+                icon: 'PiMagnifyingGlass',
+                name: "Smart Search",
+                description: "Find exactly what you're looking for with our search tool."
+            },
+            {
+                icon: 'PiCurrencyCircleDollar',
+                name: "100% Free",
+                description: "Access all groups and features at no cost. Group entry is done directly through the app."
+            },
+        ]
+    },
+    disclaimer: "We act only in the dissemination of public links submitted by third parties and do not manage or participate in Groups or Channels. All shared content is the exclusive responsibility of its administrators and participants. We do not tolerate illegal activities, scams, or fraud; if you identify any irregularities, please report it so we can review and take action.",
+    updated: "Updated on",
+    actives: "Active Groups"
 };
 
 export default texts;

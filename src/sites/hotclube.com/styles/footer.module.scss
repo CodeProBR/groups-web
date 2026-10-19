@@ -1,0 +1,134 @@
+@use './variables' as *;
+
+.footer {
+	background: #09090b;
+	color: #a1a1aa;
+	padding: 3.5rem 0 1.5rem;
+	border-top: 1px solid rgba(225, 29, 72, 0.15);
+
+	>div {
+		gap: 2.5rem;
+
+		.top {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			gap: 2rem;
+
+			@media screen and (orientation: portrait) {
+				gap: 1.25rem;
+			}
+
+			>div {
+				width: calc(25% - 1.5rem);
+				display: flex;
+				flex-direction: column;
+				gap: .25rem;
+
+				@media screen and (orientation: portrait) {
+					display: none;
+				}
+
+				&:first-child {
+					margin-right: 10rem;
+
+					@media screen and (orientation: portrait) {
+						display: flex;
+						margin-right: 0rem;
+						width: 100%;
+						text-align: center;
+					}
+				}
+
+				>span {
+					@include text-small;
+					margin: 0;
+					color: #ffffff;
+					font-weight: 700;
+					letter-spacing: .5px;
+
+					@media screen and (orientation: portrait) {
+						@include text-small;
+						margin: 0;
+					}
+				}
+
+				>p {
+					@include text-small;
+					margin: 0;
+					color: $text-secondary;
+					line-height: 1.6;
+				}
+
+				>ul {
+					list-style: none;
+					padding: 0;
+					margin: 0;
+					display: flex;
+					flex-direction: column;
+					gap: .25rem;
+
+					li {
+						a {
+							@include text-small;
+							margin: 0;
+							color: $text-secondary;
+							text-decoration: none;
+							transition: $transition;
+
+							@media screen and (orientation: portrait) {
+								@include text-small;
+								margin: 0;
+							}
+
+							&:hover {
+								color: #ff4d6d;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.bottom {
+			width: 100%;
+			border-top: 1px solid #1f1f26;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding-top: 1.5rem;
+
+			@media screen and (orientation: portrait) {
+				flex-wrap: wrap;
+			}
+
+			>p {
+				@include text-smaller;
+				margin: 0;
+				color: $text-muted;
+
+				@media screen and (orientation: portrait) {
+					width: 100%;
+					order: 2;
+					text-align: center;
+					padding-top: 1.25rem;
+				}
+			}
+		}
+	}
+}
+
+.disclaimer {
+	background-color: #0e0e12;
+	padding: 1.5rem;
+	border-radius: 1rem;
+	border: 1px solid rgba(225, 29, 72, 0.15);
+
+	>p {
+		@include text-small;
+		color: $text-secondary;
+		text-align: center;
+		line-height: 1.6;
+	}
+}

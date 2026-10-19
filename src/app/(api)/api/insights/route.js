@@ -43,14 +43,29 @@ export async function POST(request) {
 
         if (source === "google") {
             try {
+                const forwarded = request.headers.get("x-forwarded-for");
+                const ip = forwarded
+                    ? forwarded.split(",")[0].trim()
+                    : request.headers.get("x-real-ip") || request.headers.get("cf-connecting-ip") || "Desconhecido";
+
                 const now = new Date().toLocaleTimeString("pt-BR", {
                     timeZone: "America/Sao_Paulo", hour12: false,
                 });
+
+                const msgLines = [
+                    `${now} - ${process.env.NEXT_PUBLIC_NAME || ""}`,
+                    `URL: ${url}`,
+                    `IP: ${ip}`,
+                ];
+                if (referer) {
+                    msgLines.push(`Origem: ${referer}`);
+                }
+
                 const payload = new URLSearchParams({
                     token: process.env.PUSHOVER_TOKEN || "",
                     user: process.env.PUSHOVER_USER || "",
                     device: process.env.PUSHOVER_DEVICE || "",
-                    message: `${now} - ${process.env.NEXT_PUBLIC_NAME || ""}`,
+                    message: msgLines.join(" - "),
                     title: "Google",
                 });
                 await fetch("https://api.pushover.net/1/messages.json", {

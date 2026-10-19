@@ -3,8 +3,9 @@ import { cache } from 'react';
 import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
 import Guides from '@/components/Guides';
+import Posts from '@/components/Posts';
 import Pagination from '@/components/Pagination';
-import { getPages, getBoosts, getCategoriesFeatured, getGuides, getProducts } from "@/utils/database";
+import { getPages, getBoosts, getCategoriesFeatured, getGuides, getProducts, getPosts } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
 import AsideBoosts from '@/components/Aside/Boosts';
 import AsideCategories from '@/components/Aside/Categories'
@@ -12,6 +13,7 @@ import metadata from "@/utils/metadata";
 import CollectionPage from '@/components/Snippet/CollectionPage';
 import ItemList from '@/components/Snippet/ItemList';
 import Products from '@/components/Products';
+import Link from 'next/link';
 
 export async function generateMetadata({ slug, page }) {
     const data = await dataCache(slug, page);
@@ -49,11 +51,11 @@ export default async function Page({ slug, page }) {
                 {/* GUIDES */}
                 <div className={style.block}>
                     <Guides
-                        items={data.guides.items} texts={texts}
+                        items={data.results.items} texts={texts}
                     />
                     <Pagination
-                        page={data.guides.page}
-                        totalPages={data.guides.totalPages}
+                        page={data.results.page}
+                        totalPages={data.results.totalPages}
                         baseUrl={`/${texts.guides.slug}`}
                         texts={texts}
                     />
@@ -71,33 +73,72 @@ export default async function Page({ slug, page }) {
 
                 </div>
             </section>
-            <hr className={style.break} />
             <div className={style.w100}>
 
                 {/* PRODUCTS */}
                 {data.products.length > 0 && (
-                    <div className={style.block}>
-                        <div className={style.title}>
-                            <h2><strong>{texts.products.title}</strong></h2>
-                            <p>{texts.products.description}</p>
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.products.title}</strong></h2>
+                                <p>{texts.products.description}</p>
+                            </div>
+                            <Products
+                                items={data.products}
+                                texts={texts}
+                            />
                         </div>
-                        <Products
-                            items={data.products}
-                            texts={texts}
-                        />
-                    </div>
+                    </>
                 )}
 
-                {data.products.length > 0 && <hr className={style.break} />}
+                {/* GUIDES */}
+                {data.guides.items.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.guides.title}</strong></h2>
+                                <p>{texts.guides.description}</p>
+                            </div>
+                            <Guides
+                                items={data.guides.items} texts={texts}
+                            />
+                            <Link className={style.link} href={`/${texts.guides.slug}`}>{texts.guides.button}</Link>
+                        </div>
+                    </>
+                )}
+
+                {/* POSTS */}
+                {data.posts.items.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.blog.title}</strong></h2>
+                                <p>{texts.blog.description}</p>
+                            </div>
+                            <Posts
+                                items={data.posts.items} texts={texts}
+                            />
+                            <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
+                        </div>
+                    </>
+                )}
 
                 {/* FAQ */}
-                <div className={style.block}>
-                    <div className={style.title}>
-                        <h2><strong>{texts.faq.title}</strong></h2>
-                        <p>{texts.faq.description}</p>
-                    </div>
-                    <Faq items={data.faq} />
-                </div>
+                {data.faq.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{texts.faq.title}</strong></h2>
+                                <p>{texts.faq.description}</p>
+                            </div>
+                            <Faq items={data.faq} />
+                        </div>
+                    </>
+                )}
 
             </div>
 
@@ -116,17 +157,21 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
         boosts,
         categoriesFeatured,
         guides,
+        posts,
         products,
+        results
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
         getBoosts({ adult: false }),
         getCategoriesFeatured(),
-        getGuides({ limit: 12, page: currentPage }),
+        getGuides({ limit: 4 }),
+        getPosts({ limit: 4 }),
         getProducts(),
+        getGuides({ limit: 12, page: currentPage }),
     ]);
     const breadcrumb = [
         { name: texts.home, url: '/' },
         { name: page.name, url: `/${slug[0]}` },
     ];
-    return { ...page, breadcrumb, boosts, categoriesFeatured, guides, products };
+    return { ...page, results, breadcrumb, boosts, categoriesFeatured, guides, posts, products };
 });

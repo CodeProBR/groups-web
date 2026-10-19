@@ -612,3 +612,42 @@
         }
     }
 }
+
+.why {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    >div {
+        width: calc(33.33% - .67rem);
+        background-color: $light;
+        border-radius: 1rem;
+        padding: 1.25rem;
+        border: 1px solid $border;
+        flex-direction: column;
+        transition: all .125s;
+        display: flex;
+        overflow: hidden;
+        gap: 1rem;
+
+        >svg {
+            color: $primary-dark;
+            background-color: $primary-light;
+            padding: .5rem;
+            border-radius: 1rem;
+            width: 3rem;
+            height: 3rem;
+        }
+
+        >h3 {
+            @include text-normal;
+            font-weight: 700;
+            color: $text;
+        }
+
+        >p {
+            @include text-small;
+            color: $text-secondary;
+        }
+    }
+}
