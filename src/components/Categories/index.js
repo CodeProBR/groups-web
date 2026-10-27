@@ -14,7 +14,7 @@ export default function Component({ items = [], texts, subcategories = false }) 
                             {IconComponent && <IconComponent />}
                             <h3>{item.name}<span>{item.groups || 0}</span></h3>
                         </Link>
-                        {items.filter(child => child.parentId === item._id).length > 0 && <ul>
+                        {items.filter(child => child.parentId === item._id).length > 0 && subcategories && <ul>
                             {items.filter(child => child.parentId === item._id).map((child, j) => (
                                 <li key={j}>
                                     <Link href={`/${texts.categories.slug}/${child.slug}`}>
