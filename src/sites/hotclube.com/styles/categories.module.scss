@@ -6,51 +6,61 @@
     gap: 1rem;
     width: 100%;
 
-    >a {
+    >div {
         background-color: $bg-card;
         border: 1px solid $border;
         border-radius: 1rem;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: .75rem;
         transition: $transition;
         padding: 1.25rem;
+        flex-wrap: wrap;
 
-        >svg {
-            font-size: 1.1rem;
-            color: #ff3366;
-            width: 2.5rem;
-            height: 2.5rem;
-            padding: .5rem;
-            border-radius: .75rem;
-            background-color: rgba(225, 29, 72, 0.12);
-            box-shadow: 0 0 10px rgba(225, 29, 72, 0.15);
-            transition: $transition;
-            flex-shrink: 0;
-        }
-
-        >h3 {
-            @include text-small;
-            margin: 0;
-            font-weight: 500;
-            color: #fff;
-            transition: $transition;
-            width: calc(100% - 3.25rem);
+        >a {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: .5rem;
+            width: 100%;
 
-            >span {
+            >svg {
+                font-size: 1.1rem;
+                color: #ff3366;
+                min-width: 2.5rem;
+                height: 2.5rem;
+                padding: .5rem;
+                border-radius: .75rem;
+                background-color: rgba(225, 29, 72, 0.12);
+                box-shadow: 0 0 10px rgba(225, 29, 72, 0.15);
+                transition: $transition;
+                flex-shrink: 0;
+            }
+
+            >h3 {
                 @include text-small;
                 margin: 0;
-                color: $text-secondary;
-                font-weight: 700;
-                background-color: #1a1a22;
-                padding: .2rem .6rem;
-                border-radius: .6rem;
+                font-weight: 500;
+                color: #fff;
                 transition: $transition;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                >span {
+                    @include text-small;
+                    margin: 0;
+                    color: $text-secondary;
+                    font-weight: 700;
+                    background-color: #1a1a22;
+                    padding: .2rem .6rem;
+                    border-radius: .6rem;
+                    transition: $transition;
+                }
             }
         }
+
+
 
         &:hover {
             border-color: rgba(225, 29, 72, 0.6);

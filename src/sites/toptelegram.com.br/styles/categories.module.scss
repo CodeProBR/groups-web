@@ -6,51 +6,98 @@
     gap: 1rem;
     width: 100%;
 
-    >a {
+    >div {
         background-color: $light;
         border: 1px solid $border;
         border-radius: 1rem;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: .5rem;
         transition: $transition;
         padding: 1.25rem;
+        flex-wrap: wrap;
 
-        >svg {
-            font-size: 1rem;
-            color: $primary-dark;
-            width: 2rem;
-            height: 2rem;
-            padding: .25rem;
-            border-radius: .75rem;
-            background-color: $primary-light;
-        }
-
-        >h3 {
-            @include text-small;
-            margin: 0;
-            font-weight: 400;
-            color: $text;
-            transition: $transition;
-            width: calc(100% - 2.5rem);
+        >a {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: .5rem;
+            width: 100%;
 
-            >span {
+            >svg {
+                font-size: 1rem;
+                color: $primary-dark;
+                min-width: 2rem;
+                height: 2rem;
+                padding: .25rem;
+                border-radius: .75rem;
+                background-color: $primary-light;
+            }
+
+            >h3 {
                 @include text-small;
                 margin: 0;
-                color: $text-secondary;
-                font-weight: 700;
+                font-weight: 400;
+                color: $text;
                 transition: $transition;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                >span {
+                    @include text-small;
+                    margin: 0;
+                    color: $text-secondary;
+                    font-weight: 700;
+                    transition: $transition;
+                }
+            }
+
+            &:hover {
+                >h3 {
+                    color: $primary-dark;
+
+                    >span {
+                        color: $primary-dark;
+                    }
+                }
             }
         }
 
-        &:hover {
-            @include hover;
+        >ul {
+            width: 100%;
+            list-style: none;
+            border-top: 1px solid $border;
+            margin-top: .5rem;
+            padding-top: .5rem;
 
-            >h3>span {
-                color: $primary-dark;
+            >li {
+                @include text-small;
+                padding-top: .5rem;
+                color: $text;
+
+                >a {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    transition: $transition;
+
+                    >span {
+                        @include text-small;
+                        margin: 0;
+                        color: $text-secondary;
+                        font-weight: 700;
+                        transition: $transition;
+                    }
+
+                    &:hover {
+                        color: $primary-dark;
+
+                        >span {
+                            color: $primary-dark;
+                        }
+                    }
+                }
             }
         }
     }

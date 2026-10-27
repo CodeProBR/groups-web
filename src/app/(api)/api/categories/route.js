@@ -27,15 +27,39 @@ export async function GET() {
             }
         }
 
-        // 2. Buscar todas as categorias para garantir que as que não têm grupos fiquem com groups: 0
-        const categories = await db.collection('categories').find({}, { projection: { _id: 1 } }).toArray();
+        // 2. Buscar todas as categorias com _id e parentId
+        const categories = await db.collection('categories').find({}, { projection: { _id: 1, parentId: 1 } }).toArray();
 
         if (categories.length === 0) {
             return NextResponse.json({ ok: true, updated: 0, totalCategories: 0 });
         }
 
+        // 3. Mapear os IDs dos filhos de cada categoria
+        const childrenMap = new Map();
+        for (const cat of categories) {
+            if (cat.parentId) {
+                const parentIdStr = cat.parentId.toString();
+                if (!childrenMap.has(parentIdStr)) {
+                    childrenMap.set(parentIdStr, []);
+                }
+                childrenMap.get(parentIdStr).push(cat._id.toString());
+            }
+        }
+
+        // 4. Montar bulkOps: subcategorias contam apenas seus grupos diretos;
+        // categorias principais contam seus grupos diretos + grupos de todas as suas subcategorias.
         const bulkOps = categories.map((cat) => {
-            const total = countsMap.get(cat._id.toString()) || 0;
+            const catIdStr = cat._id.toString();
+            let total = countsMap.get(catIdStr) || 0;
+
+            const isMainCategory = !cat.parentId;
+            if (isMainCategory) {
+                const childrenIds = childrenMap.get(catIdStr) || [];
+                for (const childId of childrenIds) {
+                    total += countsMap.get(childId) || 0;
+                }
+            }
+
             return {
                 updateOne: {
                     filter: { _id: cat._id },

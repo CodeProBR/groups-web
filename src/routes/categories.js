@@ -50,7 +50,7 @@ export default async function Page({ slug }) {
 
                 {/* CATEGORIES */}
                 <div className={style.block}>
-                    <Categories items={data.results} texts={texts} />
+                    <Categories items={data.results} texts={texts} subcategories={true} />
                 </div>
 
             </div>

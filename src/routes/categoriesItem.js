@@ -2,7 +2,7 @@ import Layout from '@/layout';
 import { cache } from 'react';
 import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
-import { getBoosts, getPosts, getGroups, getPages, getProducts, getCategoriesFeatured, getCategoriesItem, getGuides } from "@/utils/database";
+import { getBoosts, getPosts, getGroups, getPages, getProducts, getCategoriesFeatured, getCategoriesItem, getGuides, getCategoriesAll } from "@/utils/database";
 import style from '@site/styles/page.module.scss';
 import AsideBoosts from '@/components/Aside/Boosts';
 import AsideCategories from '@/components/Aside/Categories'
@@ -15,6 +15,7 @@ import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFoun
 import { permanentRedirect } from "next/navigation";
 import Products from '@/components/Products';
 import Guides from '@/components/Guides';
+import Categories from "@/components/Categories";
 
 export async function generateMetadata({ slug, page }) {
     const data = await dataCache(slug, page);
@@ -63,6 +64,13 @@ export default async function Page({ slug, page }) {
             </div>
 
             <div className={style.w70}>
+
+                {/* CATEGORIES */}
+                {data.categories?.length > 0 && (
+                    <div className={style.block}>
+                        <Categories items={data.categories} texts={texts} subcategories={false} />
+                    </div>
+                )}
 
                 {/* GROUPS */}
                 <div className={style.block}>
@@ -164,6 +172,7 @@ export default async function Page({ slug, page }) {
 export const dataCache = cache(async (slug, currentPage = 1) => {
     const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
     const item = await getCategoriesItem({ slug: slug[1] });
+    console.log(item)
     if (!item) {
         return;
     }
@@ -174,7 +183,8 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
         posts,
         guides,
         products,
-        categoriesFeatured
+        categoriesFeatured,
+        categories
     ] = await Promise.all([
         getPages({ slug: slug[0] }),
         getGroups({ limit: 12, page: currentPage, adult: false, categoryId: item._id.toString() }),
@@ -183,11 +193,12 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
         getGuides({ limit: 4 }),
         getProducts(),
         getCategoriesFeatured(),
+        getCategoriesAll({ parentId: item._id.toString() }),
     ]);
     const breadcrumb = [
         { name: texts.home, url: '/' },
         { name: page.name, url: `/${slug[0]}` },
         { name: item.name, url: `/${slug[0]}/${item.slug || slug[1]}` },
     ];
-    return { ...item, breadcrumb, results, boosts, posts, products, categoriesFeatured, guides };
+    return { ...item, breadcrumb, results, boosts, posts, products, categoriesFeatured, guides, categories };
 });

@@ -78,11 +78,32 @@ export const getGroups = unstable_cache(async ({ id, limit, page, adult = false,
             });
         }
 
+        let targetCategoryFilter = { $in: activeCategoryIds };
+        if (categoryId && ObjectId.isValid(categoryId)) {
+            const catObjId = new ObjectId(categoryId);
+            const targetCategory = await db.collection('categories').findOne(
+                { _id: catObjId },
+                { projection: { _id: 1, parentId: 1 } }
+            );
+
+            if (targetCategory && !targetCategory.parentId) {
+                // É categoria principal: busca todos os filhos
+                const children = await db.collection('categories').find(
+                    { parentId: catObjId, status: 'active' },
+                    { projection: { _id: 1 } }
+                ).toArray();
+                const allIds = [catObjId, ...children.map(c => c._id)];
+                targetCategoryFilter = { $in: allIds };
+            } else {
+                // É subcategoria ou não possui filhos
+                targetCategoryFilter = catObjId;
+            }
+        }
+
         const filter = {
             status: 'active',
-            categoryId: { $in: activeCategoryIds },
+            categoryId: targetCategoryFilter,
             /*...(adult ? {} : blockContent()),*/
-            ...(categoryId && ObjectId.isValid(categoryId) ? { categoryId: new ObjectId(categoryId) } : {}),
             ...(andConditions.length > 0 ? { $and: andConditions } : {})
         };
         const skip = (page - 1) * limit;
@@ -292,17 +313,26 @@ export const getProducts = unstable_cache(async () => {
     }
 }, ['categories'], { revalidate: 86400, tags: ['categories'] });*/
 
-export const getCategoriesAll = unstable_cache(async () => {
+export const getCategoriesAll = unstable_cache(async ({ parentId } = {}) => {
     const client = await mongodb(process.env.DATABASE);
     const db = client.db();
-    return await db.collection('categories').find({ status: 'active' }, { projection: { name: 1, slug: 1, icon: 1, groups: 1, _id: 0 } }).sort({ name: 1 }).toArray();
+    const query = {
+        status: 'active',
+        ...(parentId && ObjectId.isValid(parentId) ? { parentId: new ObjectId(parentId) } : {})
+    };
+    const categories = await db.collection('categories').find(query, { projection: { name: 1, slug: 1, icon: 1, groups: 1, parentId: 1 } }).sort({ name: 1 }).toArray();
+    return categories.map(cat => ({
+        ...cat,
+        _id: cat._id?.toString() || null,
+        parentId: cat.parentId ? cat.parentId.toString() : null
+    }));
 }, ['categoriesAll'], { revalidate: 86400, tags: ['categoriesAll', 'categories'] });
 
 export const getCategoriesFeatured = async () => {
     return unstable_cache(
         async () => {
             const db = await getDb();
-            return await db.collection('categories').find({ status: 'active' }, { projection: { name: 1, slug: 1, icon: 1, groups: 1, _id: 0 }, limit: 8 }).sort({ groups: -1 }).toArray();
+            return await db.collection('categories').find({ status: 'active', parentId: null }, { projection: { name: 1, slug: 1, icon: 1, groups: 1, _id: 0 }, limit: 8 }).sort({ groups: -1 }).toArray();
         },
         ['categoriesFeatured'],
         { revalidate: 86400, tags: ['categoriesFeatured', 'categories'] }
