@@ -10,7 +10,7 @@ export default function Component({ title, items = [], texts }) {
             <div className={style.boosts}>
                 {items.map((item, i) => (
                     <Link href={`/${texts.groups.slug}/${item.id}`} key={i}>
-                        <Image src={item.image} alt={item.name} width={150} height={100} loading="lazy" />
+                        <Image src={process.env.NEXT_PUBLIC_IMG + item.image} alt={item.name} width={150} height={100} loading="lazy" />
                         <div>
                             <h3>{item.name}</h3>
                             <p>{item.description}</p>

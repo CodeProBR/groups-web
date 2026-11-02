@@ -10,10 +10,10 @@ export default function Component({ items = [], texts }) {
             {items.map((item, i) => (
                 <Link href={`/${texts.groups.slug}/${item.id}`} key={i}>
                     <figure>
-                        <Image src={item.image} alt={item.name} width={320} height={180} loading="lazy" />
+                        <Image src={process.env.NEXT_PUBLIC_IMG + item.image} alt={item.name} width={320} height={180} loading="lazy" />
                         <span>{item.category}</span>
                         {isBoostActive(item.boost) && <small><PiStarFill /><span>VIP</span></small>}
-                        {item.members && <strong>{item.members} {texts.members}</strong>}
+                        {item.stats?.members && <strong>{item.stats.members} {texts.members}</strong>}
                     </figure>
                     <div>
                         <h3>{item.name}</h3>

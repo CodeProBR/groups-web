@@ -60,13 +60,13 @@ export default async function Page({ slug }) {
 
                     <div className={style.group}>
                         <figure>
-                            <Image src={data.image} alt={data.name} width={900} height={400} loading="lazy" />
+                            <Image src={process.env.NEXT_PUBLIC_IMG + data.image} alt={data.name} width={900} height={400} loading="lazy" />
                         </figure>
                         <div>
                             <h2>{data.name}</h2>
                             <span>
-                                {data.members && <span>{data.members} {data.texts.members}</span>}
-                                <span>{data.texts.updatedAt} {formatData(data.updatedAt)}</span>
+                                {data.stats?.members && <span>{data.stats.members} {data.texts.members}</span>}
+                                <span>{data.texts.updatedAt} {formatData(data.dates.updated)}</span>
                                 <span className={style.green}><PiSealCheck />{data.texts.verified}</span>
                             </span>
                             <p><span>{data.description}</span></p>

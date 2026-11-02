@@ -47,8 +47,8 @@ export const getGroups = unstable_cache(async ({ id, limit, page, adult = false,
                     },
                     link: 1,
                     rules: 1,
-                    updatedAt: 1,
-                    members: 1,
+                    dates: 1,
+                    stats: 1,
                     _id: 0
                 }
             }
@@ -117,8 +117,8 @@ export const getGroups = unstable_cache(async ({ id, limit, page, adult = false,
                         $cond: [
                             {
                                 $and: [
-                                    { $ifNull: ['$boost', false] },
-                                    { $gt: ['$boost', new Date()] }
+                                    { $ifNull: ['$dates.boost', false] },
+                                    { $gt: ['$dates.boost', new Date()] }
                                 ]
                             },
                             1,
@@ -127,7 +127,7 @@ export const getGroups = unstable_cache(async ({ id, limit, page, adult = false,
                     }
                 }
             },
-            { $sort: { isBoosted: -1, score: -1, createdAt: -1 } },
+            { $sort: { isBoosted: -1, 'stats.score': -1, 'dates.created': -1 } },
             ...(skip ? [{ $skip: skip }] : []),
             ...(limit ? [{ $limit: limit }] : []),
             {
@@ -146,8 +146,8 @@ export const getGroups = unstable_cache(async ({ id, limit, page, adult = false,
                     image: 1,
                     categoryId: 1,
                     category: { $arrayElemAt: ['$categoryDoc.name', 0] },
-                    members: 1,
-                    boost: 1,
+                    stats: 1,
+                    boost: '$dates.boost',
                     _id: 0
                 }
             }
@@ -253,11 +253,11 @@ export const getBoosts = unstable_cache(async ({ adult = false } = {}) => {
     const db = client.db();
     const filter = {
         status: 'active',
-        boost: { $gt: new Date() },
+        'dates.boost': { $gt: new Date() },
     };
     return await db.collection('groups').aggregate([
         { $match: filter },
-        { $sort: { boost: -1, score: -1, createdAt: -1 } },
+        { $sort: { 'dates.boost': -1, 'stats.score': -1, 'dates.created': -1 } },
         {
             $lookup: {
                 from: 'categories',
@@ -273,7 +273,6 @@ export const getBoosts = unstable_cache(async ({ adult = false } = {}) => {
                 description: 1,
                 image: 1,
                 category: { $arrayElemAt: ['$categoryDoc.name', 0] },
-                boost: 1,
                 _id: 0
             }
         }
