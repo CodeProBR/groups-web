@@ -1,4 +1,3 @@
-import Layout from '@/layout';
 import { cache } from 'react';
 import Link from 'next/link';
 import Faq from '@/components/Faq';
@@ -8,12 +7,12 @@ import Pagination from '@/components/Pagination';
 import Posts from '@/components/Posts';
 import Guides from '@/components/Guides';
 import { getPages, getBoosts, getCategoriesFeatured, getPosts, getGroups, getProducts, getGuides } from "@/utils/database";
-import style from '@site/styles/page.module.scss';
-import AsideBoosts from '@/components/Aside/Boosts';
-import AsideCategories from '@/components/Aside/Categories'
+import style from '@template/page.module.scss';
+import AsideBoosts from '@/components/AsideBoosts';
+import AsideCategories from '@/components/AsideCategories'
 import metadata from "@/utils/metadata";
-import CollectionPage from '@/components/Snippet/CollectionPage';
-import ItemList from '@/components/Snippet/ItemList';
+import CollectionPage from '@/snippets/CollectionPage';
+import ItemList from '@/snippets/ItemList';
 import Products from '@/components/Products';
 
 export async function generateMetadata({ slug, search, page }) {
@@ -29,15 +28,14 @@ export async function generateMetadata({ slug, search, page }) {
 
 export default async function Page({ slug, search, page }) {
     const data = await dataCache(slug, page, search);
-    const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
     return (
-        <Layout>
+        <>
 
             <Navigation
                 items={data.breadcrumb}
                 title={data.title}
                 description={data.description}
-                texts={texts}
+                texts={data.texts}
             />
 
             <div className={style.w100}>
@@ -52,25 +50,39 @@ export default async function Page({ slug, search, page }) {
                 {/* GROUPS */}
                 <div className={style.block}>
                     <Groups
-                        items={data.results.items} texts={texts}
+                        items={data.results.items} texts={data.texts}
                     />
                     <Pagination
                         page={data.results.page}
                         totalPages={data.results.totalPages}
                         baseUrl={search ? `/${slug[0]}?q=${encodeURIComponent(search)}` : `/${slug[0]}`}
-                        texts={texts}
+                        texts={data.texts}
                     />
                 </div>
+
+                {/* FAQ */}
+                {data.faq.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{data.texts.faq.title}</strong></h2>
+                                <p>{data.texts.faq.description}</p>
+                            </div>
+                            <Faq items={data.faq} />
+                        </div>
+                    </>
+                )}
 
             </div>
             <section className={style.w30}>
                 <div className={style.block}>
 
                     {/* BOOSTS */}
-                    <AsideBoosts items={data.boosts} texts={texts} />
+                    <AsideBoosts items={data.boosts} texts={data.texts} />
 
                     {/* CATEGORIES */}
-                    <AsideCategories items={data.categoriesFeatured} texts={texts} />
+                    <AsideCategories items={data.categoriesFeatured} texts={data.texts} />
 
                 </div>
             </section>
@@ -82,12 +94,12 @@ export default async function Page({ slug, search, page }) {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.products.title}</strong></h2>
-                                <p>{texts.products.description}</p>
+                                <h2><strong>{data.texts.products.title}</strong></h2>
+                                <p>{data.texts.products.description}</p>
                             </div>
                             <Products
                                 items={data.products}
-                                texts={texts}
+                                texts={data.texts}
                             />
                         </div>
                     </>
@@ -99,13 +111,13 @@ export default async function Page({ slug, search, page }) {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.guides.title}</strong></h2>
-                                <p>{texts.guides.description}</p>
+                                <h2><strong>{data.texts.guides.title.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</strong></h2>
+                                <p>{data.texts.guides.description.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</p>
                             </div>
                             <Guides
-                                items={data.guides.items} texts={texts}
+                                items={data.guides.items} texts={data.texts}
                             />
-                            <Link className={style.link} href={`/${texts.guides.slug}`}>{texts.guides.button}</Link>
+                            <Link className={style.link} href={`/${data.texts.guides.slug}`}>{data.texts.guides.button}</Link>
                         </div>
                     </>
                 )}
@@ -116,27 +128,13 @@ export default async function Page({ slug, search, page }) {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.blog.title}</strong></h2>
-                                <p>{texts.blog.description}</p>
+                                <h2><strong>{data.texts.blog.title}</strong></h2>
+                                <p>{data.texts.blog.description.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</p>
                             </div>
                             <Posts
-                                items={data.posts.items} texts={texts}
+                                items={data.posts.items} texts={data.texts}
                             />
-                            <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
-                        </div>
-                    </>
-                )}
-
-                {/* FAQ */}
-                {data.faq.length > 0 && (
-                    <>
-                        <hr className={style.break} />
-                        <div className={style.block}>
-                            <div className={style.title}>
-                                <h2><strong>{texts.faq.title}</strong></h2>
-                                <p>{texts.faq.description}</p>
-                            </div>
-                            <Faq items={data.faq} />
+                            <Link className={style.link} href={`/${data.texts.blog.slug}`}>{data.texts.blog.button}</Link>
                         </div>
                     </>
                 )}
@@ -147,12 +145,12 @@ export default async function Page({ slug, search, page }) {
             {data.groups?.items?.length > 0 && (
                 <ItemList data={data.groups.items} name={data.title} type="group" slug={slug[0]} />
             )}
-        </Layout>
+        </>
     );
 }
 
 export const dataCache = cache(async (slug, currentPage = 1, search = '') => {
-    const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
+    const texts = (await import(`@/utils/texts`)).default[process.env.NEXT_PUBLIC_LANG];
     const [
         page,
         results,
@@ -182,5 +180,5 @@ export const dataCache = cache(async (slug, currentPage = 1, search = '') => {
         { name: page.name, url: `/${slug[0]}` },
         ...(search ? [{ name: `${texts.search.name}: "${search}"`, url: `/${slug[0]}?q=${encodeURIComponent(search)}` }] : []),
     ];
-    return { ...page, title, description, seo, breadcrumb, results, boosts, categoriesFeatured, posts, products, guides };
+    return { ...page, title, description, seo, breadcrumb, results, boosts, categoriesFeatured, posts, products, guides, texts };
 });

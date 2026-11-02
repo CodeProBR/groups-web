@@ -1,0 +1,81 @@
+@use '@site/variables' as *;
+
+.guides {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    width: 100%;
+
+    >a {
+        background: $bg-card;
+        border: 1px solid $border;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: $transition;
+
+        >figure {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+
+            >img {
+                width: 100%;
+                aspect-ratio: 2 / 1;
+                object-fit: cover;
+                transition: $transition;
+            }
+        }
+
+        >div {
+            margin: 1rem 1.25rem;
+            -webkit-line-clamp: 4;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.6;
+            height: 4.6rem;
+
+            >h3 {
+                @include text-small;
+                font-weight: 700;
+                color: $text;
+                text-transform: uppercase;
+                transition: $transition;
+                margin: 0;
+                line-height: unset;
+            }
+
+            >p {
+                @include text-smaller;
+                color: $text-secondary;
+                margin: 0;
+                line-height: unset;
+            }
+
+            >span {
+                @include text-smaller;
+                color: $text-secondary;
+                margin: 0;
+                line-height: unset;
+            }
+        }
+
+        >button {
+            background-color: $primary;
+            @include text-small;
+            margin: 0 1.25rem 1.25rem 1.25rem;
+            color: #fff;
+            border: 0;
+            border-radius: .75rem;
+            height: 2.5rem;
+            transition: $transition;
+            cursor: pointer;
+        }
+
+        &:hover {
+            @include hover;
+        }
+    }
+}

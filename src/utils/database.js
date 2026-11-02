@@ -43,10 +43,12 @@ export const getGroups = unstable_cache(async ({ id, limit, page, adult = false,
                         name: { $arrayElemAt: ['$categoryDoc.name', 0] },
                         description: { $arrayElemAt: ['$categoryDoc.description', 0] },
                         slug: { $arrayElemAt: ['$categoryDoc.slug', 0] },
+                        groups: { $arrayElemAt: ['$categoryDoc.groups', 0] },
                     },
                     link: 1,
                     rules: 1,
                     updatedAt: 1,
+                    members: 1,
                     _id: 0
                 }
             }
@@ -144,6 +146,7 @@ export const getGroups = unstable_cache(async ({ id, limit, page, adult = false,
                     image: 1,
                     categoryId: 1,
                     category: { $arrayElemAt: ['$categoryDoc.name', 0] },
+                    members: 1,
                     boost: 1,
                     _id: 0
                 }
@@ -320,7 +323,7 @@ export const getCategoriesAll = unstable_cache(async ({ parentId } = {}) => {
         status: 'active',
         ...(parentId && ObjectId.isValid(parentId) ? { parentId: new ObjectId(parentId) } : {})
     };
-    const categories = await db.collection('categories').find(query, { projection: { name: 1, slug: 1, icon: 1, groups: 1, parentId: 1 } }).sort({ name: 1 }).toArray();
+    const categories = await db.collection('categories').find(query, { projection: { name: 1, slug: 1, icon: 1, total: 1, parentId: 1 } }).sort({ name: 1 }).toArray();
     return categories.map(cat => ({
         ...cat,
         _id: cat._id?.toString() || null,
@@ -332,7 +335,7 @@ export const getCategoriesFeatured = async () => {
     return unstable_cache(
         async () => {
             const db = await getDb();
-            return await db.collection('categories').find({ status: 'active', parentId: null }, { projection: { name: 1, slug: 1, icon: 1, groups: 1, _id: 0 }, limit: 8 }).sort({ groups: -1 }).toArray();
+            return await db.collection('categories').find({ status: 'active', parentId: null }, { projection: { name: 1, slug: 1, icon: 1, total: 1, _id: 0 } }).sort({ total: -1 }).toArray();
         },
         ['categoriesFeatured'],
         { revalidate: 86400, tags: ['categoriesFeatured', 'categories'] }
@@ -345,7 +348,7 @@ export const getCategoriesItem = async ({ slug } = {}) => {
             const db = await getDb();
             return await db.collection('categories').findOne(
                 { $or: [{ slug }, { slugs: slug }] },
-                { projection: { name: 1, title: 1, slug: 1, badges: 1, slugs: 1, description: 1, seo: 1, faq: 1, groups: 1, _id: 1 } }
+                { projection: { name: 1, title: 1, slug: 1, badges: 1, slugs: 1, description: 1, seo: 1, faq: 1, total: 1, groups: 1, _id: 1 } }
             );
         },
         ['categoriesItem', slug || 'default'],

@@ -1,0 +1,125 @@
+@use '@site/variables' as *;
+
+.categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    width: 100%;
+
+    >div {
+        background: linear-gradient(135deg, rgba(22, 32, 54, 0.6) 0%, rgba(13, 18, 32, 0.75) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: $radius;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+        transition: $transition;
+        padding: 1.15rem;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        text-decoration: none;
+        flex-wrap: wrap;
+        flex-direction: column;
+
+        >a {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            width: 100%;
+
+            >svg {
+                border: 1px solid rgba(0, 168, 255, 0.25);
+                box-sizing: border-box;
+                flex-shrink: 0;
+                transition: $transition;
+                font-size: 1rem;
+                color: $primary-dark;
+                min-width: 2rem;
+                height: 2rem;
+                padding: .25rem;
+                border-radius: .75rem;
+                background-color: $primary-light;
+            }
+
+            >h3 {
+                @include text-small;
+                font-weight: 600;
+                color: #ffffff;
+                transition: color 0.2s ease;
+                margin: 0;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                >span {
+                    @include text-small;
+                    margin: 0;
+                    color: $text-secondary;
+                    font-weight: 700;
+                    transition: $transition;
+                }
+            }
+        }
+
+        >ul {
+            width: 100%;
+            list-style: none;
+            border-top: 1px solid $border;
+            margin-top: .5rem;
+            padding-top: .5rem;
+
+            >li {
+                @include text-small;
+                padding-top: .5rem;
+                color: $text;
+
+                >a {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    transition: $transition;
+
+                    >span {
+                        @include text-small;
+                        margin: 0;
+                        color: $text-secondary;
+                        font-weight: 700;
+                        transition: $transition;
+                    }
+
+                    &:hover {
+                        color: $primary-dark;
+
+                        >span {
+                            color: $primary-dark;
+                        }
+                    }
+                }
+            }
+        }
+
+        &:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 168, 255, 0.45);
+            background: linear-gradient(135deg, rgba(28, 42, 70, 0.75) 0%, rgba(16, 24, 42, 0.9) 100%);
+            box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 168, 255, 0.2);
+
+            >svg {
+                background: $primary-gradient;
+                color: #ffffff;
+                border-color: transparent;
+                box-shadow: 0 0 12px rgba(0, 168, 255, 0.5);
+                transform: scale(1.05);
+            }
+
+            >h3 {
+                color: $primary;
+
+                >span {
+                    color: $primary-dark;
+                }
+            }
+        }
+    }
+}

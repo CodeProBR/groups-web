@@ -1,11 +1,10 @@
-import Layout from '@/layout';
 import { cache } from 'react';
 import Faq from '@/components/Faq';
 import Navigation from '@/components/Navigation';
 import { getBoosts, getPosts, getGroups, getPages, getProducts, getCategoriesFeatured, getCategoriesItem, getGuides, getCategoriesAll } from "@/utils/database";
-import style from '@site/styles/page.module.scss';
-import AsideBoosts from '@/components/Aside/Boosts';
-import AsideCategories from '@/components/Aside/Categories'
+import style from '@template/page.module.scss';
+import AsideBoosts from '@/components/AsideBoosts';
+import AsideCategories from '@/components/AsideCategories'
 import metadata from "@/utils/metadata";
 import Link from "next/link";
 import Groups from "@/components/Groups";
@@ -38,26 +37,25 @@ export default async function Page({ slug, page }) {
     if (data.slug && slug[1] !== data.slug) {
         permanentRedirect(`/${slug[0]}/${data.slug}`);
     }
-    const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
-    const updatedAt = new Date().toLocaleDateString('pt-BR', {
+    const updatedAt = new Date().toLocaleDateString(process.env.NEXT_PUBLIC_LOCALE, {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
-        timeZone: 'America/Sao_Paulo',
+        timeZone: process.env.NEXT_PUBLIC_TIMEZONE,
     }).replace(/ de ([a-z])/i, (match, p1) => ` de ${p1.toUpperCase()}`);
     return (
-        <Layout>
+        <>
 
             <Navigation
                 items={data.breadcrumb}
                 title={data.name}
                 description={data.description}
-                texts={texts}
+                texts={data.texts}
             />
 
             <div className={style.w100}>
                 <div className={style.title}>
-                    <span><strong>{data.results.total}</strong> {texts.actives}   ●   {texts.updated} <strong>{updatedAt}</strong></span>
+                    <span><strong>{data.results.total}</strong> {data.texts.actives}   ●   {data.texts.updatedAt} <strong>{updatedAt}</strong></span>
                     <h1><strong>{data.title}</strong></h1>
                     <p>{data.description}</p>
                 </div>
@@ -68,32 +66,46 @@ export default async function Page({ slug, page }) {
                 {/* CATEGORIES */}
                 {data.categories?.length > 0 && (
                     <div className={style.block}>
-                        <Categories items={data.categories} texts={texts} subcategories={false} />
+                        <Categories items={data.categories} texts={data.texts} subcategories={false} />
                     </div>
                 )}
 
                 {/* GROUPS */}
                 <div className={style.block}>
                     <Groups
-                        items={data.results.items} texts={texts}
+                        items={data.results.items} texts={data.texts}
                     />
                     <Pagination
                         page={data.results.page}
                         totalPages={data.results.totalPages}
                         baseUrl={`/${slug[0]}/${slug[1]}`}
-                        texts={texts}
+                        texts={data.texts}
                     />
                 </div>
+
+                {/* FAQ */}
+                {Array.isArray(data.faq?.length) && data.faq.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{data.texts.faq.title}</strong></h2>
+                                <p>{data.texts.faq.description}</p>
+                            </div>
+                            <Faq items={data.faq} />
+                        </div>
+                    </>
+                )}
 
             </div>
             <section className={style.w30}>
                 <div className={style.block}>
 
                     {/* BOOSTS */}
-                    <AsideBoosts items={data.boosts} texts={texts} />
+                    <AsideBoosts items={data.boosts} texts={data.texts} />
 
                     {/* CATEGORIES */}
-                    <AsideCategories items={data.categoriesFeatured} texts={texts} />
+                    <AsideCategories items={data.categoriesFeatured} texts={data.texts} />
 
                 </div>
             </section>
@@ -105,12 +117,12 @@ export default async function Page({ slug, page }) {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.products.title}</strong></h2>
-                                <p>{texts.products.description}</p>
+                                <h2><strong>{data.texts.products.title}</strong></h2>
+                                <p>{data.texts.products.description}</p>
                             </div>
                             <Products
                                 items={data.products}
-                                texts={texts}
+                                texts={data.texts}
                             />
                         </div>
                     </>
@@ -122,13 +134,13 @@ export default async function Page({ slug, page }) {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.guides.title}</strong></h2>
-                                <p>{texts.guides.description}</p>
+                                <h2><strong>{data.texts.guides.title.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</strong></h2>
+                                <p>{data.texts.guides.description.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</p>
                             </div>
                             <Guides
-                                items={data.guides.items} texts={texts}
+                                items={data.guides.items} texts={data.texts}
                             />
-                            <Link className={style.link} href={`/${texts.guides.slug}`}>{texts.guides.button}</Link>
+                            <Link className={style.link} href={`/${data.texts.guides.slug}`}>{data.texts.guides.button}</Link>
                         </div>
                     </>
                 )}
@@ -139,40 +151,25 @@ export default async function Page({ slug, page }) {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.blog.title}</strong></h2>
-                                <p>{texts.blog.description}</p>
+                                <h2><strong>{data.texts.blog.title}</strong></h2>
+                                <p>{data.texts.blog.description.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</p>
                             </div>
                             <Posts
-                                items={data.posts.items} texts={texts}
+                                items={data.posts.items} texts={data.texts}
                             />
-                            <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
-                        </div>
-                    </>
-                )}
-
-                {/* FAQ */}
-                {data.faq.items.length > 0 && (
-                    <>
-                        <hr className={style.break} />
-                        <div className={style.block}>
-                            <div className={style.title}>
-                                <h2><strong>{data.faq.title}</strong></h2>
-                                <p>{data.faq.description}</p>
-                            </div>
-                            <Faq items={data.faq.items} />
+                            <Link className={style.link} href={`/${data.texts.blog.slug}`}>{data.texts.blog.button}</Link>
                         </div>
                     </>
                 )}
 
             </div>
-        </Layout>
+        </>
     );
 }
 
 export const dataCache = cache(async (slug, currentPage = 1) => {
-    const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
+    const texts = (await import(`@/utils/texts`)).default[process.env.NEXT_PUBLIC_LANG];
     const item = await getCategoriesItem({ slug: slug[1] });
-    console.log(item)
     if (!item) {
         return;
     }
@@ -200,5 +197,5 @@ export const dataCache = cache(async (slug, currentPage = 1) => {
         { name: page.name, url: `/${slug[0]}` },
         { name: item.name, url: `/${slug[0]}/${item.slug || slug[1]}` },
     ];
-    return { ...item, breadcrumb, results, boosts, posts, products, categoriesFeatured, guides, categories };
+    return { ...item, breadcrumb, results, boosts, posts, products, categoriesFeatured, guides, categories, texts };
 });

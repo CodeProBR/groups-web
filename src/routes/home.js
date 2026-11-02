@@ -1,15 +1,14 @@
-import Layout from '@/layout';
 import { cache } from 'react';
 import Navigation from '@/components/Navigation';
 import metadata from "@/utils/metadata";
-import style from '@site/styles/page.module.scss';
+import style from '@template/page.module.scss';
 import { getPages, getGroups, getCategoriesFeatured, getPosts, getGuides, getProducts } from "@/utils/database";
 import Groups from '@/components/Groups';
 import Categories from '@/components/Categories';
 import Posts from '@/components/Posts';
 import Guides from '@/components/Guides';
 import Faq from '@/components/Faq';
-import WebSite from '@/components/Snippet/WebSite';
+import WebSite from '@/snippets/WebSite';
 import Link from 'next/link';
 import Products from '@/components/Products';
 import * as PiIcons from 'react-icons/pi';
@@ -27,15 +26,14 @@ export async function generateMetadata() {
 
 export default async function Page() {
     const data = await dataCache();
-    const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
     return (
-        <Layout>
+        <>
 
             <Navigation
                 items={data.breadcrumb}
                 title={data.title}
                 description={data.description}
-                texts={texts}
+                texts={data.texts}
             />
 
             <div className={style.w100}>
@@ -48,8 +46,8 @@ export default async function Page() {
                                 <h1><strong>{data.title}</strong></h1>
                                 <p>{data.description}</p>
                             </div>
-                            <Groups items={data.groups.items} texts={texts} />
-                            <Link className={style.link} href={`/${texts.groups.slug}`}>{texts.groups.button}</Link>
+                            <Groups items={data.groups.items} texts={data.texts} />
+                            <Link className={style.link} href={`/${data.texts.groups.slug}`}>{data.texts.groups.button}</Link>
                         </div>
                     </>
                 )}
@@ -60,11 +58,11 @@ export default async function Page() {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.categories.title}</strong></h2>
-                                <p>{texts.categories.description}</p>
+                                <h2><strong>{data.texts.categories.title.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</strong></h2>
+                                <p>{data.texts.categories.description.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</p>
                             </div>
-                            <Categories items={data.categoriesFeatured} texts={texts} />
-                            <Link className={style.link} href={`/${texts.categories.slug}`}>{texts.categories.button}</Link>
+                            <Categories items={data.categoriesFeatured} texts={data.texts} />
+                            <Link className={style.link} href={`/${data.texts.categories.slug}`}>{data.texts.categories.button}</Link>
                         </div>
                     </>
                 )}
@@ -75,12 +73,12 @@ export default async function Page() {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.products.title}</strong></h2>
-                                <p>{texts.products.description}</p>
+                                <h2><strong>{data.texts.products.title}</strong></h2>
+                                <p>{data.texts.products.description}</p>
                             </div>
                             <Products
                                 items={data.products}
-                                texts={texts}
+                                texts={data.texts}
                             />
                         </div>
                     </>
@@ -92,13 +90,13 @@ export default async function Page() {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.guides.title}</strong></h2>
-                                <p>{texts.guides.description}</p>
+                                <h2><strong>{data.texts.guides.title.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</strong></h2>
+                                <p>{data.texts.guides.description.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</p>
                             </div>
                             <Guides
-                                items={data.guides.items} texts={texts}
+                                items={data.guides.items} texts={data.texts}
                             />
-                            <Link className={style.link} href={`/${texts.guides.slug}`}>{texts.guides.button}</Link>
+                            <Link className={style.link} href={`/${data.texts.guides.slug}`}>{data.texts.guides.button}</Link>
                         </div>
                     </>
                 )}
@@ -109,28 +107,28 @@ export default async function Page() {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.blog.title}</strong></h2>
-                                <p>{texts.blog.description}</p>
+                                <h2><strong>{data.texts.blog.title}</strong></h2>
+                                <p>{data.texts.blog.description.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</p>
                             </div>
                             <Posts
-                                items={data.posts.items} texts={texts}
+                                items={data.posts.items} texts={data.texts}
                             />
-                            <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
+                            <Link className={style.link} href={`/${data.texts.blog.slug}`}>{data.texts.blog.button}</Link>
                         </div>
                     </>
                 )}
 
                 {/* WHY */}
-                {texts.why.items.length > 0 && (
+                {data.texts.why.items.length > 0 && (
                     <>
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.why.title}</strong></h2>
-                                <p>{texts.why.description}</p>
+                                <h2><strong>{data.texts.why.title.replaceAll('[SITE]', process.env.NEXT_PUBLIC_NAME)}</strong></h2>
+                                <p>{data.texts.why.description}</p>
                             </div>
                             <div className={style.why}>
-                                {texts.why.items.map((item, i) => {
+                                {data.texts.why.items.map((item, i) => {
                                     const IconComponent = PiIcons[item.icon];
                                     return (
                                         <div key={i}>
@@ -151,8 +149,8 @@ export default async function Page() {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.faq.title}</strong></h2>
-                                <p>{texts.faq.description}</p>
+                                <h2><strong>{data.texts.faq.title}</strong></h2>
+                                <p>{data.texts.faq.description}</p>
                             </div>
                             <Faq items={data.faq} />
                         </div>
@@ -162,13 +160,13 @@ export default async function Page() {
             </div>
 
             <WebSite description={data.description} />
-        </Layout>
+        </>
     );
 }
 
 
 export const dataCache = cache(async () => {
-    const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
+    const texts = (await import(`@/utils/texts`)).default[process.env.NEXT_PUBLIC_LANG];
     const [
         page,
         groups,
@@ -187,5 +185,5 @@ export const dataCache = cache(async () => {
     const breadcrumb = [
         { name: page.name, url: '/' },
     ];
-    return { ...page, breadcrumb, groups, categoriesFeatured, posts, guides, products };
+    return { ...page, breadcrumb, groups, categoriesFeatured, posts, guides, products, texts };
 });

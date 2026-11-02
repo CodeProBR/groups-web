@@ -63,7 +63,7 @@ export async function GET() {
             return {
                 updateOne: {
                     filter: { _id: cat._id },
-                    update: { $set: { groups: total } }
+                    update: { $set: { total: total } }
                 }
             };
         });

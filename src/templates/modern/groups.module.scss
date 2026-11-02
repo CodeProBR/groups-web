@@ -1,0 +1,135 @@
+@use '@site/variables' as *;
+
+.groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    width: 100%;
+
+    >a {
+        background: $light;
+        border: 1px solid $border;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: $transition;
+
+        >figure {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+
+            >img {
+                width: 100%;
+                aspect-ratio: 2 / 1;
+                object-fit: cover;
+                transition: $transition;
+            }
+
+            >span {
+                @include text-smallest;
+                margin: 0;
+                position: absolute;
+                left: .5rem;
+                top: .5rem;
+                background-color: $bg-card;
+                color: $primary-dark;
+                padding: 0 .5rem;
+                border-radius: .6rem;
+                height: 1.5rem;
+                display: flex;
+                align-items: center;
+                width: fit-content;
+                gap: .25rem;
+
+                >svg {
+                    font-size: .8rem;
+                }
+            }
+
+            >small {
+                background-color: #e9b949;
+                color: #5C4306;
+                border-radius: 0 1rem;
+                align-items: center;
+                justify-content: center;
+                height: 2rem;
+                padding: 0 1rem;
+                display: flex;
+                position: absolute;
+                top: 0rem;
+                right: 0rem;
+                gap: .25rem;
+
+                >svg {
+                    font-size: 1rem;
+                }
+
+                >span {
+                    @include text-smaller;
+                    margin: 0;
+                    font-weight: 900;
+                    line-height: 2rem;
+                    letter-spacing: 1px;
+                }
+            }
+
+            >strong {
+                @include text-smallest;
+                margin: 0;
+                color: $text-secondary;
+                font-weight: 400;
+                position: absolute;
+                background-color: $light;
+                bottom: -.2rem;
+                right: 1rem;
+                background-color: white;
+                padding: .25rem .751rem 0 .75rem;
+                border-radius: 1rem 1rem 0 0;
+            }
+        }
+
+        >div {
+            margin: 1rem 1.25rem;
+            -webkit-line-clamp: 4;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.6;
+            height: 4.6rem;
+
+            >h3 {
+                @include text-small;
+                font-weight: 700;
+                color: $text;
+                text-transform: uppercase;
+                transition: $transition;
+                margin: 0;
+                line-height: unset;
+            }
+
+            >p {
+                @include text-smaller;
+                color: $text-secondary;
+                margin: 0;
+                line-height: unset;
+            }
+        }
+
+        >button {
+            background-color: $primary;
+            @include text-small;
+            margin: 0 1.25rem 1.25rem 1.25rem;
+            color: #fff;
+            border: 0;
+            border-radius: .75rem;
+            height: 2.5rem;
+            transition: $transition;
+        }
+
+        &:hover {
+            @include hover;
+        }
+    }
+}

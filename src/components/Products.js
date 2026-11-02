@@ -1,6 +1,6 @@
 "use client";
 
-import style from '@site/styles/products.module.scss';
+import style from '@template/products.module.scss';
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatarMoeda } from '@/utils';

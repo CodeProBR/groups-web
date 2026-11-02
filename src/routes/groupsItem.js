@@ -1,4 +1,3 @@
-import Layout from '@/layout';
 import { cache } from 'react';
 import Link from 'next/link';
 import Faq from '@/components/Faq';
@@ -7,24 +6,25 @@ import Groups from '@/components/Groups';
 import Posts from '@/components/Posts';
 import Guides from '@/components/Guides';
 import { getBoosts, getCategoriesFeatured, getPosts, getGroups, getPages, getProducts, getGuides } from "@/utils/database";
-import style from '@site/styles/page.module.scss';
-import AsideBoosts from '@/components/Aside/Boosts';
-import AsideCategories from '@/components/Aside/Categories'
+import style from '@template/page.module.scss';
+import AsideBoosts from '@/components/AsideBoosts';
+import AsideCategories from '@/components/AsideCategories'
 import metadata from "@/utils/metadata";
 import { formatData } from '@/utils';
 import NotFound, { generateMetadata as metadataNotFound } from "@/routes/notFound";
 import Image from 'next/image';
 import Products from '@/components/Products';
+import CopyButton from '@/components/CopyButton';
 import { PiSealCheck, PiUsersThree, PiArrowsClockwise } from "react-icons/pi";
 
 export async function generateMetadata({ slug }) {
     const data = await dataCache(slug);
     if (!data) return metadataNotFound({ slug });
     return metadata({
-        title: data.seo?.title,
-        description: data.seo?.description,
-        index: data.seo?.index,
-        image: data.seo?.image,
+        title: data.category?.groups?.seo?.title?.replaceAll('[NAME]', data.name) || '',
+        description: data.category?.groups?.seo?.description?.replaceAll('[NAME]', data.name) || '',
+        index: data.category?.groups?.seo?.index || true,
+        image: data.image,
         url: `/${slug[0]}/${slug[1]}`
     });
 }
@@ -32,32 +32,32 @@ export async function generateMetadata({ slug }) {
 export default async function Page({ slug }) {
     const data = await dataCache(slug);
     if (!data) return <NotFound slug={slug} />;
-    const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
-    const updatedAt = new Date().toLocaleDateString('pt-BR', {
+    const updatedAt = new Date().toLocaleDateString(process.env.NEXT_PUBLIC_LOCALE, {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
-        timeZone: 'America/Sao_Paulo',
+        timeZone: process.env.NEXT_PUBLIC_TIMEZONE,
     }).replace(/ de ([a-z])/i, (match, p1) => ` de ${p1.toUpperCase()}`);
     return (
-        <Layout>
+        <>
 
             <Navigation
                 items={data.breadcrumb}
                 title={data.name}
                 description={data.description}
-                texts={texts}
+                texts={data.texts}
             />
 
             <div className={style.w100}>
                 <div className={style.title}>
-                    <span><strong>{data.category.name}</strong>   ●   {texts.groups.verified} <strong>{updatedAt}</strong></span>
-                    <h1><strong>{texts.groups.group.replaceAll('[PLATFORM]', data.platform).replaceAll('[GROUP]', data.name)}</strong></h1>
+                    <span><strong>{data.category.name}</strong>   ●   {data.texts.verifiedAt} <strong>{updatedAt}</strong></span>
+                    <h1><strong>{data.texts.groups.item.replaceAll('[PLATFORM]', data.platform).replaceAll('[NAME]', data.name)}</strong></h1>
                 </div>
             </div>
 
             <div className={style.w70}>
                 <div className={style.block}>
+
                     <div className={style.group}>
                         <figure>
                             <Image src={data.image} alt={data.name} width={900} height={400} loading="lazy" />
@@ -65,50 +65,71 @@ export default async function Page({ slug }) {
                         <div>
                             <h2>{data.name}</h2>
                             <span>
-                                <span>1.048 membros</span>
-                                <span>{texts.updated} {formatData(data.updatedAt)}</span>
-                                <span className={style.green}><PiSealCheck />Verificado</span>
+                                {data.members && <span>{data.members} {data.texts.members}</span>}
+                                <span>{data.texts.updatedAt} {formatData(data.updatedAt)}</span>
+                                <span className={style.green}><PiSealCheck />{data.texts.verified}</span>
                             </span>
                             <p><span>{data.description}</span></p>
                             <div>
-                                <a href={data.link} target="_blank" rel="noopener noreferrer" className="goGroup" data-group={data.id}>{texts.groups.action}</a>
-                                <button>{texts.share.copy}</button>
+                                <a href={data.link} target="_blank" rel="noopener noreferrer" className="goGroup" data-group={data.id}>{data.texts.enter}</a>
+                                <CopyButton
+                                    textToCopy={data.link}
+                                    label={data.texts.copy}
+                                    copiedLabel={data.texts.copied}
+                                />
                             </div>
-                            <button>{texts.report}</button>
+                            <button>{data.texts.report}</button>
                         </div>
                     </div>
+
                     <div className={style.alert}>
                         <div>
-                            <h2>{texts.groups.alert.title}</h2>
+                            <h2>{data.texts.alert.title}</h2>
                             <hr />
-                            <p>{texts.groups.alert.description.replaceAll('[GROUP]', data.name)}</p>
+                            <p>{data.texts.alert.description.replaceAll('[NAME]', data.name)}</p>
                         </div>
                     </div>
+
                     <div className={style.details}>
-                        <h2>{texts.groups.description}</h2>
+                        <h2>{data.texts.description}</h2>
                         <hr />
                         <p>{data.description}</p>
                     </div>
-                    <div className={style.moderate}>
-                        <div>
-                            <p>{texts.groups.moderate}</p>
-                        </div>
-                    </div>
+
                     <div className={style.details}>
-                        <h2>{texts.groups.rules.title}</h2>
+                        <h2>{data.texts.rules.title}</h2>
                         <hr />
                         <div>
                             {data.rules?.map((item, i) => (
                                 <div key={i}><span>{i + 1}</span><p>{item}</p></div>
                             ))}
                         </div>
-                        <blockquote>{texts.groups.rules.description.replaceAll('[PLATFORM]', data.platform).replaceAll('[GROUP]', data.name).replaceAll('[CATEGORY]', data.category.name)}</blockquote>
+                        <blockquote>{data.texts.rules.description.replaceAll('[PLATFORM]', data.platform).replaceAll('[NAME]', data.name).replaceAll('[CATEGORY]', data.category.name)}</blockquote>
                     </div>
-                    <div className={style.details}>
-                        <h2>{texts.groups.about.replaceAll('[PLATFORM]', data.platform).replaceAll('[CATEGORY]', data.category.name)}</h2>
+
+                    <div className={style.moderate}>
+                        <div>
+                            <p>{data.texts.moderate}</p>
+                        </div>
+                    </div>
+
+                    {data.category?.groups?.texts?.about && <div className={style.details}>
+                        <h2>{data.texts.about}</h2>
                         <hr />
-                        <p>{data.category.description}</p>
-                    </div>
+                        <p>{data.category.groups.texts.about.replaceAll('[NAME]', data.name)}</p>
+                    </div>}
+
+                    {data.category?.groups?.texts?.content && <div className={style.details}>
+                        <h2>{data.texts.find}</h2>
+                        <hr />
+                        <p>{data.category.groups.texts.content.replaceAll('[NAME]', data.name)}</p>
+                    </div>}
+
+                    {data.category?.groups?.texts?.useful && <div className={style.details}>
+                        <h2>{data.texts.worth}</h2>
+                        <hr />
+                        <p>{data.category.groups.texts.useful.replaceAll('[NAME]', data.name)}</p>
+                    </div>}
                 </div>
 
                 {/* SIMILAR GROUPS */}
@@ -117,11 +138,28 @@ export default async function Page({ slug }) {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.groups.similar.title}</strong></h2>
-                                <span>{texts.groups.similar.description.replaceAll('[CATEGORY]', data.category.name)}</span>
+                                <h2><strong>{data.texts.similar.title}</strong></h2>
+                                <span>{data.texts.similar.description.replaceAll('[CATEGORY]', data.category.name)}</span>
                             </div>
-                            <Groups items={data.results.items} texts={texts} />
-                            <Link className={style.link} href={`/${texts.categories.slug}/${data.category.slug}`}>{texts.groups.button}</Link>
+                            <Groups items={data.results.items} texts={data.texts} />
+                            <Link className={style.link} href={`/${data.texts.categories.slug}/${data.category.slug}`}>{data.texts.groups.button}</Link>
+                        </div>
+                    </>
+                )}
+
+                {/* FAQ */}
+                {data.category?.groups?.faq?.length > 0 && (
+                    <>
+                        <hr className={style.break} />
+                        <div className={style.block}>
+                            <div className={style.title}>
+                                <h2><strong>{data.texts.faq.title}</strong></h2>
+                                <p>{data.texts.faq.description}</p>
+                            </div>
+                            <Faq items={data.category.groups.faq.map(item => ({
+                                question: item.question.replaceAll('[NAME]', data.name),
+                                answer: item.answer.replaceAll('[NAME]', data.name)
+                            }))} />
                         </div>
                     </>
                 )}
@@ -131,10 +169,10 @@ export default async function Page({ slug }) {
                 <div className={style.block}>
 
                     {/* BOOSTS */}
-                    <AsideBoosts items={data.boosts} texts={texts} />
+                    <AsideBoosts items={data.boosts} texts={data.texts} />
 
                     {/* CATEGORIES */}
-                    <AsideCategories items={data.categoriesFeatured} texts={texts} />
+                    <AsideCategories items={data.categoriesFeatured} texts={data.texts} />
 
                 </div>
             </section>
@@ -146,13 +184,10 @@ export default async function Page({ slug }) {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.products.title}</strong></h2>
-                                <p>{texts.products.description}</p>
+                                <h2><strong>{data.texts.products.title}</strong></h2>
+                                <p>{data.texts.products.description}</p>
                             </div>
-                            <Products
-                                items={data.products}
-                                texts={texts}
-                            />
+                            <Products items={data.products} texts={data.texts} />
                         </div>
                     </>
                 )}
@@ -163,13 +198,11 @@ export default async function Page({ slug }) {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.guides.title}</strong></h2>
-                                <p>{texts.guides.description}</p>
+                                <h2><strong>{data.texts.guides.title.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</strong></h2>
+                                <p>{data.texts.guides.description.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</p>
                             </div>
-                            <Guides
-                                items={data.guides.items} texts={texts}
-                            />
-                            <Link className={style.link} href={`/${texts.guides.slug}`}>{texts.guides.button}</Link>
+                            <Guides items={data.guides.items} texts={data.texts} />
+                            <Link className={style.link} href={`/${data.texts.guides.slug}`}>{data.texts.guides.button}</Link>
                         </div>
                     </>
                 )}
@@ -180,38 +213,23 @@ export default async function Page({ slug }) {
                         <hr className={style.break} />
                         <div className={style.block}>
                             <div className={style.title}>
-                                <h2><strong>{texts.blog.title}</strong></h2>
-                                <p>{texts.blog.description}</p>
+                                <h2><strong>{data.texts.blog.title}</strong></h2>
+                                <p>{data.texts.blog.description.replaceAll('[PLATFORM]', process.env.NEXT_PUBLIC_PLATFORM.replace('/', data.texts.and))}</p>
                             </div>
-                            <Posts
-                                items={data.posts.items} texts={texts}
-                            />
-                            <Link className={style.link} href={`/${texts.blog.slug}`}>{texts.blog.button}</Link>
-                        </div>
-                    </>
-                )}
-
-                {/* FAQ */}
-                {data.faq.length > 0 && (
-                    <>
-                        <hr className={style.break} />
-                        <div className={style.block}>
-                            <div className={style.title}>
-                                <h2><strong>{texts.faq.title}</strong></h2>
-                                <p>{texts.faq.description}</p>
-                            </div>
-                            <Faq items={data.faq} />
+                            <Posts items={data.posts.items} texts={data.texts} />
+                            <Link className={style.link} href={`/${data.texts.blog.slug}`}>{data.texts.blog.button}</Link>
                         </div>
                     </>
                 )}
 
             </div>
-        </Layout>
+        </>
     );
 }
 
 export const dataCache = cache(async (slug) => {
-    const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
+    //const texts = (await import(`@/utils/texts`)).default[process.env.NEXT_PUBLIC_LANG];
+    const texts = (await import(`@/utils/texts`)).default[process.env.NEXT_PUBLIC_LANG];
     const item = await getGroups({ id: slug[1] });
     if (!item) {
         return;
@@ -233,23 +251,11 @@ export const dataCache = cache(async (slug) => {
         getGuides({ limit: 4 }),
         getProducts(),
     ]);
-    const groupName = item?.name;
-    const categoryName = item?.category?.name;
     const platform = item.link.includes("t.me") ? "Telegram" : item.link.includes("telegram") ? "Telegram" : "WhatsApp";
-    const seo = {
-        title: texts.groups.seo.title.replaceAll('[PLATFORM]', platform).replaceAll('[GROUP]', groupName).replaceAll('[CATEGORY]', categoryName),
-        description: texts.groups.seo.description.replaceAll('[PLATFORM]', platform).replaceAll('[GROUP]', groupName).replaceAll('[CATEGORY]', categoryName),
-        image: item?.image ? item.image : null,
-        index: true,
-    };
-    const faq = texts.groups.faq.map(item => ({
-        question: item.question.replaceAll('[PLATFORM]', platform).replaceAll('[GROUP]', groupName).replaceAll('[CATEGORY]', categoryName).replaceAll('[SITE]', process.env.NEXT_PUBLIC_NAME),
-        answer: item.answer.replaceAll('[PLATFORM]', platform).replaceAll('[GROUP]', groupName).replaceAll('[CATEGORY]', categoryName).replaceAll('[SITE]', process.env.NEXT_PUBLIC_NAME),
-    }));
     const breadcrumb = [
         { name: texts.home, url: '/' },
         { name: page.name, url: `/${slug[0]}` },
-        { name: groupName, url: `/${slug[0]}/${slug[1]}` },
+        { name: item?.name, url: `/${slug[0]}/${slug[1]}` },
     ];
-    return { ...item, platform, results, seo, faq, breadcrumb, boosts, categoriesFeatured, posts, guides, products };
+    return { ...item, platform, results, breadcrumb, boosts, categoriesFeatured, posts, guides, products, texts };
 });

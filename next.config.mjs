@@ -12,7 +12,8 @@ dotenv.config({
     path: envPath
 });
 
-const site = process.env.NEXT_PUBLIC_SITE || 'toptelegram.com.br';
+const site = process.env.NEXT_PUBLIC_SITE || '';
+const template = process.env.TEMPLATE || '';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -34,11 +35,13 @@ const nextConfig = {
     },
     webpack: (config) => {
         config.resolve.alias['@site'] = path.resolve(process.cwd(), `src/sites/${site}`);
+        config.resolve.alias['@template'] = path.resolve(process.cwd(), `src/templates/${template}`);
         return config;
     },
     turbopack: {
         resolveAlias: {
             '@site/*': `./src/sites/${site}/*`,
+            '@template/*': `./src/templates/${template}/*`,
         },
     },
 };
