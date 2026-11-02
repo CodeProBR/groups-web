@@ -3,7 +3,7 @@ import mongodb from '@/lib/mongoDB';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-	const texts = (await import(`@/sites/${process.env.NEXT_PUBLIC_SITE}/texts`)).default;
+	const texts = (await import(`@/utils/texts`)).default[process.env.NEXT_PUBLIC_LANG];
 
 	const baseUrl = process.env.NEXT_PUBLIC_WEB;
 	const currentDate = new Date().toISOString().split('T')[0];
