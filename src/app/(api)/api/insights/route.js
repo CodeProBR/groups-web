@@ -34,8 +34,20 @@ export async function POST(request) {
                     source = referer.toLowerCase();
                 } else {
                     const safeUrl = referer.startsWith("http") ? referer : `http://${referer}`;
-                    const { domain } = parse(safeUrl);
-                    if (domain) source = domain.split(".")[0];
+                    const { domain, hostname } = parse(safeUrl);
+
+                    // Identifica se é acesso interno (mesmo domínio/host do site)
+                    const currentHost = request.headers.get("host") || "";
+                    const currentDomain = process.env.DOMAIN || process.env.NEXT_PUBLIC_SITE || "";
+                    const isInternal =
+                        (hostname && currentHost.includes(hostname)) ||
+                        (domain && currentDomain.includes(domain));
+
+                    if (isInternal) {
+                        source = "internal";
+                    } else if (domain) {
+                        source = domain.split(".")[0];
+                    }
                 }
             }
         } catch (e) { }
